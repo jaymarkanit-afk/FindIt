@@ -22,7 +22,7 @@ function handleSearch(query) {
     tab.classList.remove("active");
   });
   const allTab = Array.from(document.querySelectorAll(".filter-tab")).find(
-    (tab) => tab.textContent.includes("All")
+    (tab) => tab.textContent.includes("All"),
   );
   if (allTab) allTab.classList.add("active");
 
@@ -52,12 +52,12 @@ function handleSearch(query) {
 
 function submitSearch(query) {
   const searchQuery = query.toLowerCase().trim();
-  
+
   if (searchQuery.length === 0) {
     showToast("Please enter a café name to search");
     return;
   }
-  
+
   const results = cafeDatabase.filter(
     (cafe) =>
       cafe.name.toLowerCase().includes(searchQuery) ||
