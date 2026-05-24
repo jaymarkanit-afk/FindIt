@@ -61,7 +61,8 @@ function locateMe() {
         let msg = "Unable to get location.";
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            msg = "📍 Location access denied. Please enable location in settings to see cafés near you.";
+            msg =
+              "📍 Location access denied. Please enable location in settings to see cafés near you.";
             break;
           case error.POSITION_UNAVAILABLE:
             msg = "📍 Location service unavailable. Using default location.";
@@ -72,7 +73,7 @@ function locateMe() {
         }
         showToast(msg);
         console.log("Geolocation error:", error);
-        
+
         // Use default Butuan City location as fallback
         updateGeoInfoCard();
       },
