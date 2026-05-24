@@ -23,8 +23,8 @@
   ],
   "rewrites": [
     {
-      "source": "/pages/(.*)",
-      "destination": "/pages/$1"
+      "source": "/:path*",
+      "destination": "/:path*"
     }
   ]
 }
