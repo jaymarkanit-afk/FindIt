@@ -1,7 +1,6 @@
 {
   "version": 2,
   "public": true,
-  "env": [],
   "buildCommand": "echo 'Static site - no build required'",
   "outputDirectory": ".",
   "framework": null,
