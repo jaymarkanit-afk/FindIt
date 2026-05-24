@@ -1,288 +1,282 @@
 <div id="owner-gate">
-    <div class="hero" style="padding-bottom: 18px">
-      <div class="hero-gradient"></div>
-      <div class="hero-grain"></div>
-      <div class="hero-inner">
-        <div class="hero-badge">🏪 Business Portal</div>
-        <h1 class="hero-h1">Owner <em>Dashboard</em></h1>
-        <p class="hero-sub">
-          Restricted access. Manage inventory, post announcements & track
-          performance.
-        </p>
-      </div>
+  <div class="hero" style="padding-bottom: 18px">
+    <div class="hero-gradient"></div>
+    <div class="hero-grain"></div>
+    <div class="hero-inner">
+      <div class="hero-badge">🏪 Business Portal</div>
+      <h1 class="hero-h1">Owner <em>Dashboard</em></h1>
+      <p class="hero-sub">
+        Restricted access. Manage inventory, post announcements & track
+        performance.
+      </p>
     </div>
-    <div style="padding: 16px 22px 0; max-width: 420px">
-      <div class="form-card">
-        <div style="text-align: center; margin-bottom: 18px">
-          <div style="font-size: 36px; margin-bottom: 8px">🏪</div>
-          <div
-            style="
-              font-family: var(--font-d);
-              font-size: 19px;
-              font-weight: 700;
-              color: var(--ink);
-            "
-          >
-            Sign in as Owner
-          </div>
-          <div style="font-size: 12px; color: var(--ink3); margin-top: 3px">
-            Verified café owners only
-          </div>
-        </div>
-        <div class="fg">
-          <label>Business Email</label
-          ><input
-            class="fi"
-            type="email"
-            id="ow-email"
-            placeholder="owner@yourcafe.com"
-          />
-        </div>
-        <div class="fg">
-          <label>Password</label
-          ><input
-            class="fi"
-            type="password"
-            id="ow-pass"
-            placeholder="••••••••"
-          />
-        </div>
-        <button class="btn-prim" onclick="ownerLogin()">
-          Sign in to Dashboard →
-        </button>
-        <div class="fg-note">Demo: any email + password works</div>
-      </div>
-    </div>
-    <div style="height: 32px"></div>
   </div>
-  <div id="owner-dash" style="display: none">
-    <div class="dash-hero">
-      <div class="dash-label">OWNER DASHBOARD · BUTUAN CITY</div>
-      <div class="dash-title">Paramount Coffee ☕</div>
-      <div class="dash-sub">
-        J.C. Aquino Ave, Butuan City · Manage your café presence
-      </div>
-    </div>
-    <div class="dash-stats">
-      <div class="ds">
-        <div class="ds-n">248</div>
-        <div class="ds-l">Views</div>
-      </div>
-      <div class="ds">
-        <div class="ds-n">34</div>
-        <div class="ds-l">Saves</div>
-      </div>
-      <div class="ds">
-        <div class="ds-n">4.9</div>
-        <div class="ds-l">Rating</div>
-      </div>
-    </div>
-    <div class="inv-sec mt20">
-      <div class="inv-head">
-        <div>
-          <div class="sec-eyebrow">Location</div>
-          <div class="sec-title" style="font-size: 16px">
-            Your Café <em>on Map</em>
-          </div>
-        </div>
-      </div>
-      <div
-        style="
-          border-radius: var(--r2);
-          overflow: hidden;
-          height: 120px;
-          border: 1px solid var(--line);
-          position: relative;
-          background: linear-gradient(135deg, #d4e8d0, #c8dcc4);
-        "
-      >
-        <svg
-          style="
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.5;
-          "
-          viewBox="0 0 400 120"
-        >
-          <g stroke="#9ab090" stroke-width="1.5" fill="none">
-            <line x1="0" y1="50" x2="400" y2="50" />
-            <line x1="0" y1="85" x2="400" y2="85" />
-            <line x1="100" y1="0" x2="100" y2="120" />
-            <line x1="220" y1="0" x2="220" y2="120" />
-            <line x1="330" y1="0" x2="330" y2="120" />
-          </g>
-          <text
-            x="200"
-            y="44"
-            font-size="8"
-            fill="#6a8a6a"
-            text-anchor="middle"
-            font-family="sans-serif"
-          >
-            J.C. Aquino Ave
-          </text>
-        </svg>
+  <div style="padding: 16px 22px 0; max-width: 420px">
+    <div class="form-card">
+      <div style="text-align: center; margin-bottom: 18px">
+        <div style="font-size: 36px; margin-bottom: 8px">🏪</div>
         <div
           style="
-            position: absolute;
-            left: 52%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
-            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
-          "
-        >
-          📍
-        </div>
-        <div
-          style="
-            position: absolute;
-            bottom: 7px;
-            left: 8px;
-            background: rgba(255, 255, 255, 0.88);
-            border-radius: 6px;
-            padding: 2px 9px;
-            font-size: 10px;
+            font-family: var(--font-d);
+            font-size: 19px;
             font-weight: 700;
-            color: #2e6b4a;
+            color: var(--ink);
           "
         >
-          📍 Verified · Butuan City
+          Sign in as Owner
+        </div>
+        <div style="font-size: 12px; color: var(--ink3); margin-top: 3px">
+          Verified café owners only
+        </div>
+      </div>
+      <div class="fg">
+        <label>Business Email</label
+        ><input
+          class="fi"
+          type="email"
+          id="ow-email"
+          placeholder="owner@yourcafe.com"
+        />
+      </div>
+      <div class="fg">
+        <label>Password</label
+        ><input
+          class="fi"
+          type="password"
+          id="ow-pass"
+          placeholder="••••••••"
+        />
+      </div>
+      <button class="btn-prim" onclick="ownerLogin()">
+        Sign in to Dashboard →
+      </button>
+      <div class="fg-note">Demo: any email + password works</div>
+    </div>
+  </div>
+  <div style="height: 32px"></div>
+</div>
+<div id="owner-dash" style="display: none">
+  <div class="dash-hero">
+    <div class="dash-label">OWNER DASHBOARD · BUTUAN CITY</div>
+    <div class="dash-title">Paramount Coffee ☕</div>
+    <div class="dash-sub">
+      J.C. Aquino Ave, Butuan City · Manage your café presence
+    </div>
+  </div>
+  <div class="dash-stats">
+    <div class="ds">
+      <div class="ds-n">248</div>
+      <div class="ds-l">Views</div>
+    </div>
+    <div class="ds">
+      <div class="ds-n">34</div>
+      <div class="ds-l">Saves</div>
+    </div>
+    <div class="ds">
+      <div class="ds-n">4.9</div>
+      <div class="ds-l">Rating</div>
+    </div>
+  </div>
+  <div class="inv-sec mt20">
+    <div class="inv-head">
+      <div>
+        <div class="sec-eyebrow">Location</div>
+        <div class="sec-title" style="font-size: 16px">
+          Your Café <em>on Map</em>
         </div>
       </div>
     </div>
-    <div class="inv-sec mt20">
-      <div class="inv-head">
-        <div>
-          <div class="sec-eyebrow">Live Inventory</div>
-          <div class="sec-title" style="font-size: 16px">
-            Menu <em>Availability</em>
-          </div>
-        </div>
-        <button
-          class="filter-trigger"
-          style="padding: 6px 12px; font-size: 11px"
-          onclick="showToast('Inventory synced ✓')"
+    <div
+      style="
+        border-radius: var(--r2);
+        overflow: hidden;
+        height: 120px;
+        border: 1px solid var(--line);
+        position: relative;
+        background: linear-gradient(135deg, #d4e8d0, #c8dcc4);
+      "
+    >
+      <svg
+        style="
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          opacity: 0.5;
+        "
+        viewBox="0 0 400 120"
+      >
+        <g stroke="#9ab090" stroke-width="1.5" fill="none">
+          <line x1="0" y1="50" x2="400" y2="50" />
+          <line x1="0" y1="85" x2="400" y2="85" />
+          <line x1="100" y1="0" x2="100" y2="120" />
+          <line x1="220" y1="0" x2="220" y2="120" />
+          <line x1="330" y1="0" x2="330" y2="120" />
+        </g>
+        <text
+          x="200"
+          y="44"
+          font-size="8"
+          fill="#6a8a6a"
+          text-anchor="middle"
+          font-family="sans-serif"
         >
-          ↻ Sync
-        </button>
-      </div>
-      <div class="inv-list">
-        <div class="inv-row">
-          <div class="inv-img">
-            <img
-              src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=100&q=70"
-              alt=""
-            />
-          </div>
-          <div class="inv-info">
-            <div class="inv-name">Paramount House Blend</div>
-            <div class="inv-cat">Brewed Coffee</div>
-          </div>
-          <div class="inv-btns">
-            <div class="ivb ivb-in active" onclick="setInv(this, 'in')">
-              ✓ In
-            </div>
-            <div class="ivb ivb-low" onclick="setInv(this, 'low')">Low</div>
-            <div class="ivb ivb-out" onclick="setInv(this, 'out')">Out</div>
-          </div>
-        </div>
-        <div class="inv-row">
-          <div class="inv-img">
-            <img
-              src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=100&q=70"
-              alt=""
-            />
-          </div>
-          <div class="inv-info">
-            <div class="inv-name">Sikwate Brown Sugar Latte</div>
-            <div class="inv-cat">Espresso Drinks</div>
-          </div>
-          <div class="inv-btns">
-            <div class="ivb ivb-in" onclick="setInv(this, 'in')">In</div>
-            <div class="ivb ivb-low active" onclick="setInv(this, 'low')">
-              ⚠ Low
-            </div>
-            <div class="ivb ivb-out" onclick="setInv(this, 'out')">Out</div>
-          </div>
-        </div>
-        <div class="inv-row">
-          <div class="inv-img">
-            <img
-              src="https://images.unsplash.com/photo-1611174743420-3d7df880ce32?w=100&q=70"
-              alt=""
-            />
-          </div>
-          <div class="inv-info">
-            <div class="inv-name">Butuan Cold Brew</div>
-            <div class="inv-cat">Cold Drinks</div>
-          </div>
-          <div class="inv-btns">
-            <div class="ivb ivb-in" onclick="setInv(this, 'in')">In</div>
-            <div class="ivb ivb-low" onclick="setInv(this, 'low')">Low</div>
-            <div class="ivb ivb-out active" onclick="setInv(this, 'out')">
-              ✕ Out
-            </div>
-          </div>
-        </div>
-        <div class="inv-row">
-          <div class="inv-img">
-            <img
-              src="https://images.unsplash.com/photo-1517959105821-eaf2591984d2?w=100&q=70"
-              alt=""
-            />
-          </div>
-          <div class="inv-info">
-            <div class="inv-name">Local Pastry Sampler</div>
-            <div class="inv-cat">Food</div>
-          </div>
-          <div class="inv-btns">
-            <div class="ivb ivb-in active" onclick="setInv(this, 'in')">
-              ✓ In
-            </div>
-            <div class="ivb ivb-low" onclick="setInv(this, 'low')">Low</div>
-            <div class="ivb ivb-out" onclick="setInv(this, 'out')">Out</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="announce-sec mt20">
+          J.C. Aquino Ave
+        </text>
+      </svg>
       <div
         style="
-          font-family: var(--font-d);
-          font-size: 16px;
-          font-weight: 700;
-          color: var(--ink);
-          margin-bottom: 10px;
+          position: absolute;
+          left: 52%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 24px;
+          filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
         "
       >
-        📣 Post Announcement
+        📍
       </div>
-      <textarea
-        class="ann-textarea"
-        id="ann-text"
-        placeholder="Share a promo, new menu item, event, or hiring update…"
-      ></textarea>
-      <div class="ann-types">
-        <div class="ann-type on" onclick="annType(this)">🏷️ Promo</div>
-        <div class="ann-type" onclick="annType(this)">🆕 New Menu</div>
-        <div class="ann-type" onclick="annType(this)">🎉 Event</div>
-        <div class="ann-type" onclick="annType(this)">💼 findItJob</div>
-      </div>
-      <button class="btn-post" onclick="postAnn()">
-        📤 Post to FindIt Feed
-      </button>
-    </div>
-    <div class="announce-sec mt16">
-      <button
-        class="btn-prim"
-        style="background: var(--rose); max-width: 180px"
-        onclick="ownerLogout()"
+      <div
+        style="
+          position: absolute;
+          bottom: 7px;
+          left: 8px;
+          background: rgba(255, 255, 255, 0.88);
+          border-radius: 6px;
+          padding: 2px 9px;
+          font-size: 10px;
+          font-weight: 700;
+          color: #2e6b4a;
+        "
       >
-        Sign Out
+        📍 Verified · Butuan City
+      </div>
+    </div>
+  </div>
+  <div class="inv-sec mt20">
+    <div class="inv-head">
+      <div>
+        <div class="sec-eyebrow">Live Inventory</div>
+        <div class="sec-title" style="font-size: 16px">
+          Menu <em>Availability</em>
+        </div>
+      </div>
+      <button
+        class="filter-trigger"
+        style="padding: 6px 12px; font-size: 11px"
+        onclick="showToast('Inventory synced ✓')"
+      >
+        ↻ Sync
       </button>
     </div>
-    <div style="height: 32px"></div>
+    <div class="inv-list">
+      <div class="inv-row">
+        <div class="inv-img">
+          <img
+            src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=100&q=70"
+            alt=""
+          />
+        </div>
+        <div class="inv-info">
+          <div class="inv-name">Paramount House Blend</div>
+          <div class="inv-cat">Brewed Coffee</div>
+        </div>
+        <div class="inv-btns">
+          <div class="ivb ivb-in active" onclick="setInv(this, 'in')">✓ In</div>
+          <div class="ivb ivb-low" onclick="setInv(this, 'low')">Low</div>
+          <div class="ivb ivb-out" onclick="setInv(this, 'out')">Out</div>
+        </div>
+      </div>
+      <div class="inv-row">
+        <div class="inv-img">
+          <img
+            src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=100&q=70"
+            alt=""
+          />
+        </div>
+        <div class="inv-info">
+          <div class="inv-name">Sikwate Brown Sugar Latte</div>
+          <div class="inv-cat">Espresso Drinks</div>
+        </div>
+        <div class="inv-btns">
+          <div class="ivb ivb-in" onclick="setInv(this, 'in')">In</div>
+          <div class="ivb ivb-low active" onclick="setInv(this, 'low')">
+            ⚠ Low
+          </div>
+          <div class="ivb ivb-out" onclick="setInv(this, 'out')">Out</div>
+        </div>
+      </div>
+      <div class="inv-row">
+        <div class="inv-img">
+          <img
+            src="https://images.unsplash.com/photo-1611174743420-3d7df880ce32?w=100&q=70"
+            alt=""
+          />
+        </div>
+        <div class="inv-info">
+          <div class="inv-name">Butuan Cold Brew</div>
+          <div class="inv-cat">Cold Drinks</div>
+        </div>
+        <div class="inv-btns">
+          <div class="ivb ivb-in" onclick="setInv(this, 'in')">In</div>
+          <div class="ivb ivb-low" onclick="setInv(this, 'low')">Low</div>
+          <div class="ivb ivb-out active" onclick="setInv(this, 'out')">
+            ✕ Out
+          </div>
+        </div>
+      </div>
+      <div class="inv-row">
+        <div class="inv-img">
+          <img
+            src="https://images.unsplash.com/photo-1517959105821-eaf2591984d2?w=100&q=70"
+            alt=""
+          />
+        </div>
+        <div class="inv-info">
+          <div class="inv-name">Local Pastry Sampler</div>
+          <div class="inv-cat">Food</div>
+        </div>
+        <div class="inv-btns">
+          <div class="ivb ivb-in active" onclick="setInv(this, 'in')">✓ In</div>
+          <div class="ivb ivb-low" onclick="setInv(this, 'low')">Low</div>
+          <div class="ivb ivb-out" onclick="setInv(this, 'out')">Out</div>
+        </div>
+      </div>
+    </div>
   </div>
+  <div class="announce-sec mt20">
+    <div
+      style="
+        font-family: var(--font-d);
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 10px;
+      "
+    >
+      📣 Post Announcement
+    </div>
+    <textarea
+      class="ann-textarea"
+      id="ann-text"
+      placeholder="Share a promo, new menu item, event, or hiring update…"
+    ></textarea>
+    <div class="ann-types">
+      <div class="ann-type on" onclick="annType(this)">🏷️ Promo</div>
+      <div class="ann-type" onclick="annType(this)">🆕 New Menu</div>
+      <div class="ann-type" onclick="annType(this)">🎉 Event</div>
+      <div class="ann-type" onclick="annType(this)">💼 findItJob</div>
+    </div>
+    <button class="btn-post" onclick="postAnn()">📤 Post to FindIt Feed</button>
+  </div>
+  <div class="announce-sec mt16">
+    <button
+      class="btn-prim"
+      style="background: var(--rose); max-width: 180px"
+      onclick="ownerLogout()"
+    >
+      Sign Out
+    </button>
+  </div>
+  <div style="height: 32px"></div>
+</div>

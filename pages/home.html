@@ -1,149 +1,305 @@
 <div class="hero">
-    <div class="hero-gradient"></div>
-    <div class="hero-grain"></div>
-    <div class="hero-deco"></div>
-    <div class="hero-inner">
-      <div class="hero-badge">
-        <span class="live-dot"></span>Live · Butuan City · 17+ cafés
-      </div>
-      <h1 class="hero-h1">
-        Butuan's<br /><em>café scene,</em><br />live & real‑time.
-      </h1>
-      <p class="hero-sub">
-        Discover promos, events, hiring & new menus from coffee shops across
-        Butuan City.
-      </p>
-      <div class="hero-search">
-        <span style="font-size: 17px">🔍</span>
-        <input
-          type="text"
-          id="hero-search"
-          placeholder="Search cafés, drinks, moods…"
-          oninput="handleSearch(this.value)"
-        />
-        <button class="filter-trigger" onclick="openDrawer()">
-          ☰ Filters
-        </button>
-      </div>
+  <div class="hero-gradient"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-deco"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span class="live-dot"></span>Live · Butuan City · 17+ cafés
+    </div>
+    <h1 class="hero-h1">
+      Butuan's<br /><em>café scene,</em><br />live & real‑time.
+    </h1>
+    <p class="hero-sub">
+      Discover promos, events, hiring & new menus from coffee shops across
+      Butuan City.
+    </p>
+    <div class="hero-search">
+      <span style="font-size: 17px">🔍</span>
+      <input
+        type="text"
+        id="hero-search"
+        placeholder="Search cafés, drinks, moods…"
+        oninput="handleSearch(this.value)"
+      />
+      <button class="filter-trigger" onclick="openDrawer()">☰ Filters</button>
     </div>
   </div>
+</div>
 
-  <div class="sec" style="padding-top: 18px">
-    <div class="stats-strip">
-      <div class="stat-tile">
-        <div class="stat-n">17</div>
-        <div class="stat-l">Cafés</div>
-      </div>
-      <div class="stat-tile">
-        <div class="stat-n">7</div>
-        <div class="stat-l">Hiring</div>
-      </div>
-      <div class="stat-tile">
-        <div class="stat-n">12</div>
-        <div class="stat-l">Promos</div>
-      </div>
+<div class="sec" style="padding-top: 18px">
+  <div class="stats-strip">
+    <div class="stat-tile">
+      <div class="stat-n">17</div>
+      <div class="stat-l">Cafés</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-n">7</div>
+      <div class="stat-l">Hiring</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-n">12</div>
+      <div class="stat-l">Promos</div>
     </div>
   </div>
+</div>
 
-  <div class="sec mt20">
-    <div class="sec-head">
-      <div>
-        <div class="sec-eyebrow">Daily Pick</div>
-        <div class="sec-title">Today's <em>Highlight</em></div>
-      </div>
+<div class="sec mt20">
+  <div class="sec-head">
+    <div>
+      <div class="sec-eyebrow">Daily Pick</div>
+      <div class="sec-title">Today's <em>Highlight</em></div>
     </div>
   </div>
-  <div class="brew-card" onclick="selectedCafeId=1;showPanel('profile')">
-    <img
-      class="brew-img"
-      src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=900&q=80"
-      alt=""
-    />
-    <div class="brew-overlay"></div>
-    <div class="brew-body">
-      <div class="brew-pill">🏆 Featured Today</div>
-      <div class="brew-title">Paramount Coffee</div>
-      <div class="brew-sub">
-        Local &amp; sustainable brews · J.C. Aquino Ave · Fast WiFi · Friendly
-        atmosphere
-      </div>
-      <div class="brew-meta">
-        <span class="brew-stat">⭐ 4.9</span
-        ><span class="brew-stat">📍 0.3 km</span
-        ><span class="brew-stat">⏰ Open now</span>
-      </div>
+</div>
+<div
+  class="brew-card"
+  onclick="
+    selectedCafeId = 1;
+    showPanel('profile');
+  "
+>
+  <img
+    class="brew-img"
+    src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=900&q=80"
+    alt=""
+  />
+  <div class="brew-overlay"></div>
+  <div class="brew-body">
+    <div class="brew-pill">🏆 Featured Today</div>
+    <div class="brew-title">Paramount Coffee</div>
+    <div class="brew-sub">
+      Local &amp; sustainable brews · J.C. Aquino Ave · Fast WiFi · Friendly
+      atmosphere
+    </div>
+    <div class="brew-meta">
+      <span class="brew-stat">⭐ 4.9</span
+      ><span class="brew-stat">📍 0.3 km</span
+      ><span class="brew-stat">⏰ Open now</span>
     </div>
   </div>
+</div>
 
-  <div class="mascot-bar">
-    <div class="mascot-ava">🐻</div>
-    <div class="mascot-content">
-      <div class="mascot-name">BREVI · YOUR CAFÉ GUIDE</div>
-      <div class="mascot-msg" id="mascot-msg">
-        Good day! Brevi's picks: Paramount Coffee for sustainable vibes &amp;
-        Craft Coffee Roastery for locally roasted beans. Both open now! ☕
-      </div>
+<div class="mascot-bar">
+  <div class="mascot-ava">🐻</div>
+  <div class="mascot-content">
+    <div class="mascot-name">BREVI · YOUR CAFÉ GUIDE</div>
+    <div class="mascot-msg" id="mascot-msg">
+      Good day! Brevi's picks: Paramount Coffee for sustainable vibes &amp;
+      Craft Coffee Roastery for locally roasted beans. Both open now! ☕
     </div>
   </div>
+</div>
 
-  <div class="sec mt24">
-    <div class="sec-head">
-      <div>
-        <div class="sec-eyebrow">Personalize</div>
-        <div class="sec-title">What's your <em>vibe?</em></div>
-      </div>
-    </div>
-    <div class="mood-grid">
-      <div class="mood-tile on" onclick="setMood(this, 'study')">
-        <img
-          class="mood-thumb"
-          src="https://images.unsplash.com/photo-1517960413843-0aee8e2b3285?w=300&q=70"
-          alt=""
-        />
-        <div class="mood-label">Study</div>
-        <div class="mood-sub">WiFi+quiet</div>
-      </div>
-      <div class="mood-tile" onclick="setMood(this, 'chill')">
-        <img
-          class="mood-thumb"
-          src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=300&q=70"
-          alt=""
-        />
-        <div class="mood-label">Chill</div>
-        <div class="mood-sub">Laid back</div>
-      </div>
-      <div class="mood-tile" onclick="setMood(this, 'date')">
-        <img
-          class="mood-thumb"
-          src="https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=300&q=70"
-          alt=""
-        />
-        <div class="mood-label">Date</div>
-        <div class="mood-sub">Romantic</div>
-      </div>
-      <div class="mood-tile" onclick="setMood(this, 'solo')">
-        <img
-          class="mood-thumb"
-          src="https://images.unsplash.com/photo-1593538312308-d4c29d8dc7f1?w=300&q=70"
-          alt=""
-        />
-        <div class="mood-label">Solo</div>
-        <div class="mood-sub">Me time</div>
-      </div>
+<div class="sec mt24">
+  <div class="sec-head">
+    <div>
+      <div class="sec-eyebrow">Personalize</div>
+      <div class="sec-title">What's your <em>vibe?</em></div>
     </div>
   </div>
+  <div class="mood-grid">
+    <div class="mood-tile on" onclick="setMood(this, 'study')">
+      <img
+        class="mood-thumb"
+        src="https://images.unsplash.com/photo-1517960413843-0aee8e2b3285?w=300&q=70"
+        alt=""
+      />
+      <div class="mood-label">Study</div>
+      <div class="mood-sub">WiFi+quiet</div>
+    </div>
+    <div class="mood-tile" onclick="setMood(this, 'chill')">
+      <img
+        class="mood-thumb"
+        src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=300&q=70"
+        alt=""
+      />
+      <div class="mood-label">Chill</div>
+      <div class="mood-sub">Laid back</div>
+    </div>
+    <div class="mood-tile" onclick="setMood(this, 'date')">
+      <img
+        class="mood-thumb"
+        src="https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=300&q=70"
+        alt=""
+      />
+      <div class="mood-label">Date</div>
+      <div class="mood-sub">Romantic</div>
+    </div>
+    <div class="mood-tile" onclick="setMood(this, 'solo')">
+      <img
+        class="mood-thumb"
+        src="https://images.unsplash.com/photo-1593538312308-d4c29d8dc7f1?w=300&q=70"
+        alt=""
+      />
+      <div class="mood-label">Solo</div>
+      <div class="mood-sub">Me time</div>
+    </div>
+  </div>
+</div>
 
-  <div class="sec mt24">
-    <div class="sec-head">
-      <div>
-        <div class="sec-eyebrow">Smart Picks</div>
-        <div class="sec-title" id="smart-title">
-          ☕ Perfect for you <em>right now</em>
+<div class="sec mt24">
+  <div class="sec-head">
+    <div>
+      <div class="sec-eyebrow">Smart Picks</div>
+      <div class="sec-title" id="smart-title">
+        ☕ Perfect for you <em>right now</em>
+      </div>
+    </div>
+    <a class="see-all" onclick="openDrawer()">Filter</a>
+  </div>
+  <div class="rec-stack" id="smart-recs">
+    <div class="rec-row" onclick="showPanel('profile')">
+      <img
+        class="rec-thumb"
+        src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200&q=70"
+        alt="Paramount Coffee"
+      />
+      <div class="rec-info">
+        <div class="rec-name">Paramount Coffee</div>
+        <div class="rec-sub">
+          J.C. Aquino Ave · ⭐ 4.9 · Sustainable · Fast WiFi
         </div>
       </div>
-      <a class="see-all" onclick="openDrawer()">Filter</a>
+      <span class="rec-chip chip-study">Top Pick</span>
     </div>
-    <div class="rec-stack" id="smart-recs">
+    <div class="rec-row" onclick="showPanel('profile')">
+      <img
+        class="rec-thumb"
+        src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=200&q=70"
+        alt="Craft Coffee Roastery"
+      />
+      <div class="rec-info">
+        <div class="rec-name">Craft Coffee Roastery</div>
+        <div class="rec-sub">
+          Alviola Village, Baan Km 3 · ⭐ 4.8 · Local roasts · Power outlets
+        </div>
+      </div>
+      <span class="rec-chip chip-study">Top Pick</span>
+    </div>
+    <div class="rec-row" onclick="showPanel('profile')">
+      <img
+        class="rec-thumb"
+        src="https://images.unsplash.com/photo-1517960413843-0aee8e2b3285?w=200&q=70"
+        alt="Dodo Workspace"
+      />
+      <div class="rec-info">
+        <div class="rec-name">Dodo Workspace &amp; Café</div>
+        <div class="rec-sub">
+          Butuan City · ⭐ 4.8 · High-speed internet · Quiet
+        </div>
+      </div>
+      <span class="rec-chip chip-study">Study Pick</span>
+    </div>
+  </div>
+
+  <div class="sec mt24">
+    <div class="sec-head">
+      <div>
+        <div class="sec-eyebrow">🔥 findItTrending Now</div>
+        <div class="sec-title">Everyone's <em>talking about</em></div>
+      </div>
+      <a class="see-all">See all</a>
+    </div>
+  </div>
+  <div class="h-reel">
+    <div class="cafe-card" onclick="showPanel('profile')">
+      <div class="cc-img-wrap">
+        <img
+          class="cc-img"
+          src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&q=75"
+          alt="Paramount Coffee"
+        />
+        <span class="cc-badge b-hot">🔥 Trending</span>
+        <button class="cc-save" id="sv1" onclick="doSave('sv1', event)">
+          🔖
+        </button>
+      </div>
+      <div class="cc-body">
+        <div class="cc-name">Paramount Coffee</div>
+        <div class="cc-meta">J.C. Aquino Ave · ⭐ 4.9</div>
+        <div class="cc-tags">
+          <span class="cc-tag">Sustainable</span
+          ><span class="cc-tag">Local</span>
+        </div>
+        <div class="cc-rxns">
+          <div class="rxn-btn" onclick="bumpRxn(this)">
+            <span class="rxn-e">❤️</span><span class="rxn-n">214</span>
+          </div>
+          <div class="rxn-btn" onclick="bumpRxn(this)">
+            <span class="rxn-e">☕</span><span class="rxn-n">138</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cafe-card" onclick="showPanel('profile')">
+      <div class="cc-img-wrap">
+        <img
+          class="cc-img"
+          src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&q=75"
+          alt="Craft Coffee Roastery"
+        />
+        <span class="cc-badge b-new">🏅 Featured</span>
+        <button class="cc-save" id="sv2" onclick="doSave('sv2', event)">
+          🔖
+        </button>
+      </div>
+      <div class="cc-body">
+        <div class="cc-name">Craft Coffee Roastery</div>
+        <div class="cc-meta">Alviola Village, Baan Km 3 · ⭐ 4.8</div>
+        <div class="cc-tags">
+          <span class="cc-tag">Roastery</span
+          ><span class="cc-tag">Artisan</span>
+        </div>
+        <div class="cc-rxns">
+          <div class="rxn-btn" onclick="bumpRxn(this)">
+            <span class="rxn-e">❤️</span><span class="rxn-n">186</span>
+          </div>
+          <div class="rxn-btn" onclick="bumpRxn(this)">
+            <span class="rxn-e">☕</span><span class="rxn-n">109</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cafe-card" onclick="showPanel('profile')">
+      <div class="cc-img-wrap">
+        <img
+          class="cc-img"
+          src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&q=75"
+          alt="Project Brew"
+        />
+        <span class="cc-badge b-event">✨ Specialty</span>
+        <button class="cc-save" id="sv3" onclick="doSave('sv3', event)">
+          🔖
+        </button>
+      </div>
+      <div class="cc-body">
+        <div class="cc-name">Project Brew</div>
+        <div class="cc-meta">Jose Rosales Ave · ⭐ 4.8</div>
+        <div class="cc-tags">
+          <span class="cc-tag">Specialty</span
+          ><span class="cc-tag">Minimalist</span>
+        </div>
+        <div class="cc-rxns">
+          <div class="rxn-btn" onclick="bumpRxn(this)">
+            <span class="rxn-e">❤️</span><span class="rxn-n">162</span>
+          </div>
+          <div class="rxn-btn" onclick="bumpRxn(this)">
+            <span class="rxn-e">☕</span><span class="rxn-n">97</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec mt24">
+    <div class="sec-head">
+      <div>
+        <div class="sec-eyebrow">📍 Near You</div>
+        <div class="sec-title">Closest <em>cafés</em></div>
+      </div>
+      <a class="see-all" onclick="showPanel('map')">Map</a>
+    </div>
+    <div class="rec-stack">
       <div class="rec-row" onclick="showPanel('profile')">
         <img
           class="rec-thumb"
@@ -153,10 +309,10 @@
         <div class="rec-info">
           <div class="rec-name">Paramount Coffee</div>
           <div class="rec-sub">
-            J.C. Aquino Ave · ⭐ 4.9 · Sustainable · Fast WiFi
+            J.C. Aquino Ave · ⭐ 4.9 · Open now · Sustainable
           </div>
         </div>
-        <span class="rec-chip chip-study">Top Pick</span>
+        <span class="rec-chip chip-chill">0.3 km</span>
       </div>
       <div class="rec-row" onclick="showPanel('profile')">
         <img
@@ -167,392 +323,234 @@
         <div class="rec-info">
           <div class="rec-name">Craft Coffee Roastery</div>
           <div class="rec-sub">
-            Alviola Village, Baan Km 3 · ⭐ 4.8 · Local roasts · Power outlets
+            Alviola Village, Baan Km 3 · ⭐ 4.8 · Open now · Local roasts
           </div>
         </div>
-        <span class="rec-chip chip-study">Top Pick</span>
+        <span class="rec-chip chip-chill">0.8 km</span>
       </div>
       <div class="rec-row" onclick="showPanel('profile')">
         <img
           class="rec-thumb"
-          src="https://images.unsplash.com/photo-1517960413843-0aee8e2b3285?w=200&q=70"
-          alt="Dodo Workspace"
+          src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=200&q=70"
+          alt="Second Shot Brewing Studio"
         />
         <div class="rec-info">
-          <div class="rec-name">Dodo Workspace &amp; Café</div>
+          <div class="rec-name">Second Shot Brewing Studio</div>
           <div class="rec-sub">
-            Butuan City · ⭐ 4.8 · High-speed internet · Quiet
+            Ochoa Ave · ⭐ 4.8 · Open now · Quality brews
           </div>
         </div>
-        <span class="rec-chip chip-study">Study Pick</span>
+        <span class="rec-chip chip-chill">1.1 km</span>
       </div>
     </div>
+  </div>
 
-    <div class="sec mt24">
-      <div class="sec-head">
-        <div>
-          <div class="sec-eyebrow">🔥 findItTrending Now</div>
-          <div class="sec-title">Everyone's <em>talking about</em></div>
-        </div>
-        <a class="see-all">See all</a>
+  <div class="sec mt24">
+    <div class="sec-head">
+      <div>
+        <div class="sec-eyebrow">📣 Live Feed</div>
+        <div class="sec-title">Latest <em>updates</em></div>
       </div>
+      <a class="see-all">See all</a>
     </div>
-    <div class="h-reel">
-      <div class="cafe-card" onclick="showPanel('profile')">
-        <div class="cc-img-wrap">
-          <img
-            class="cc-img"
-            src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&q=75"
-            alt="Paramount Coffee"
-          />
-          <span class="cc-badge b-hot">🔥 Trending</span>
-          <button class="cc-save" id="sv1" onclick="doSave('sv1', event)">
-            🔖
-          </button>
-        </div>
-        <div class="cc-body">
-          <div class="cc-name">Paramount Coffee</div>
-          <div class="cc-meta">J.C. Aquino Ave · ⭐ 4.9</div>
-          <div class="cc-tags">
-            <span class="cc-tag">Sustainable</span
-            ><span class="cc-tag">Local</span>
-          </div>
-          <div class="cc-rxns">
-            <div class="rxn-btn" onclick="bumpRxn(this)">
-              <span class="rxn-e">❤️</span><span class="rxn-n">214</span>
-            </div>
-            <div class="rxn-btn" onclick="bumpRxn(this)">
-              <span class="rxn-e">☕</span><span class="rxn-n">138</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="cafe-card" onclick="showPanel('profile')">
-        <div class="cc-img-wrap">
-          <img
-            class="cc-img"
-            src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&q=75"
-            alt="Craft Coffee Roastery"
-          />
-          <span class="cc-badge b-new">🏅 Featured</span>
-          <button class="cc-save" id="sv2" onclick="doSave('sv2', event)">
-            🔖
-          </button>
-        </div>
-        <div class="cc-body">
-          <div class="cc-name">Craft Coffee Roastery</div>
-          <div class="cc-meta">Alviola Village, Baan Km 3 · ⭐ 4.8</div>
-          <div class="cc-tags">
-            <span class="cc-tag">Roastery</span
-            ><span class="cc-tag">Artisan</span>
-          </div>
-          <div class="cc-rxns">
-            <div class="rxn-btn" onclick="bumpRxn(this)">
-              <span class="rxn-e">❤️</span><span class="rxn-n">186</span>
-            </div>
-            <div class="rxn-btn" onclick="bumpRxn(this)">
-              <span class="rxn-e">☕</span><span class="rxn-n">109</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="cafe-card" onclick="showPanel('profile')">
-        <div class="cc-img-wrap">
-          <img
-            class="cc-img"
-            src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&q=75"
-            alt="Project Brew"
-          />
-          <span class="cc-badge b-event">✨ Specialty</span>
-          <button class="cc-save" id="sv3" onclick="doSave('sv3', event)">
-            🔖
-          </button>
-        </div>
-        <div class="cc-body">
-          <div class="cc-name">Project Brew</div>
-          <div class="cc-meta">Jose Rosales Ave · ⭐ 4.8</div>
-          <div class="cc-tags">
-            <span class="cc-tag">Specialty</span
-            ><span class="cc-tag">Minimalist</span>
-          </div>
-          <div class="cc-rxns">
-            <div class="rxn-btn" onclick="bumpRxn(this)">
-              <span class="rxn-e">❤️</span><span class="rxn-n">162</span>
-            </div>
-            <div class="rxn-btn" onclick="bumpRxn(this)">
-              <span class="rxn-e">☕</span><span class="rxn-n">97</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="sec mt24">
-      <div class="sec-head">
-        <div>
-          <div class="sec-eyebrow">📍 Near You</div>
-          <div class="sec-title">Closest <em>cafés</em></div>
-        </div>
-        <a class="see-all" onclick="showPanel('map')">Map</a>
-      </div>
-      <div class="rec-stack">
-        <div class="rec-row" onclick="showPanel('profile')">
-          <img
-            class="rec-thumb"
-            src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200&q=70"
-            alt="Paramount Coffee"
-          />
-          <div class="rec-info">
-            <div class="rec-name">Paramount Coffee</div>
-            <div class="rec-sub">
-              J.C. Aquino Ave · ⭐ 4.9 · Open now · Sustainable
-            </div>
-          </div>
-          <span class="rec-chip chip-chill">0.3 km</span>
-        </div>
-        <div class="rec-row" onclick="showPanel('profile')">
-          <img
-            class="rec-thumb"
-            src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=200&q=70"
-            alt="Craft Coffee Roastery"
-          />
-          <div class="rec-info">
-            <div class="rec-name">Craft Coffee Roastery</div>
-            <div class="rec-sub">
-              Alviola Village, Baan Km 3 · ⭐ 4.8 · Open now · Local roasts
-            </div>
-          </div>
-          <span class="rec-chip chip-chill">0.8 km</span>
-        </div>
-        <div class="rec-row" onclick="showPanel('profile')">
-          <img
-            class="rec-thumb"
-            src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=200&q=70"
-            alt="Second Shot Brewing Studio"
-          />
-          <div class="rec-info">
-            <div class="rec-name">Second Shot Brewing Studio</div>
-            <div class="rec-sub">
-              Ochoa Ave · ⭐ 4.8 · Open now · Quality brews
-            </div>
-          </div>
-          <span class="rec-chip chip-chill">1.1 km</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="sec mt24">
-      <div class="sec-head">
-        <div>
-          <div class="sec-eyebrow">📣 Live Feed</div>
-          <div class="sec-title">Latest <em>updates</em></div>
-        </div>
-        <a class="see-all">See all</a>
-      </div>
-      <div class="feed">
-        <div class="f-card">
-          <div class="f-card-top">
-            <div class="f-ava">
-              <img
-                src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=80&q=70"
-                alt="Paramount Coffee"
-              />
-            </div>
-            <div style="flex: 1">
-              <div class="f-shop">Paramount Coffee</div>
-              <div class="f-time">Just now</div>
-            </div>
-            <button class="f-follow on" onclick="toggleFollow(this)">
-              Following
-            </button>
-          </div>
-          <div class="f-img-wrap">
+    <div class="feed">
+      <div class="f-card">
+        <div class="f-card-top">
+          <div class="f-ava">
             <img
-              class="f-img"
-              src="https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?w=800&q=75"
+              src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=80&q=70"
               alt="Paramount Coffee"
             />
-            <span class="f-badge b-promo">🏷️ Promo</span>
           </div>
-          <div class="f-body">
-            <div class="f-title">Sustainability Week — All Drinks 20% Off!</div>
-            <div class="f-desc">
-              Paramount Coffee is celebrating local farming and sustainable
-              sourcing this week. All drinks 20% off — dine in only. Come
-              support local! ☕🌿
+          <div style="flex: 1">
+            <div class="f-shop">Paramount Coffee</div>
+            <div class="f-time">Just now</div>
+          </div>
+          <button class="f-follow on" onclick="toggleFollow(this)">
+            Following
+          </button>
+        </div>
+        <div class="f-img-wrap">
+          <img
+            class="f-img"
+            src="https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?w=800&q=75"
+            alt="Paramount Coffee"
+          />
+          <span class="f-badge b-promo">🏷️ Promo</span>
+        </div>
+        <div class="f-body">
+          <div class="f-title">Sustainability Week — All Drinks 20% Off!</div>
+          <div class="f-desc">
+            Paramount Coffee is celebrating local farming and sustainable
+            sourcing this week. All drinks 20% off — dine in only. Come support
+            local! ☕🌿
+          </div>
+        </div>
+        <div class="f-foot">
+          <div class="f-rxns">
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">❤️</span><span class="f-rxn-n">214</span>
             </div>
-          </div>
-          <div class="f-foot">
-            <div class="f-rxns">
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">❤️</span><span class="f-rxn-n">214</span>
-              </div>
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">☕</span><span class="f-rxn-n">138</span>
-              </div>
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">🔥</span><span class="f-rxn-n">97</span>
-              </div>
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">😍</span><span class="f-rxn-n">63</span>
-              </div>
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">☕</span><span class="f-rxn-n">138</span>
+            </div>
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">🔥</span><span class="f-rxn-n">97</span>
+            </div>
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">😍</span><span class="f-rxn-n">63</span>
             </div>
           </div>
         </div>
-        <div class="f-card">
-          <div class="f-card-top">
-            <div class="f-ava">
-              <img
-                src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=80&q=70"
-                alt="Craft Coffee Roastery"
-              />
-            </div>
-            <div style="flex: 1">
-              <div class="f-shop">Craft Coffee Roastery</div>
-              <div class="f-time">28 min ago</div>
-            </div>
-            <button class="f-follow on" onclick="toggleFollow(this)">
-              Following
-            </button>
-          </div>
-          <div class="f-img-wrap">
+      </div>
+      <div class="f-card">
+        <div class="f-card-top">
+          <div class="f-ava">
             <img
-              class="f-img"
-              src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&q=75"
+              src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=80&q=70"
               alt="Craft Coffee Roastery"
             />
-            <span class="f-badge b-new">🌱 New Roast</span>
           </div>
-          <div class="f-body">
-            <div class="f-title">
-              New Batch: Agusan Highlands Single Origin!
-            </div>
-            <div class="f-desc">
-              Fresh off the roaster — our latest small-batch from Agusan del
-              Norte highlands. Fruity, clean, and utterly smooth. Available at
-              Alviola Village, Baan Km 3. ☕🏔️
-            </div>
+          <div style="flex: 1">
+            <div class="f-shop">Craft Coffee Roastery</div>
+            <div class="f-time">28 min ago</div>
           </div>
-          <div class="f-foot">
-            <div class="f-rxns">
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">❤️</span><span class="f-rxn-n">186</span>
-              </div>
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">☕</span><span class="f-rxn-n">109</span>
-              </div>
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">🔥</span><span class="f-rxn-n">74</span>
-              </div>
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">😍</span><span class="f-rxn-n">51</span>
-              </div>
+          <button class="f-follow on" onclick="toggleFollow(this)">
+            Following
+          </button>
+        </div>
+        <div class="f-img-wrap">
+          <img
+            class="f-img"
+            src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&q=75"
+            alt="Craft Coffee Roastery"
+          />
+          <span class="f-badge b-new">🌱 New Roast</span>
+        </div>
+        <div class="f-body">
+          <div class="f-title">New Batch: Agusan Highlands Single Origin!</div>
+          <div class="f-desc">
+            Fresh off the roaster — our latest small-batch from Agusan del Norte
+            highlands. Fruity, clean, and utterly smooth. Available at Alviola
+            Village, Baan Km 3. ☕🏔️
+          </div>
+        </div>
+        <div class="f-foot">
+          <div class="f-rxns">
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">❤️</span><span class="f-rxn-n">186</span>
+            </div>
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">☕</span><span class="f-rxn-n">109</span>
+            </div>
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">🔥</span><span class="f-rxn-n">74</span>
+            </div>
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">😍</span><span class="f-rxn-n">51</span>
             </div>
           </div>
         </div>
-        <div class="f-card">
-          <div class="f-card-top">
-            <div class="f-ava">
-              <img
-                src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=80&q=70"
-                alt="Historya by Antigo"
-              />
-            </div>
-            <div style="flex: 1">
-              <div class="f-shop">Historya by Antigo</div>
-              <div class="f-time">1 hr ago</div>
-            </div>
-            <button class="f-follow" onclick="toggleFollow(this)">
-              Follow
-            </button>
-          </div>
-          <div class="f-img-wrap">
+      </div>
+      <div class="f-card">
+        <div class="f-card-top">
+          <div class="f-ava">
             <img
-              class="f-img"
-              src="https://images.unsplash.com/photo-1459257831348-f0cdd359235f?w=800&q=75"
+              src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=80&q=70"
               alt="Historya by Antigo"
             />
-            <span class="f-badge b-event">🎭 Event</span>
           </div>
-          <div class="f-body">
-            <div class="f-title">
-              Heritage Night — Art, History &amp; Coffee This Friday!
-            </div>
-            <div class="f-desc">
-              Explore Butuan's rich history through antiques, local artworks,
-              and curated coffee. Marcos Calo St. Free entry. Limited seats —
-              come early! 🎨🏛️
-            </div>
+          <div style="flex: 1">
+            <div class="f-shop">Historya by Antigo</div>
+            <div class="f-time">1 hr ago</div>
           </div>
-          <div class="f-foot">
-            <div class="f-rxns">
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">❤️</span><span class="f-rxn-n">143</span>
-              </div>
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">☕</span><span class="f-rxn-n">82</span>
-              </div>
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">🔥</span><span class="f-rxn-n">61</span>
-              </div>
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">😍</span><span class="f-rxn-n">45</span>
-              </div>
+          <button class="f-follow" onclick="toggleFollow(this)">Follow</button>
+        </div>
+        <div class="f-img-wrap">
+          <img
+            class="f-img"
+            src="https://images.unsplash.com/photo-1459257831348-f0cdd359235f?w=800&q=75"
+            alt="Historya by Antigo"
+          />
+          <span class="f-badge b-event">🎭 Event</span>
+        </div>
+        <div class="f-body">
+          <div class="f-title">
+            Heritage Night — Art, History &amp; Coffee This Friday!
+          </div>
+          <div class="f-desc">
+            Explore Butuan's rich history through antiques, local artworks, and
+            curated coffee. Marcos Calo St. Free entry. Limited seats — come
+            early! 🎨🏛️
+          </div>
+        </div>
+        <div class="f-foot">
+          <div class="f-rxns">
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">❤️</span><span class="f-rxn-n">143</span>
+            </div>
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">☕</span><span class="f-rxn-n">82</span>
+            </div>
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">🔥</span><span class="f-rxn-n">61</span>
+            </div>
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">😍</span><span class="f-rxn-n">45</span>
             </div>
           </div>
         </div>
-        <div class="f-card">
-          <div class="f-card-top">
-            <div class="f-ava">
-              <img
-                src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=80&q=70"
-                alt="Second Shot Brewing Studio"
-              />
-            </div>
-            <div style="flex: 1">
-              <div class="f-shop">Second Shot Brewing Studio</div>
-              <div class="f-time">3 hr ago</div>
-            </div>
-            <button class="f-follow" onclick="toggleFollow(this)">
-              Follow
-            </button>
-          </div>
-          <div class="f-img-wrap">
+      </div>
+      <div class="f-card">
+        <div class="f-card-top">
+          <div class="f-ava">
             <img
-              class="f-img"
-              src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=800&q=75"
+              src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=80&q=70"
               alt="Second Shot Brewing Studio"
             />
-            <span class="f-badge b-hiring">💼 findItJob</span>
           </div>
-          <div class="f-body">
-            <div class="f-title">
-              We're Hiring — Brewer &amp; Front-of-House Staff!
-            </div>
-            <div class="f-desc">
-              Second Shot Brewing Studio (Ochoa Ave) is growing! Looking for
-              passionate coffee people. Full-time &amp; part-time. Great team,
-              flexible hours &amp; staff perks! ☕💼
-            </div>
+          <div style="flex: 1">
+            <div class="f-shop">Second Shot Brewing Studio</div>
+            <div class="f-time">3 hr ago</div>
           </div>
-          <div class="f-foot">
-            <div class="f-rxns">
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">❤️</span><span class="f-rxn-n">72</span>
-              </div>
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">☕</span><span class="f-rxn-n">38</span>
-              </div>
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">🔥</span><span class="f-rxn-n">29</span>
-              </div>
-              <div class="f-rxn" onclick="fReact(this)">
-                <span class="f-rxn-e">😍</span><span class="f-rxn-n">17</span>
-              </div>
+          <button class="f-follow" onclick="toggleFollow(this)">Follow</button>
+        </div>
+        <div class="f-img-wrap">
+          <img
+            class="f-img"
+            src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=800&q=75"
+            alt="Second Shot Brewing Studio"
+          />
+          <span class="f-badge b-hiring">💼 findItJob</span>
+        </div>
+        <div class="f-body">
+          <div class="f-title">
+            We're Hiring — Brewer &amp; Front-of-House Staff!
+          </div>
+          <div class="f-desc">
+            Second Shot Brewing Studio (Ochoa Ave) is growing! Looking for
+            passionate coffee people. Full-time &amp; part-time. Great team,
+            flexible hours &amp; staff perks! ☕💼
+          </div>
+        </div>
+        <div class="f-foot">
+          <div class="f-rxns">
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">❤️</span><span class="f-rxn-n">72</span>
+            </div>
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">☕</span><span class="f-rxn-n">38</span>
+            </div>
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">🔥</span><span class="f-rxn-n">29</span>
+            </div>
+            <div class="f-rxn" onclick="fReact(this)">
+              <span class="f-rxn-e">😍</span><span class="f-rxn-n">17</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div style="height: 32px"></div>
   </div>
+  <div style="height: 32px"></div>
+</div>

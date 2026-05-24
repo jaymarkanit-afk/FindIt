@@ -57,9 +57,9 @@ function showPanel(name) {
       }
     }, 150);
   }
-  
+
   // Load café profile when profile panel is shown
-  if (name === "profile" && typeof loadCafeProfile === 'function') {
+  if (name === "profile" && typeof loadCafeProfile === "function") {
     setTimeout(() => {
       try {
         loadCafeProfile(selectedCafeId || 1);

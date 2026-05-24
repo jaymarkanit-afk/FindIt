@@ -52,19 +52,22 @@ FindIt/
 ### Running Locally
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd FindIt
    ```
 
 2. **Start a local server**
-   
+
    Using Python 3:
+
    ```bash
    python -m http.server 8000
    ```
-   
+
    Or using Node.js/npm:
+
    ```bash
    npx http-server
    ```
@@ -79,6 +82,7 @@ FindIt/
 This project is configured for seamless Vercel deployment.
 
 1. **Push to Git**
+
    ```bash
    git init
    git add .
@@ -113,18 +117,21 @@ The app uses geolocation APIs that work best with HTTPS. Vercel automatically pr
 ## Features Documentation
 
 ### Geolocation
+
 - Auto-detects user location using browser permission
 - Calculates distances to all cafés using Haversine formula
 - Displays nearest café and count of nearby cafés
 - Updates map view to user's current position
 
 ### Map
+
 - Interactive Leaflet map centered on Butuan City
 - Café markers with clickable popups
 - User location marker
 - Click café markers to view profiles
 
 ### Café Profiles
+
 - Dynamic profile loading with café images
 - Ratings and review counts
 - Address and hours information
@@ -132,11 +139,13 @@ The app uses geolocation APIs that work best with HTTPS. Vercel automatically pr
 - Image carousel gallery
 
 ### Search
+
 - Real-time café search by name and tags
 - Filtered results with café details
 - Click results to view full profile
 
 ### Sidebar Navigation
+
 - Recommended cafés
 - Quick access to features
 - Clickable cards for profile navigation
@@ -173,17 +182,20 @@ The app uses geolocation APIs that work best with HTTPS. Vercel automatically pr
 ## Troubleshooting
 
 ### Geolocation not working
+
 - Check browser permissions for location access
 - Ensure HTTPS is enabled (auto on Vercel)
 - Try incognito/private mode
 - Check browser console for errors
 
 ### Map not displaying
+
 - Verify Leaflet library is loaded
 - Check browser developer console for errors
 - Ensure internet connection is active
 
 ### Pages showing blank
+
 - Clear browser cache
 - Check browser console for JavaScript errors
 - Verify all page files are loading correctly

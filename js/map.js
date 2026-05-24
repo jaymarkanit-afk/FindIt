@@ -46,7 +46,7 @@ function initializeMap() {
     updateGeoInfoCard();
 
     // Auto-initialize geolocation to get user's actual position
-    if (typeof initializeGeolocation === 'function') {
+    if (typeof initializeGeolocation === "function") {
       setTimeout(() => initializeGeolocation(), 500);
     }
 
@@ -98,18 +98,18 @@ function closePopup() {
 
 function loadCafeProfile(cafeId) {
   selectedCafeId = cafeId;
-  const cafe = cafeDatabase.find(c => c.id === cafeId);
-  
+  const cafe = cafeDatabase.find((c) => c.id === cafeId);
+
   if (!cafe) {
     console.error("Café not found:", cafeId);
     return;
   }
-  
+
   // Update profile hero section
-  const nameEl = document.querySelector('.profile-name');
+  const nameEl = document.querySelector(".profile-name");
   if (nameEl) nameEl.textContent = cafe.name;
-  
-  const statsEl = document.querySelector('.profile-stats');
+
+  const statsEl = document.querySelector(".profile-stats");
   if (statsEl) {
     statsEl.innerHTML = `
       <span class="ps">⭐ ${cafe.rating} (${cafe.reviews} reviews)</span>
@@ -117,9 +117,9 @@ function loadCafeProfile(cafeId) {
       <span class="ps">🕐 Open · Closes 9 PM</span>
     `;
   }
-  
+
   // Update profile image carousel
-  const carousel = document.getElementById('carousel-strip');
+  const carousel = document.getElementById("carousel-strip");
   if (carousel) {
     carousel.innerHTML = `
       <img class="profile-slide" src="${cafe.img}" alt="${cafe.name}"/>
@@ -127,11 +127,11 @@ function loadCafeProfile(cafeId) {
       <img class="profile-slide" src="https://images.unsplash.com/photo-1611174743420-3d7df880ce32?w=900&q=80" alt=""/>
     `;
   }
-  
+
   // Reset carousel to first slide
-  const dots = document.querySelectorAll('.cdot');
+  const dots = document.querySelectorAll(".cdot");
   dots.forEach((dot, idx) => {
-    dot.classList.remove('on');
-    if (idx === 0) dot.classList.add('on');
+    dot.classList.remove("on");
+    if (idx === 0) dot.classList.add("on");
   });
 }
