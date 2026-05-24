@@ -20,8 +20,79 @@
         id="hero-search"
         placeholder="Search cafés, drinks, moods…"
         oninput="handleSearch(this.value)"
+        onkeypress="if(event.key==='Enter') submitSearch(this.value)"
       />
       <button class="filter-trigger" onclick="openDrawer()">☰ Filters</button>
+    </div>
+  </div>
+</div>
+
+<!-- FILTER TABS -->
+<div class="filter-tabs-container">
+  <div class="filter-tabs">
+    <button class="filter-tab active" onclick="quickFilter('all')">All</button>
+    <button class="filter-tab" onclick="quickFilter('findItNearMe')">📍 finditNearMe</button>
+    <button class="filter-tab" onclick="quickFilter('findItTopRated')">⭐ finditTopRated</button>
+    <button class="filter-tab" onclick="quickFilter('findItTrending')">🔥 finditTrending</button>
+    <button class="filter-tab" onclick="quickFilter('findItJob')">💼 finditJob</button>
+    <button class="filter-tab" onclick="quickFilter('findItEvents')">🎉 finditEvents</button>
+    <button class="filter-tab" onclick="quickFilter('findItNew')">🆕 finditNew</button>
+  </div>
+</div>
+
+<!-- SMART PICKS - RIGHT BELOW SEARCH -->
+<div class="sec mt24">
+  <div class="sec-head">
+    <div>
+      <div class="sec-eyebrow">Smart Picks</div>
+      <div class="sec-title" id="smart-title">
+        ☕ Perfect for you <em>right now</em>
+      </div>
+    </div>
+    <a class="see-all" onclick="openDrawer()">Filter</a>
+  </div>
+  <div class="rec-stack" id="smart-recs">
+    <div class="rec-row" onclick="showPanel('profile')">
+      <img
+        class="rec-thumb"
+        src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200&q=70"
+        alt="Paramount Coffee"
+      />
+      <div class="rec-info">
+        <div class="rec-name">Paramount Coffee</div>
+        <div class="rec-sub">
+          J.C. Aquino Ave · ⭐ 4.9 · Sustainable · Fast WiFi
+        </div>
+      </div>
+      <span class="rec-chip chip-study">Top Pick</span>
+    </div>
+    <div class="rec-row" onclick="showPanel('profile')">
+      <img
+        class="rec-thumb"
+        src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=200&q=70"
+        alt="Craft Coffee Roastery"
+      />
+      <div class="rec-info">
+        <div class="rec-name">Craft Coffee Roastery</div>
+        <div class="rec-sub">
+          Alviola Village, Baan Km 3 · ⭐ 4.8 · Local roasts · Power outlets
+        </div>
+      </div>
+      <span class="rec-chip chip-study">Top Pick</span>
+    </div>
+    <div class="rec-row" onclick="showPanel('profile')">
+      <img
+        class="rec-thumb"
+        src="https://images.unsplash.com/photo-1517960413843-0aee8e2b3285?w=200&q=70"
+        alt="Dodo Workspace"
+      />
+      <div class="rec-info">
+        <div class="rec-name">Dodo Workspace &amp; Café</div>
+        <div class="rec-sub">
+          Butuan City · ⭐ 4.8 · High-speed internet · Quiet
+        </div>
+      </div>
+      <span class="rec-chip chip-study">Study Pick</span>
     </div>
   </div>
 </div>
@@ -140,67 +211,12 @@
 <div class="sec mt24">
   <div class="sec-head">
     <div>
-      <div class="sec-eyebrow">Smart Picks</div>
-      <div class="sec-title" id="smart-title">
-        ☕ Perfect for you <em>right now</em>
-      </div>
+      <div class="sec-eyebrow">🔥 findItTrending Now</div>
+      <div class="sec-title">Everyone's <em>talking about</em></div>
     </div>
-    <a class="see-all" onclick="openDrawer()">Filter</a>
+    <a class="see-all">See all</a>
   </div>
-  <div class="rec-stack" id="smart-recs">
-    <div class="rec-row" onclick="showPanel('profile')">
-      <img
-        class="rec-thumb"
-        src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200&q=70"
-        alt="Paramount Coffee"
-      />
-      <div class="rec-info">
-        <div class="rec-name">Paramount Coffee</div>
-        <div class="rec-sub">
-          J.C. Aquino Ave · ⭐ 4.9 · Sustainable · Fast WiFi
-        </div>
-      </div>
-      <span class="rec-chip chip-study">Top Pick</span>
-    </div>
-    <div class="rec-row" onclick="showPanel('profile')">
-      <img
-        class="rec-thumb"
-        src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=200&q=70"
-        alt="Craft Coffee Roastery"
-      />
-      <div class="rec-info">
-        <div class="rec-name">Craft Coffee Roastery</div>
-        <div class="rec-sub">
-          Alviola Village, Baan Km 3 · ⭐ 4.8 · Local roasts · Power outlets
-        </div>
-      </div>
-      <span class="rec-chip chip-study">Top Pick</span>
-    </div>
-    <div class="rec-row" onclick="showPanel('profile')">
-      <img
-        class="rec-thumb"
-        src="https://images.unsplash.com/photo-1517960413843-0aee8e2b3285?w=200&q=70"
-        alt="Dodo Workspace"
-      />
-      <div class="rec-info">
-        <div class="rec-name">Dodo Workspace &amp; Café</div>
-        <div class="rec-sub">
-          Butuan City · ⭐ 4.8 · High-speed internet · Quiet
-        </div>
-      </div>
-      <span class="rec-chip chip-study">Study Pick</span>
-    </div>
-  </div>
-
-  <div class="sec mt24">
-    <div class="sec-head">
-      <div>
-        <div class="sec-eyebrow">🔥 findItTrending Now</div>
-        <div class="sec-title">Everyone's <em>talking about</em></div>
-      </div>
-      <a class="see-all">See all</a>
-    </div>
-  </div>
+</div>
   <div class="h-reel">
     <div class="cafe-card" onclick="showPanel('profile')">
       <div class="cc-img-wrap">
