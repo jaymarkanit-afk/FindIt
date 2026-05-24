@@ -1,0 +1,20 @@
+/* ═══════════════════════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════════════════════ */
+
+.side-sec {
+  padding: 0 18px 22px;
+}
+
+.side-title {
+  font-family: var(--font-d);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 11px;
+}
+
+.side-title em {
+  color: var(--accent);
+  font-style: italic;
+}

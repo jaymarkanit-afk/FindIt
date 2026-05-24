@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FindIt — Butuan City Café Discovery</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<link rel="stylesheet" href="css/findit.css"/>
+</head>
+<body>
+
+<div id="theme-flash"></div>
+<div id="toast"></div>
+
+<!-- ══════════ FILTER DRAWER ══════════ -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="drawerClose(event)">
+  <div class="filter-drawer">
+    <div class="drawer-pill"></div>
+    <div class="drawer-eyebrow" style="padding:0 22px 2px;font-family:var(--font-m);font-size:10px;font-weight:500;color:var(--accent);letter-spacing:.1em;text-transform:uppercase">FindIt Discovery</div>
+    <div class="drawer-head">
+      <div class="drawer-title">FindIt Filters</div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-grid">
+        <div class="drawer-card active" onclick="pickFilter(this,'findItNearMe')"><div class="dc-icon">📍</div><div class="dc-label">findItNearMe</div><div class="dc-count">24 cafés nearby</div></div>
+        <div class="drawer-card" onclick="pickFilter(this,'findItTrending')"><div class="dc-icon">🔥</div><div class="dc-label">findItTrending</div><div class="dc-count">Hot right now</div></div>
+        <div class="drawer-card" onclick="pickFilter(this,'findItNew')"><div class="dc-icon">🆕</div><div class="dc-label">findItNew</div><div class="dc-count">5 just opened</div></div>
+        <div class="drawer-card" onclick="pickFilter(this,'findItJob')"><div class="dc-icon">💼</div><div class="dc-label">findItJob</div><div class="dc-count">7 with openings</div></div>
+        <div class="drawer-card" onclick="pickFilter(this,'findItEvents')"><div class="dc-icon">🎉</div><div class="dc-label">findItEvents</div><div class="dc-count">This week</div></div>
+        <div class="drawer-card" onclick="pickFilter(this,'findItTopRated')"><div class="dc-icon">⭐</div><div class="dc-label">findItTopRated</div><div class="dc-count">Community picks</div></div>
+      </div>
+      <button class="drawer-apply" onclick="applyFilter()" id="apply-filter-btn">Apply Filter ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TOPBAR ══════════ -->
+<header class="topbar">
+  <a class="logo" href="#" onclick="return false">
+    <div class="logo-icon">☕</div>
+    <div class="logo-text">Find<em>It</em></div>
+  </a>
+  <div class="topbar-search">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="topbar-search" placeholder="Search cafés in Butuan City…" oninput="handleSearch(this.value)"/>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="icon-btn" onclick="toggleNotif()" title="Notifications">
+      🔔<span class="badge" id="notif-badge"></span>
+    </div>
+    <div class="theme-toggle" onclick="toggleTheme(event)" title="Toggle theme">
+      <div class="toggle-knob" id="theme-knob">☀️</div>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════ NOTIFICATIONS ══════════ -->
+<div class="notif-backdrop" id="notif-backdrop" onclick="closeNotif(event)">
+  <div class="notif-panel" onclick="event.stopPropagation()">
+    <div class="notif-head">
+      <div class="notif-title">Notifications</div>
+      <div class="notif-clear" onclick="closeNotif()">Clear all</div>
+    </div>
+    <div class="notif-list">
+      <div class="notif-row"><div class="notif-dot"></div><div class="notif-ava"><img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=80&q=70" alt=""/></div><div><div class="notif-n">Paramount Coffee</div><div class="notif-m">Fresh local brews ready — come visit at J.C. Aquino Ave! ☕</div><div class="notif-t">2 min ago</div></div></div>
+      <div class="notif-row"><div class="notif-dot"></div><div class="notif-ava"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=80&q=70" alt=""/></div><div><div class="notif-n">Craft Coffee Roastery</div><div class="notif-m">New Agusan highlands roast is in — try it today! ☕🏔️</div><div class="notif-t">20 min ago</div></div></div>
+      <div class="notif-row"><div class="notif-ava"><img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=80&q=70" alt=""/></div><div><div class="notif-n">Historya by Antigo</div><div class="notif-m">Heritage Night this Friday — art, history &amp; coffee! 🎨</div><div class="notif-t">1 hr ago</div></div></div>
+      <div class="notif-row"><div class="notif-ava"><img src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=80&q=70" alt=""/></div><div><div class="notif-n">Second Shot Brewing Studio</div><div class="notif-m">Now hiring! Brewer &amp; front-of-house positions open 💼</div><div class="notif-t">3 hr ago</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PAGE WRAPPER ══════════ -->
+<div class="page-wrapper">
+  <div class="layout-cols">
+    <div class="main-col" id="pages-container">
+      <!-- Pages load here -->
+      <!-- HOME (default) -->
+      <div class="panel active" id="panel-home"></div>
+      <!-- MAP -->
+      <div class="panel" id="panel-map"></div>
+      <!-- PROFILE -->
+      <div class="panel" id="panel-profile"></div>
+      <!-- SAVED -->
+      <div class="panel" id="panel-saved"></div>
+      <!-- OWNER -->
+      <div class="panel" id="panel-owner"></div>
+    </div>
+
+    <!-- SIDEBAR (1200px+) -->
+    <aside class="side-col">
+      <div class="side-sec">
+        <div class="mascot-bar" style="margin:0 0 18px">
+          <div class="mascot-ava">🐻</div>
+          <div class="mascot-content"><div class="mascot-name">BREVI</div><div class="mascot-msg" style="font-size:12px">Try the House Blend at Paramount — locally sourced Mindanao beans, so smooth! ☕🌿</div></div>
+        </div>
+        <div class="sec-eyebrow" style="margin-bottom:4px">Recommended</div>
+        <div class="side-title" style="margin-bottom:12px">⭐ Based on your <em>taste</em></div>
+        <div class="rec-stack">
+          <div class="rec-row" onclick="showPanel('profile')"><img class="rec-thumb" src="https://images.unsplash.com/photo-1498804103079-a6351b050096?w=200&q=70" alt=""/><div class="rec-info"><div class="rec-name">12.25 Coffee House</div><div class="rec-sub">Villa Kananga · Alfresco &amp; indoor dining</div></div><span class="rec-chip chip-study">For you</span></div>
+          <div class="rec-row" onclick="showPanel('profile')"><img class="rec-thumb" src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=200&q=70" alt=""/><div class="rec-info"><div class="rec-name">Second Shot Brewing Studio</div><div class="rec-sub">Ochoa Ave · Quality brewed selections</div></div><span class="rec-chip chip-morn">For you</span></div>
+        </div>
+      </div>
+      <div class="side-sec">
+        <div class="sec-eyebrow" style="margin-bottom:4px">💼 findItJob Now</div>
+        <div class="side-title" style="margin-bottom:12px">Join a <em>café team</em></div>
+        <div class="rec-stack">
+          <div class="rec-row"><img class="rec-thumb" src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=200&q=70" alt=""/><div class="rec-info"><div class="rec-name">Craft Coffee Roastery</div><div class="rec-sub">Head Roaster · Full-time · Baan Km 3</div></div><span class="rec-chip chip-date">Hiring</span></div>
+          <div class="rec-row"><img class="rec-thumb" src="https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=200&q=70" alt=""/><div class="rec-info"><div class="rec-name">Fulcrum Coffee</div><div class="rec-sub">Barista · Part-time · SM City Butuan</div></div><span class="rec-chip chip-date">Hiring</span></div>
+        </div>
+      </div>
+      <div class="side-sec">
+        <div class="sec-eyebrow" style="margin-bottom:4px">🆕 findItNew</div>
+        <div class="side-title" style="margin-bottom:12px">Also in <em>Butuan City</em></div>
+        <div class="rec-stack">
+          <div class="rec-row"><img class="rec-thumb" src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=200&q=70" alt="Matu Sikwate"/><div class="rec-info"><div class="rec-name">Matu Sikwate &amp; Coffee</div><div class="rec-sub">Dairy Farm · Local cacao &amp; sikwate · Family-run</div></div><span class="rec-chip chip-chill">New</span></div>
+          <div class="rec-row"><img class="rec-thumb" src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=200&q=70" alt="Columns Coffee"/><div class="rec-info"><div class="rec-name">Columns Coffee + Kitchen</div><div class="rec-sub">Butuan City · Plant-based · Oat milk · Modern</div></div><span class="rec-chip chip-chill">New</span></div>
+        </div>
+        <div style="margin-top:14px">
+          <div class="sec-eyebrow" style="margin-bottom:8px">More around Butuan</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="padding:5px 11px;background:var(--surface2);border:1px solid var(--line);border-radius:99px;font-size:11px;font-weight:500;color:var(--ink2);">Streetside Café</span>
+            <span style="padding:5px 11px;background:var(--surface2);border:1px solid var(--line);border-radius:99px;font-size:11px;font-weight:500;color:var(--ink2);">Gold 'n Pearl</span>
+            <span style="padding:5px 11px;background:var(--surface2);border:1px solid var(--line);border-radius:99px;font-size:11px;font-weight:500;color:var(--ink2);">12 D Cafe</span>
+            <span style="padding:5px 11px;background:var(--surface2);border:1px solid var(--line);border-radius:99px;font-size:11px;font-weight:500;color:var(--ink2);">3FE Café</span>
+            <span style="padding:5px 11px;background:var(--surface2);border:1px solid var(--line);border-radius:99px;font-size:11px;font-weight:500;color:var(--ink2);">Atreza Sweets &amp; Café</span>
+            <span style="padding:5px 11px;background:var(--surface2);border:1px solid var(--line);border-radius:99px;font-size:11px;font-weight:500;color:var(--ink2);">721 Cups &amp; Plates</span>
+          </div>
+        </div>
+      </div>
+      <div class="side-sec">
+        <div class="sec-eyebrow" style="margin-bottom:4px">🎉 findItEvents</div>
+        <div class="side-title" style="margin-bottom:12px">This <em>week</em></div>
+        <div class="event-list">
+          <div class="event-item"><div class="event-date">FRI · 7 PM</div><div class="event-name">Open Mic Night</div><div class="event-desc">Historya by Antigo · Marcos Calo St · Free</div></div>
+          <div class="event-item"><div class="event-date">SAT · 10 AM</div><div class="event-name">Latte Art Workshop</div><div class="event-desc">Paramount Coffee · J.C. Aquino Ave · ₱350</div></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ══════════ BOTTOM NAV ══════════ -->
+<nav class="bottom-nav">
+  <div class="nav-it on" id="nav-home" onclick="showPanel('home')">
+    <div class="nav-ico">🏠</div><div class="nav-lbl">Home</div>
+  </div>
+  <div class="nav-it" id="nav-map" onclick="showPanel('map')">
+    <div class="nav-ico">🗺️</div><div class="nav-lbl">Map</div>
+  </div>
+  <div class="nav-it" id="nav-profile" onclick="showPanel('profile')">
+    <div class="nav-ico">☕</div><div class="nav-lbl">Café</div>
+  </div>
+  <div class="nav-it" id="nav-saved" onclick="showPanel('saved')">
+    <div class="nav-ico">🔖</div><div class="nav-lbl">Saved</div>
+  </div>
+  <div class="nav-it" id="nav-owner" onclick="showPanel('owner')">
+    <div class="nav-ico">🏪</div><div class="nav-lbl">Owner</div>
+  </div>
+</nav>
+
+<!-- ══════════ LOAD PAGE MODULES ══════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="js/page-loader.js"></script>
+
+<!-- Modular JavaScript Files -->
+<script src="js/database.js"></script>
+<script src="js/geolocation.js"></script>
+<script src="js/map.js"></script>
+<script src="js/search.js"></script>
+<script src="js/filter.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/interactions.js"></script>
+<script src="js/mood.js"></script>
+<script src="js/carousel.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/owner.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>

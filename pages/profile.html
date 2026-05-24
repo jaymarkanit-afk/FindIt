@@ -1,0 +1,249 @@
+<div class="profile-hero">
+    <div class="profile-img-strip" id="carousel-strip">
+      <img
+        class="profile-slide"
+        src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=900&q=80"
+        alt=""
+      />
+      <img
+        class="profile-slide"
+        src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=900&q=80"
+        alt=""
+      />
+      <img
+        class="profile-slide"
+        src="https://images.unsplash.com/photo-1611174743420-3d7df880ce32?w=900&q=80"
+        alt=""
+      />
+    </div>
+    <div class="profile-overlay-grad"></div>
+    <button class="carousel-prev" onclick="carouselMove(-1)">‹</button>
+    <button class="carousel-next" onclick="carouselMove(1)">›</button>
+    <button class="profile-back-btn" onclick="showPanel('home')">←</button>
+    <div class="carousel-dots" id="carousel-dots">
+      <div class="cdot on" onclick="carouselGo(0)"></div>
+      <div class="cdot" onclick="carouselGo(1)"></div>
+      <div class="cdot" onclick="carouselGo(2)"></div>
+    </div>
+    <div class="profile-info-overlay">
+      <div class="profile-name">Paramount Coffee</div>
+      <div class="profile-stats">
+        <span class="ps">⭐ 4.9 (312 reviews)</span>
+        <span class="ps">📍 J.C. Aquino Ave, Butuan City</span>
+        <span class="ps">🕐 Open · Closes 9 PM</span>
+      </div>
+    </div>
+  </div>
+  <div class="profile-body">
+    <div class="profile-action-row">
+      <div class="profile-action primary" onclick="saveProfile(this)">
+        ❤️ Save
+      </div>
+      <div class="profile-action" onclick="followProfile(this)">🔔 Follow</div>
+      <div class="profile-action" onclick="showToast('Opening directions…')">
+        🗺️ Map
+      </div>
+    </div>
+    <div class="ptabs">
+      <div class="ptab on" onclick="setPTab(this, 'photos')">Photos</div>
+      <div class="ptab" onclick="setPTab(this, 'menu')">Menu</div>
+      <div class="ptab" onclick="setPTab(this, 'updates')">Updates</div>
+      <div class="ptab" onclick="setPTab(this, 'events')">Events</div>
+    </div>
+    <div class="tab-content on" id="tab-photos">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+        <div
+          style="
+            grid-column: 1/-1;
+            height: 160px;
+            border-radius: var(--r);
+            overflow: hidden;
+          "
+        >
+          <img
+            src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=900&q=80"
+            style="
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              transition: transform 0.4s;
+            "
+            onmouseover="this.style.transform = 'scale(1.04)'"
+            onmouseout="this.style.transform = ''"
+            alt=""
+          />
+        </div>
+        <div style="height: 110px; border-radius: var(--r); overflow: hidden">
+          <img
+            src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=400&q=80"
+            style="
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              transition: transform 0.4s;
+            "
+            onmouseover="this.style.transform = 'scale(1.06)'"
+            onmouseout="this.style.transform = ''"
+            alt=""
+          />
+        </div>
+        <div style="height: 110px; border-radius: var(--r); overflow: hidden">
+          <img
+            src="https://images.unsplash.com/photo-1611174743420-3d7df880ce32?w=400&q=80"
+            style="
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              transition: transform 0.4s;
+            "
+            onmouseover="this.style.transform = 'scale(1.06)'"
+            onmouseout="this.style.transform = ''"
+            alt=""
+          />
+        </div>
+      </div>
+    </div>
+    <div class="tab-content" id="tab-menu">
+      <div class="menu-grid">
+        <div
+          style="
+            font-family: var(--font-d);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 10px;
+          "
+        >
+          Menu <em style="color: var(--accent)">Highlights</em>
+        </div>
+        <div class="menu-item">
+          <div class="mi-img">
+            <img
+              src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200&q=70"
+              alt=""
+            />
+          </div>
+          <div>
+            <div class="mi-name">
+              Paramount House Blend <span class="avail av-in">● In Stock</span>
+            </div>
+            <div class="mi-desc">
+              Locally sourced Mindanao beans, smooth & balanced
+            </div>
+          </div>
+        </div>
+        <div class="menu-item">
+          <div class="mi-img">
+            <img
+              src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=200&q=70"
+              alt=""
+            />
+          </div>
+          <div>
+            <div class="mi-name">
+              Sikwate Brown Sugar Latte
+              <span class="avail av-low">⚠ Low Stock</span>
+            </div>
+            <div class="mi-desc">
+              Local cacao sikwate base, brown sugar, oat milk
+            </div>
+          </div>
+        </div>
+        <div class="menu-item">
+          <div class="mi-img">
+            <img
+              src="https://images.unsplash.com/photo-1611174743420-3d7df880ce32?w=200&q=70"
+              alt=""
+            />
+          </div>
+          <div>
+            <div class="mi-name">
+              Butuan Cold Brew <span class="avail av-out">✕ Out of Stock</span>
+            </div>
+            <div class="mi-desc">
+              24-hr cold brew from Agusan highland beans, smooth finish
+            </div>
+          </div>
+        </div>
+        <div class="menu-item">
+          <div class="mi-img">
+            <img
+              src="https://images.unsplash.com/photo-1517959105821-eaf2591984d2?w=200&q=70"
+              alt=""
+            />
+          </div>
+          <div>
+            <div class="mi-name">
+              Local Pastry Sampler <span class="avail av-in">● In Stock</span>
+            </div>
+            <div class="mi-desc">
+              Rotating selection of fresh-baked Butuan pastries daily
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-content" id="tab-updates">
+      <div class="feed">
+        <div class="f-card">
+          <div class="f-img-wrap" style="height: 150px">
+            <img
+              class="f-img"
+              src="https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?w=800&q=75"
+              alt=""
+            /><span class="f-badge b-promo">🏷️ Promo</span>
+          </div>
+          <div class="f-body">
+            <div class="f-title">Sustainability Week — All Drinks 20% Off!</div>
+            <div class="f-desc">
+              Celebrate local farming. Dine in only. This week only!
+            </div>
+          </div>
+        </div>
+        <div class="f-card">
+          <div class="f-img-wrap" style="height: 150px">
+            <img
+              class="f-img"
+              src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=800&q=75"
+              alt=""
+            /><span class="f-badge b-hiring">💼 findItJob</span>
+          </div>
+          <div class="f-body">
+            <div class="f-title">Now Hiring: Weekend Barista &amp; Cashier</div>
+            <div class="f-desc">
+              Part-time positions. Friendly team. Apply at J.C. Aquino Ave.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-content" id="tab-events">
+      <div class="event-list">
+        <div class="event-item">
+          <div class="event-date">FRI, DEC 6 · 7:00 PM</div>
+          <div class="event-name">Community Brew Night</div>
+          <div class="event-desc">
+            Meet local farmers & roasters at Paramount. Free entry, limited
+            seats.
+          </div>
+        </div>
+        <div class="event-item">
+          <div class="event-date">SAT, DEC 7 · 10:00 AM</div>
+          <div class="event-name">Latte Art Workshop</div>
+          <div class="event-desc">
+            Learn milk steaming & rosette patterns with local baristas.
+            ₱350/head.
+          </div>
+        </div>
+        <div class="event-item">
+          <div class="event-date">SUN, DEC 8 · 2:00 PM</div>
+          <div class="event-name">Acoustic Sunday Sessions</div>
+          <div class="event-desc">
+            Chill live music every Sunday at Paramount. Free entry — all
+            welcome.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="height: 32px"></div>

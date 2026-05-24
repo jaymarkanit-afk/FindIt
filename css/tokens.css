@@ -1,0 +1,83 @@
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — Color system, typography, spacing
+═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg: #f7f1e8;
+  --bg2: #ede5d8;
+  --bg3: #e4d9c8;
+  --surface: #ffffff;
+  --surface2: #faf6ef;
+  --surface3: #f4eee3;
+  --ink: #1a0f06;
+  --ink2: #4a3322;
+  --ink3: #8b6b4e;
+  --ink4: #c4a882;
+  --ink5: #dfcdb5;
+  --accent: #c45c0a;
+  --accent2: #e07930;
+  --accent3: #f5a050;
+  --accent-pale: #fce9d8;
+  --accent-pale2: #f6d4b0;
+  --green: #2e6b4a;
+  --green-pale: #d4eddf;
+  --blue: #1a4e82;
+  --blue-pale: #d0e4f7;
+  --rose: #8c2a2a;
+  --rose-pale: #f9dada;
+  --gold: #9a6e1a;
+  --gold-pale: #f5e8c0;
+  --line: rgba(74, 51, 34, 0.09);
+  --line2: rgba(74, 51, 34, 0.05);
+  --shadow-xs: 0 1px 3px rgba(26, 15, 6, 0.05);
+  --shadow-sm: 0 2px 8px rgba(26, 15, 6, 0.07), 0 1px 3px rgba(26, 15, 6, 0.04);
+  --shadow: 0 4px 20px rgba(26, 15, 6, 0.09), 0 2px 6px rgba(26, 15, 6, 0.05);
+  --shadow-lg:
+    0 12px 48px rgba(26, 15, 6, 0.12), 0 4px 16px rgba(26, 15, 6, 0.07);
+  --shadow-xl:
+    0 24px 80px rgba(26, 15, 6, 0.15), 0 8px 24px rgba(26, 15, 6, 0.09);
+  --r: 10px;
+  --r2: 16px;
+  --r3: 22px;
+  --r4: 32px;
+  --font-d: "Cormorant Garamond", Georgia, serif;
+  --font-b: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-m: "JetBrains Mono", monospace;
+  --nav-h: 62px;
+  --bottom-h: 68px;
+  --sidebar-w: 280px;
+}
+
+[data-theme="dark"] {
+  --bg: #0d0804;
+  --bg2: #140c06;
+  --bg3: #1a1008;
+  --surface: #201408;
+  --surface2: #271a0a;
+  --surface3: #2e200c;
+  --ink: #f2e8d8;
+  --ink2: #c8a87e;
+  --ink3: #8a6848;
+  --ink4: #5a3e24;
+  --ink5: #3a2614;
+  --accent: #e8782a;
+  --accent2: #f0924a;
+  --accent3: #f8b070;
+  --accent-pale: #2a1408;
+  --accent-pale2: #3a1e0c;
+  --green: #3a8a5e;
+  --green-pale: #0c2418;
+  --blue: #2e6aaa;
+  --blue-pale: #0c1e30;
+  --rose: #b84040;
+  --rose-pale: #280c0c;
+  --gold: #c08a30;
+  --gold-pale: #241806;
+  --line: rgba(194, 168, 126, 0.1);
+  --line2: rgba(194, 168, 126, 0.05);
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.25);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.55), 0 4px 16px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 24px 80px rgba(0, 0, 0, 0.65), 0 8px 24px rgba(0, 0, 0, 0.35);
+}

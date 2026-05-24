@@ -1,0 +1,76 @@
+/* ═══════════════════════════════════════════════════════════════
+   PAGE LAYOUT & PANELS
+═══════════════════════════════════════════════════════════════ */
+
+.page-wrapper {
+  padding-top: var(--nav-h);
+  padding-bottom: var(--bottom-h);
+  min-height: 100vh;
+}
+
+@media (min-width: 900px) {
+  .page-wrapper {
+    padding-top: var(--nav-h);
+    padding-bottom: var(--bottom-h);
+  }
+}
+
+.panel {
+  display: none;
+  animation: panelFadeIn 0.3s ease both;
+}
+
+.panel.active {
+  display: block;
+}
+
+@keyframes panelFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Two-column desktop layout */
+.layout-cols {
+  display: flex;
+  max-width: 1366px;
+  margin: 0 auto;
+}
+
+.main-col {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Sidebar — only show at very large screens (1200px+) */
+.side-col {
+  display: none;
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  padding: 24px 0;
+  border-left: 1px solid var(--line);
+  position: sticky;
+  top: var(--nav-h);
+  height: calc(100vh - var(--nav-h) - var(--bottom-h));
+  overflow-y: auto;
+}
+
+@media (min-width: 1200px) {
+  .side-col {
+    display: block;
+  }
+}
+
+/* Desktop filter chips row */
+.desktop-filter-bar {
+  display: none;
+}
+
+.df-chip {
+  display: none;
+}

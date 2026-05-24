@@ -1,0 +1,385 @@
+/* ═══════════════════════════════════════════════════════════════
+   MAP PANEL
+═══════════════════════════════════════════════════════════════ */
+
+/* ── GEOLOCATION INFO CARD ── */
+.geo-info-card {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 240px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  padding: 14px;
+  box-shadow: var(--shadow);
+  z-index: 20;
+  animation: slideInLeft 0.35s cubic-bezier(0.32, 1, 0.32, 1) both;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.geo-header {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--font-m);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.geo-location {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 11px;
+  line-height: 1.4;
+}
+
+.geo-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.geo-stat {
+  background: var(--bg2);
+  border-radius: var(--r);
+  padding: 10px 9px;
+  text-align: center;
+}
+
+.geo-stat-label {
+  font-size: 10px;
+  color: var(--ink3);
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.geo-stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--font-d);
+}
+
+.geo-refresh-btn {
+  width: 100%;
+  padding: 9px;
+  border-radius: var(--r);
+  border: 1.5px solid var(--accent);
+  background: var(--accent-pale);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.geo-refresh-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.geo-refresh-btn:active {
+  animation: spin 0.6s ease;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.map-container {
+  margin: 16px 22px 0;
+  border-radius: var(--r2);
+  overflow: visible;
+  height: 500px;
+  position: relative;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+#butuan-map {
+  width: 100%;
+  height: 100%;
+  background: var(--bg2);
+  z-index: 1;
+}
+
+.map-ui-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.map-toggle-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  pointer-events: all;
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.mtg {
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink3);
+  cursor: pointer;
+  transition: all 0.2s;
+  pointer-events: all;
+}
+
+.mtg.on {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.map-locate {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  pointer-events: all;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r);
+  border: none;
+  cursor: pointer;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+  color: var(--ink2);
+}
+
+.map-locate:hover {
+  background: var(--accent-pale);
+  border-color: var(--accent);
+}
+
+.map-popup {
+  position: absolute;
+  bottom: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(min(290px, 90vw));
+  background: var(--surface);
+  border-radius: var(--r2);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--line);
+  display: none;
+  z-index: 10;
+  animation: popupIn 0.3s cubic-bezier(0.32, 1, 0.32, 1) both;
+}
+
+.map-popup.show {
+  display: block;
+}
+
+@keyframes popupIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+.popup-img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--r2) var(--r2) 0 0;
+}
+
+.popup-body {
+  padding: 11px 13px 13px;
+}
+
+.popup-name {
+  font-family: var(--font-d);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+
+.popup-meta {
+  font-size: 12px;
+  color: var(--ink3);
+  margin-bottom: 9px;
+}
+
+.popup-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.popup-btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: var(--r);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid var(--line);
+  text-align: center;
+  background: var(--surface2);
+  color: var(--ink2);
+  transition: all 0.2s;
+}
+
+.popup-btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.popup-btn:hover {
+  transform: translateY(-1px);
+}
+
+.popup-close {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.osm-map {
+  width: 100%;
+  height: 100%;
+  background: #e0d8cc;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-pin-marker {
+  position: absolute;
+  cursor: pointer;
+  transform: translate(-50%, -100%);
+  font-size: 22px;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+  transition: transform 0.2s;
+  animation: pinDrop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.map-pin-marker:hover {
+  transform: translate(-50%, -100%) scale(1.25);
+}
+
+@keyframes pinDrop {
+  from {
+    transform: translate(-50%, -80%) scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -100%) scale(1);
+    opacity: 1;
+  }
+}
+
+.map-user-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--blue);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 4px rgba(30, 78, 130, 0.25);
+  animation: userPulse 2.5s ease infinite;
+}
+
+@keyframes userPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgba(30, 78, 130, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(30, 78, 130, 0.06);
+  }
+}
+
+.map-filter-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 12px 22px 0;
+}
+
+.map-filter-row::-webkit-scrollbar {
+  display: none;
+}
+
+.mf {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 13px;
+  border-radius: 99px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink2);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.mf:hover,
+.mf.on {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+[data-theme="dark"] .mf:hover,
+[data-theme="dark"] .mf.on {
+  background: var(--ink);
+  color: var(--bg);
+}

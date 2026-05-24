@@ -1,0 +1,66 @@
+/* ═══════════════════════════════════════════════════════════════
+   UTILITIES & SPACING
+═══════════════════════════════════════════════════════════════ */
+
+/* Margin utilities */
+.mt {
+  margin-top: 1rem;
+}
+
+.mb {
+  margin-bottom: 1rem;
+}
+
+.my {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Padding utilities */
+.p1 {
+  padding: 0.5rem;
+}
+
+.p2 {
+  padding: 1rem;
+}
+
+/* Flexbox utilities */
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Text utilities */
+.text-center {
+  text-align: center;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Clickable elements */
+.clickable {
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s;
+}
+
+.clickable:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}

@@ -1,0 +1,19 @@
+{
+  "name": "findit",
+  "version": "1.0.0",
+  "description": "FindIt - Butuan City Café Discovery Platform",
+  "main": "findit.html",
+  "type": "module",
+  "keywords": [
+    "cafe",
+    "discovery",
+    "butuan",
+    "map",
+    "geolocation"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
