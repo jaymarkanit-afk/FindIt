@@ -378,6 +378,161 @@
   border-color: var(--ink);
 }
 
+/* ════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE — MAP & LOCATION CARD
+   ════════════════════════════════════════════════════════════ */
+
+@media (max-width: 639px) {
+  .geo-info-card {
+    width: 200px;
+    height: 170px;
+    top: 12px;
+    left: 12px;
+    padding: 10px;
+  }
+
+  .geo-header {
+    font-size: 10px;
+    margin-bottom: 5px;
+  }
+
+  .geo-location {
+    font-size: 13px;
+    margin-bottom: 9px;
+  }
+
+  .geo-stats {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .geo-stat {
+    padding: 8px 7px;
+  }
+
+  .geo-stat-label {
+    font-size: 9px;
+    margin-bottom: 2px;
+  }
+
+  .geo-stat-value {
+    font-size: 16px;
+  }
+
+  .geo-refresh-btn {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .map-container {
+    margin: 12px 14px 0;
+    height: 380px;
+  }
+
+  .map-toggle-btn {
+    top: 8px;
+    right: 8px;
+  }
+
+  .mtg {
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+
+  .map-locate {
+    bottom: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .map-popup {
+    width: calc(min(260px, 85vw));
+    bottom: 50px;
+  }
+
+  .popup-img {
+    height: 80px;
+  }
+
+  .popup-body {
+    padding: 10px 11px;
+  }
+
+  .popup-name {
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
+  .popup-meta {
+    font-size: 11px;
+    margin-bottom: 7px;
+  }
+
+  .popup-actions {
+    gap: 6px;
+  }
+
+  .popup-btn {
+    padding: 7px;
+    font-size: 11px;
+  }
+
+  .popup-close {
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
+  }
+
+  .map-filter-row {
+    padding: 10px 14px 0;
+    gap: 6px;
+  }
+
+  .mf {
+    padding: 5px 11px;
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 899px) {
+  .geo-info-card {
+    width: 200px;
+    padding: 12px;
+  }
+
+  .map-container {
+    margin: 14px 18px 0;
+    height: 450px;
+  }
+
+  .map-popup {
+    width: calc(min(280px, 85vw));
+  }
+
+  .popup-img {
+    height: 90px;
+  }
+
+  .popup-body {
+    padding: 10px 12px;
+  }
+
+  .popup-name {
+    font-size: 15px;
+  }
+
+  .popup-meta {
+    font-size: 11px;
+  }
+
+  .map-filter-row {
+    padding: 11px 18px 0;
+    gap: 7px;
+  }
+}
+
 [data-theme="dark"] .mf:hover,
 [data-theme="dark"] .mf.on {
   background: var(--ink);
