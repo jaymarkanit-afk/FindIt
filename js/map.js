@@ -223,22 +223,22 @@ function updatePhotosTab(cafeId) {
 function getCafeImages(cafeId) {
   if (cafeId === 1) {
     return [
-      'Images/paramount/paramount1.jpg',
-      'Images/paramount/paramount2.jpg',
-      'Images/paramount/paramount3.jpg',
-      'Images/paramount/paramount4.jpg',
-      'Images/paramount/paramount5.jpg',
-      'Images/paramount/paramount6.jpg'
+      "Images/paramount/paramount1.jpg",
+      "Images/paramount/paramount2.jpg",
+      "Images/paramount/paramount3.jpg",
+      "Images/paramount/paramount4.jpg",
+      "Images/paramount/paramount5.jpg",
+      "Images/paramount/paramount6.jpg",
     ];
   } else if (cafeId === 9) {
     return [
-      'Images/coffeecapital/coffeecapital_main_image.jpg',
-      'Images/coffeecapital/coffecapital1.jpg',
-      'Images/coffeecapital/coffeecapital2.jpg',
-      'Images/coffeecapital/coffeecapital3.jpg',
-      'Images/coffeecapital/coffeecapital4.jpg',
-      'Images/coffeecapital/coffeecapital5.jpg',
-      'Images/coffeecapital/coffeecapital6.jpg'
+      "Images/coffeecapital/coffeecapital_main_image.jpg",
+      "Images/coffeecapital/coffecapital1.jpg",
+      "Images/coffeecapital/coffeecapital2.jpg",
+      "Images/coffeecapital/coffeecapital3.jpg",
+      "Images/coffeecapital/coffeecapital4.jpg",
+      "Images/coffeecapital/coffeecapital5.jpg",
+      "Images/coffeecapital/coffeecapital6.jpg",
     ];
   }
   return [];
@@ -253,7 +253,7 @@ function openPhotoModal(src) {
   // Get all images for current cafe
   const cafeId = selectedCafeId || 1;
   photoModalImages = getCafeImages(cafeId);
-  
+
   // Find index of clicked image
   currentPhotoIndex = photoModalImages.indexOf(src);
   if (currentPhotoIndex === -1) currentPhotoIndex = 0;
@@ -268,9 +268,9 @@ function openPhotoModal(src) {
       <img id="photoImage" src="${photoModalImages[currentPhotoIndex]}" style="max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 8px; user-select: none;" alt=""/>
       
       <!-- Navigation arrows -->
-      <button id="photoPrev" style="position: absolute; left: 20px; background: rgba(255,255,255,0.3); border: none; color: white; font-size: 40px; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; transition: all 0.3s; display: ${photoModalImages.length > 1 ? 'flex' : 'none'}; align-items: center; justify-content: center;" onmouseover="this.style.background = 'rgba(255,255,255,0.5)'; this.style.transform = 'scale(1.1)';" onmouseout="this.style.background = 'rgba(255,255,255,0.3)'; this.style.transform = 'scale(1)';">‹</button>
+      <button id="photoPrev" style="position: absolute; left: 20px; background: rgba(255,255,255,0.3); border: none; color: white; font-size: 40px; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; transition: all 0.3s; display: ${photoModalImages.length > 1 ? "flex" : "none"}; align-items: center; justify-content: center;" onmouseover="this.style.background = 'rgba(255,255,255,0.5)'; this.style.transform = 'scale(1.1)';" onmouseout="this.style.background = 'rgba(255,255,255,0.3)'; this.style.transform = 'scale(1)';">‹</button>
       
-      <button id="photoNext" style="position: absolute; right: 20px; background: rgba(255,255,255,0.3); border: none; color: white; font-size: 40px; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; transition: all 0.3s; display: ${photoModalImages.length > 1 ? 'flex' : 'none'}; align-items: center; justify-content: center;" onmouseover="this.style.background = 'rgba(255,255,255,0.5)'; this.style.transform = 'scale(1.1)';" onmouseout="this.style.background = 'rgba(255,255,255,0.3)'; this.style.transform = 'scale(1)';">›</button>
+      <button id="photoNext" style="position: absolute; right: 20px; background: rgba(255,255,255,0.3); border: none; color: white; font-size: 40px; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; transition: all 0.3s; display: ${photoModalImages.length > 1 ? "flex" : "none"}; align-items: center; justify-content: center;" onmouseover="this.style.background = 'rgba(255,255,255,0.5)'; this.style.transform = 'scale(1.1)';" onmouseout="this.style.background = 'rgba(255,255,255,0.3)'; this.style.transform = 'scale(1)';">›</button>
       
       <!-- Close button -->
       <button id="photoClose" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.3); border: none; color: white; font-size: 32px; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background = 'rgba(255,255,255,0.5)'; this.style.transform = 'scale(1.1)';" onmouseout="this.style.background = 'rgba(255,255,255,0.3)'; this.style.transform = 'scale(1)';">✕</button>
@@ -299,7 +299,9 @@ function openPhotoModal(src) {
   }
 
   function prevPhoto() {
-    currentPhotoIndex = (currentPhotoIndex - 1 + photoModalImages.length) % photoModalImages.length;
+    currentPhotoIndex =
+      (currentPhotoIndex - 1 + photoModalImages.length) %
+      photoModalImages.length;
     updatePhoto();
   }
 
@@ -320,14 +322,22 @@ function openPhotoModal(src) {
   let touchStartX = 0;
   let touchEndX = 0;
 
-  container.addEventListener("touchstart", (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-  }, false);
+  container.addEventListener(
+    "touchstart",
+    (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    },
+    false,
+  );
 
-  container.addEventListener("touchend", (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
-  }, false);
+  container.addEventListener(
+    "touchend",
+    (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    },
+    false,
+  );
 
   function handleSwipe() {
     const swipeThreshold = 50;
