@@ -2,18 +2,33 @@
   <div class="profile-img-strip" id="carousel-strip">
     <img
       class="profile-slide"
-      src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=900&q=80"
-      alt=""
+      src="Images/paramount/paramount1.jpg"
+      alt="Paramount Coffee"
     />
     <img
       class="profile-slide"
-      src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=900&q=80"
-      alt=""
+      src="Images/paramount/paramount2.jpg"
+      alt="Paramount Coffee"
     />
     <img
       class="profile-slide"
-      src="https://images.unsplash.com/photo-1611174743420-3d7df880ce32?w=900&q=80"
-      alt=""
+      src="Images/paramount/paramount3.jpg"
+      alt="Paramount Coffee"
+    />
+    <img
+      class="profile-slide"
+      src="Images/paramount/paramount4.jpg"
+      alt="Paramount Coffee"
+    />
+    <img
+      class="profile-slide"
+      src="Images/paramount/paramount5.jpg"
+      alt="Paramount Coffee"
+    />
+    <img
+      class="profile-slide"
+      src="Images/paramount/paramount6.jpg"
+      alt="Paramount Coffee"
     />
   </div>
   <div class="profile-overlay-grad"></div>
@@ -24,6 +39,9 @@
     <div class="cdot on" onclick="carouselGo(0)"></div>
     <div class="cdot" onclick="carouselGo(1)"></div>
     <div class="cdot" onclick="carouselGo(2)"></div>
+    <div class="cdot" onclick="carouselGo(3)"></div>
+    <div class="cdot" onclick="carouselGo(4)"></div>
+    <div class="cdot" onclick="carouselGo(5)"></div>
   </div>
   <div class="profile-info-overlay">
     <div class="profile-name">Paramount Coffee</div>
@@ -51,57 +69,7 @@
     <div class="ptab" onclick="setPTab(this, 'events')">Events</div>
   </div>
   <div class="tab-content on" id="tab-photos">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
-      <div
-        style="
-          grid-column: 1/-1;
-          height: 160px;
-          border-radius: var(--r);
-          overflow: hidden;
-        "
-      >
-        <img
-          src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=900&q=80"
-          style="
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s;
-          "
-          onmouseover="this.style.transform = 'scale(1.04)'"
-          onmouseout="this.style.transform = ''"
-          alt=""
-        />
-      </div>
-      <div style="height: 110px; border-radius: var(--r); overflow: hidden">
-        <img
-          src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=400&q=80"
-          style="
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s;
-          "
-          onmouseover="this.style.transform = 'scale(1.06)'"
-          onmouseout="this.style.transform = ''"
-          alt=""
-        />
-      </div>
-      <div style="height: 110px; border-radius: var(--r); overflow: hidden">
-        <img
-          src="https://images.unsplash.com/photo-1611174743420-3d7df880ce32?w=400&q=80"
-          style="
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s;
-          "
-          onmouseover="this.style.transform = 'scale(1.06)'"
-          onmouseout="this.style.transform = ''"
-          alt=""
-        />
-      </div>
-    </div>
+    <!-- Content will be dynamically loaded based on cafe ID -->
   </div>
   <div class="tab-content" id="tab-menu">
     <div class="menu-grid">
