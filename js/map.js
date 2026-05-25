@@ -219,24 +219,153 @@ function updatePhotosTab(cafeId) {
   }
 }
 
-function openPhotoModal(src) {
-  const modal = document.createElement("div");
-  modal.id = "photoModal";
-  modal.style.cssText =
-    "display: flex; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.92); z-index: 10000; align-items: center; justify-content: center; padding: 20px;";
+// Get images for a cafe
+function getCafeImages(cafeId) {
+  if (cafeId === 1) {
+    return [
+      'Images/paramount/paramount1.jpg',
+      'Images/paramount/paramount2.jpg',
+      'Images/paramount/paramount3.jpg',
+      'Images/paramount/paramount4.jpg',
+      'Images/paramount/paramount5.jpg',
+      'Images/paramount/paramount6.jpg'
+    ];
+  } else if (cafeId === 9) {
+    return [
+      'Images/coffeecapital/coffeecapital_main_image.jpg',
+      'Images/coffeecapital/coffecapital1.jpg',
+      'Images/coffeecapital/coffeecapital2.jpg',
+      'Images/coffeecapital/coffeecapital3.jpg',
+      'Images/coffeecapital/coffeecapital4.jpg',
+      'Images/coffeecapital/coffeecapital5.jpg',
+      'Images/coffeecapital/coffeecapital6.jpg'
+    ];
+  }
+  return [];
+}
 
-  modal.innerHTML = `
-    <div style="position: relative; max-width: 90vw; max-height: 90vh; display: flex; align-items: center; justify-content: center;">
-      <img src="${src}" style="max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 8px;" alt=""/>
-      <button onclick="this.parentElement.parentElement.remove()" style="position: absolute; top: -50px; right: 0; background: rgba(255,255,255,0.2); border: none; color: white; font-size: 32px; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background = 'rgba(255,255,255,0.4)'; this.style.transform = 'scale(1.1)';" onmouseout="this.style.background = 'rgba(255,255,255,0.2)'; this.style.transform = 'scale(1)';">✕</button>
+// Global variables for photo modal
+let currentPhotoIndex = 0;
+let photoModalImages = [];
+let photoModal = null;
+
+function openPhotoModal(src) {
+  // Get all images for current cafe
+  const cafeId = selectedCafeId || 1;
+  photoModalImages = getCafeImages(cafeId);
+  
+  // Find index of clicked image
+  currentPhotoIndex = photoModalImages.indexOf(src);
+  if (currentPhotoIndex === -1) currentPhotoIndex = 0;
+
+  photoModal = document.createElement("div");
+  photoModal.id = "photoModal";
+  photoModal.style.cssText =
+    "display: flex; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.92); z-index: 10000; align-items: center; justify-content: center; padding: 20px; touch-action: none;";
+
+  photoModal.innerHTML = `
+    <div style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;" id="photoContainer">
+      <img id="photoImage" src="${photoModalImages[currentPhotoIndex]}" style="max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 8px; user-select: none;" alt=""/>
+      
+      <!-- Navigation arrows -->
+      <button id="photoPrev" style="position: absolute; left: 20px; background: rgba(255,255,255,0.3); border: none; color: white; font-size: 40px; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; transition: all 0.3s; display: ${photoModalImages.length > 1 ? 'flex' : 'none'}; align-items: center; justify-content: center;" onmouseover="this.style.background = 'rgba(255,255,255,0.5)'; this.style.transform = 'scale(1.1)';" onmouseout="this.style.background = 'rgba(255,255,255,0.3)'; this.style.transform = 'scale(1)';">‹</button>
+      
+      <button id="photoNext" style="position: absolute; right: 20px; background: rgba(255,255,255,0.3); border: none; color: white; font-size: 40px; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; transition: all 0.3s; display: ${photoModalImages.length > 1 ? 'flex' : 'none'}; align-items: center; justify-content: center;" onmouseover="this.style.background = 'rgba(255,255,255,0.5)'; this.style.transform = 'scale(1.1)';" onmouseout="this.style.background = 'rgba(255,255,255,0.3)'; this.style.transform = 'scale(1)';">›</button>
+      
+      <!-- Close button -->
+      <button id="photoClose" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.3); border: none; color: white; font-size: 32px; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background = 'rgba(255,255,255,0.5)'; this.style.transform = 'scale(1.1)';" onmouseout="this.style.background = 'rgba(255,255,255,0.3)'; this.style.transform = 'scale(1)';">✕</button>
+      
+      <!-- Image counter -->
+      <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: white; font-size: 14px; background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 20px;" id="photoCounter"></div>
     </div>
   `;
 
-  modal.addEventListener("click", function (e) {
-    if (e.target === modal) modal.remove();
+  // Add event listeners
+  const prevBtn = photoModal.querySelector("#photoPrev");
+  const nextBtn = photoModal.querySelector("#photoNext");
+  const closeBtn = photoModal.querySelector("#photoClose");
+  const counter = photoModal.querySelector("#photoCounter");
+  const img = photoModal.querySelector("#photoImage");
+  const container = photoModal.querySelector("#photoContainer");
+
+  function updatePhoto() {
+    img.src = photoModalImages[currentPhotoIndex];
+    counter.textContent = `${currentPhotoIndex + 1} / ${photoModalImages.length}`;
+  }
+
+  function nextPhoto() {
+    currentPhotoIndex = (currentPhotoIndex + 1) % photoModalImages.length;
+    updatePhoto();
+  }
+
+  function prevPhoto() {
+    currentPhotoIndex = (currentPhotoIndex - 1 + photoModalImages.length) % photoModalImages.length;
+    updatePhoto();
+  }
+
+  // Button click handlers
+  if (nextBtn) nextBtn.addEventListener("click", nextPhoto);
+  if (prevBtn) prevBtn.addEventListener("click", prevPhoto);
+  if (closeBtn) closeBtn.addEventListener("click", () => photoModal.remove());
+
+  // Keyboard navigation
+  const keyHandler = (e) => {
+    if (e.key === "ArrowRight") nextPhoto();
+    if (e.key === "ArrowLeft") prevPhoto();
+    if (e.key === "Escape") photoModal.remove();
+  };
+  document.addEventListener("keydown", keyHandler);
+
+  // Swipe handling for mobile
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  container.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, false);
+
+  container.addEventListener("touchend", (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  }, false);
+
+  function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        // Swiped left - show next photo
+        nextPhoto();
+      } else {
+        // Swiped right - show previous photo
+        prevPhoto();
+      }
+    }
+  }
+
+  // Close on background click
+  photoModal.addEventListener("click", function (e) {
+    if (e.target === photoModal) {
+      photoModal.remove();
+      document.removeEventListener("keydown", keyHandler);
+    }
   });
 
-  document.body.appendChild(modal);
+  // Cleanup on remove
+  const observer = new MutationObserver((mutations) => {
+    if (!document.body.contains(photoModal)) {
+      document.removeEventListener("keydown", keyHandler);
+      observer.disconnect();
+    }
+  });
+
+  observer.observe(document.body, { childList: true });
+
+  // Update counter
+  updatePhoto();
+
+  document.body.appendChild(photoModal);
 }
 
 function loadCafeProfile(cafeId) {
