@@ -2,7 +2,7 @@
    GEOLOCATION — Location detection and distance calculations
    ═══════════════════════════════════════════════════════════════ */
 
-let userLocation = { lat: 8.9686, lng: 125.5287 };
+let userLocation = null;
 let locationInitialized = false;
 
 function initializeGeolocation() {
@@ -65,16 +65,14 @@ function locateMe() {
               "📍 Location access denied. Please enable location in settings to see cafés near you.";
             break;
           case error.POSITION_UNAVAILABLE:
-            msg = "📍 Location service unavailable. Using default location.";
+            msg = "📍 Location service unavailable. Please try again.";
             break;
           case error.TIMEOUT:
-            msg = "📍 Location request timed out. Using default location.";
+            msg = "📍 Location request timed out. Please try again.";
             break;
         }
         showToast(msg);
         console.log("Geolocation error:", error);
-
-        // Use default Butuan City location as fallback
         updateGeoInfoCard();
       },
       {
@@ -84,7 +82,7 @@ function locateMe() {
       },
     );
   } else {
-    showToast("❌ Geolocation not supported. Using default location.");
+    showToast("❌ Geolocation not supported on this device.");
     console.log("Geolocation API not available");
   }
 }
@@ -104,14 +102,6 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 function updateGeoInfoCard() {
-  // This updates any UI that shows location info
-  const geoCard = document.querySelector("[data-geo]");
-  if (geoCard) {
-    geoCard.textContent = `📍 ${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}`;
-  }
-}
-
-function updateGeoInfoCard() {
   // Get nearest cafe distance
   const sortedByCafe = [...cafeDatabase].sort(
     (a, b) => a.distance - b.distance,
@@ -124,7 +114,11 @@ function updateGeoInfoCard() {
   const geoNearestDist = document.getElementById("geo-nearest-dist");
 
   if (geoLocation) {
-    geoLocation.textContent = `${userLocation.lat.toFixed(4)}°N, ${userLocation.lng.toFixed(4)}°E`;
+    if (userLocation) {
+      geoLocation.textContent = `${userLocation.lat.toFixed(4)}°N, ${userLocation.lng.toFixed(4)}°E`;
+    } else {
+      geoLocation.textContent = "📍 Waiting for location...";
+    }
   }
 
   if (geoCafeCount) {

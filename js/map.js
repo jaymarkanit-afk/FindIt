@@ -29,15 +29,17 @@ function initializeMap() {
       attribution: "© OpenStreetMap contributors",
     }).addTo(map);
 
-    // Add user location marker
-    const userIcon = L.divIcon({
-      html: '<div style="width:20px;height:20px;background:var(--accent);border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.3)"></div>',
-      iconSize: [20, 20],
-      className: "user-marker",
-    });
-    L.marker([userLocation.lat, userLocation.lng], { icon: userIcon })
-      .addTo(map)
-      .bindPopup("📍 Your location");
+    // Add user location marker (only if location is available)
+    if (userLocation) {
+      const userIcon = L.divIcon({
+        html: '<div style="width:20px;height:20px;background:var(--accent);border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.3)"></div>',
+        iconSize: [20, 20],
+        className: "user-marker",
+      });
+      L.marker([userLocation.lat, userLocation.lng], { icon: userIcon })
+        .addTo(map)
+        .bindPopup("📍 Your location");
+    }
 
     // Add café markers
     addCafeMarkers(cafeDatabase);
