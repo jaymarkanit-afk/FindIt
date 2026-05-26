@@ -141,7 +141,8 @@ const cafeDatabase = [
   {
     id: 10,
     name: "Lakbai Coffee",
-    address: "National Highway, Brgy. Hubang, San Francisco, Agusan del Sur 8501",
+    address:
+      "National Highway, Brgy. Hubang, San Francisco, Agusan del Sur 8501",
     lat: 8.5375,
     lng: 125.9485,
     rating: 4.6,
