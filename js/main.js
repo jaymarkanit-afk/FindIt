@@ -3,6 +3,12 @@
    ═══════════════════════════════════════════════════════════════ */
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Restore last viewed panel from localStorage
+  const lastPanel = localStorage.getItem("lastPanel");
+  if (lastPanel && document.getElementById("panel-" + lastPanel)) {
+    showPanel(lastPanel);
+  }
+
   // Wait for pages to load first
   setTimeout(() => {
     // Set up greeting based on time of day
@@ -74,7 +80,10 @@ function populateTrendingCafes() {
     .sort((a, b) => b.rating - a.rating);
 
   // Include all cafes if less than 3 are marked as trending
-  const displayCafes = trendingCafes.length >= 3 ? trendingCafes : cafeDatabase.sort((a, b) => b.rating - a.rating);
+  const displayCafes =
+    trendingCafes.length >= 3
+      ? trendingCafes
+      : cafeDatabase.sort((a, b) => b.rating - a.rating);
 
   trendingReel.innerHTML = displayCafes
     .map(

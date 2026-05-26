@@ -45,6 +45,8 @@ function showPanel(name) {
   const ni = document.getElementById("nav-" + name);
   if (ni) ni.classList.add("on");
   window.scrollTo({ top: 0, behavior: "smooth" });
+  // Save current panel to localStorage for persistence
+  localStorage.setItem("lastPanel", name);
 
   // Initialize map when map panel is shown
   if (name === "map" && !map) {
