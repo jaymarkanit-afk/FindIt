@@ -149,6 +149,58 @@ function updatePhotosTab(cafeId) {
         </div>
       </div>
     `;
+  } else if (cafeId === 2) {
+    // Craft Coffee Roastery - show Craft Coffee images
+    photoTab.innerHTML = `
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 0 0 20px 0;">
+        <!-- Featured large image -->
+        <div
+          style="
+            grid-column: 1/-1;
+            height: 240px;
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            position: relative;
+          "
+          onclick="openPhotoModal('Images/craftcoffee/craftcoffe1.jpg')"
+        >
+          <img
+            src="Images/craftcoffee/craftcoffe1.jpg"
+            style="
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              transition: transform 0.3s ease;
+            "
+            onmouseover="this.style.transform = 'scale(1.05)'"
+            onmouseout="this.style.transform = 'scale(1)'"
+            alt="Coffee"
+          />
+        </div>
+        
+        <!-- Grid of 6 clickable images -->
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/craftcoffee/craftcoffe1.jpg')">
+          <img src="Images/craftcoffee/craftcoffe1.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/craftcoffee/craftcoffe2.jpg')">
+          <img src="Images/craftcoffee/craftcoffe2.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/craftcoffee/craftcoffe3.jpg')">
+          <img src="Images/craftcoffee/craftcoffe3.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/craftcoffee/craftcoffe4.jpg')">
+          <img src="Images/craftcoffee/craftcoffe4.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/craftcoffee/craftcoffe5.jpg')">
+          <img src="Images/craftcoffee/craftcoffe5.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/craftcoffee/craftcoffe6.jpg')">
+          <img src="Images/craftcoffee/craftcoffe6.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+      </div>
+    `;
   } else if (cafeId === 9) {
     // Coffee Capital - show Coffee Capital images
     photoTab.innerHTML = `
@@ -281,6 +333,15 @@ function getCafeImages(cafeId) {
       "Images/paramount/paramount4.jpg",
       "Images/paramount/paramount5.jpg",
       "Images/paramount/paramount6.jpg",
+    ];
+  } else if (cafeId === 2) {
+    return [
+      "Images/craftcoffee/craftcoffe1.jpg",
+      "Images/craftcoffee/craftcoffe2.jpg",
+      "Images/craftcoffee/craftcoffe3.jpg",
+      "Images/craftcoffee/craftcoffe4.jpg",
+      "Images/craftcoffee/craftcoffe5.jpg",
+      "Images/craftcoffee/craftcoffe6.jpg",
     ];
   } else if (cafeId === 9) {
     return [
@@ -487,8 +548,16 @@ function loadCafeProfile(cafeId) {
         <img class="profile-slide" src="Images/coffeecapital/coffeecapital4.jpg" alt="${cafe.name}"/>
         <img class="profile-slide" src="Images/coffeecapital/coffeecapital5.jpg" alt="${cafe.name}"/>
         <img class="profile-slide" src="Images/coffeecapital/coffeecapital6.jpg" alt="${cafe.name}"/>
-      `;
-    } else if (cafeId === 10) {
+      `;    } else if (cafeId === 2) {
+      // Use Craft Coffee Roastery images for Craft Coffee Roastery (ID 2)
+      carouselHTML = `
+        <img class="profile-slide" src="Images/craftcoffee/craftcoffe1.jpg" alt="${cafe.name}"/>
+        <img class="profile-slide" src="Images/craftcoffee/craftcoffe2.jpg" alt="${cafe.name}"/>
+        <img class="profile-slide" src="Images/craftcoffee/craftcoffe3.jpg" alt="${cafe.name}"/>
+        <img class="profile-slide" src="Images/craftcoffee/craftcoffe4.jpg" alt="${cafe.name}"/>
+        <img class="profile-slide" src="Images/craftcoffee/craftcoffe5.jpg" alt="${cafe.name}"/>
+        <img class="profile-slide" src="Images/craftcoffee/craftcoffe6.jpg" alt="${cafe.name}"/>
+      `;    } else if (cafeId === 10) {
       // Use Lakbai Coffee images for Lakbai Coffee (ID 10)
       carouselHTML = `
         <img class="profile-slide" src="Images/Lakbai/lakbai1.jpg" alt="${cafe.name}"/>

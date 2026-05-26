@@ -99,7 +99,9 @@ function getFilteredCafes() {
   // Apply category filter
   switch (currentFilter) {
     case "findItNearMe":
-      filtered.sort((a, b) => a.distance - b.distance);
+      filtered = filtered
+        .filter((c) => c.distance < 10)
+        .sort((a, b) => a.distance - b.distance);
       break;
     case "findItTrending":
       filtered = filtered

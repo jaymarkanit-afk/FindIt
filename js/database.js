@@ -31,7 +31,7 @@ const cafeDatabase = [
     category: ["trending", "toprated", "nearme"],
     hiring: false,
     events: false,
-    img: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=200&q=70",
+    img: "Images/craftcoffee/craftcoffe1.jpg",
   },
   {
     id: 3,
