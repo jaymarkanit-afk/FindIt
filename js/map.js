@@ -597,3 +597,36 @@ function loadCafeProfile(cafeId) {
   // Update photos tab based on cafe ID
   updatePhotosTab(cafeId);
 }
+
+// Display nearby cafes list below map
+function displayNearbyCafesList() {
+  const list = document.getElementById("nearby-cafes-list");
+  if (!list) return;
+
+  // Get nearby cafes (below 10km, sorted by distance)
+  const nearbyCafes = cafeDatabase
+    .filter((c) => parseFloat(c.distance) < 10)
+    .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+
+  if (nearbyCafes.length === 0) {
+    list.innerHTML = "";
+    return;
+  }
+
+  // Build cafe cards
+  list.innerHTML = nearbyCafes
+    .map(
+      (cafe) => `
+    <div class="cafe-card-item" onclick="selectedCafeId=${cafe.id}; showPanel('profile')">
+      <img src="${cafe.img}" alt="${cafe.name}" class="cafe-card-img" />
+      <div class="cafe-card-content">
+        <div class="cafe-card-name">${cafe.name}</div>
+        <div class="cafe-card-address">${cafe.address}</div>
+        <div class="cafe-card-meta">⭐ ${cafe.rating} · ${cafe.reviews} reviews</div>
+      </div>
+      <div class="cafe-card-distance">${cafe.distance} km</div>
+    </div>
+  `,
+    )
+    .join("");
+}

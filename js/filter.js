@@ -2,7 +2,7 @@
    FILTER — Filter functionality for café discovery
    ═══════════════════════════════════════════════════════════════ */
 
-let currentFilter = "findItNearMe";
+let currentFilter = "all";
 
 function openDrawer() {
   document.getElementById("drawer-overlay").classList.add("open");
@@ -129,4 +129,5 @@ function filterAndDisplayCafes() {
   const filtered = getFilteredCafes();
   displaySearchResults(filtered);
   updateMap(filtered);
+  if (typeof displayNearbyCafesList === "function") displayNearbyCafesList();
 }

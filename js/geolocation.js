@@ -56,6 +56,8 @@ function locateMe() {
 
         showToast("📍 Location found! Showing cafés near you.");
         updateGeoInfoCard();
+        if (typeof displayNearbyCafesList === "function")
+          displayNearbyCafesList();
       },
       function (error) {
         let msg = "Unable to get location.";
