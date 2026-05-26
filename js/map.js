@@ -201,6 +201,58 @@ function updatePhotosTab(cafeId) {
         </div>
       </div>
     `;
+  } else if (cafeId === 10) {
+    // Lakbai Coffee - show Lakbai images
+    photoTab.innerHTML = `
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 0 0 20px 0;">
+        <!-- Featured large image -->
+        <div
+          style="
+            grid-column: 1/-1;
+            height: 240px;
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            position: relative;
+          "
+          onclick="openPhotoModal('Images/Lakbai/lakbai1.jpg')"
+        >
+          <img
+            src="Images/Lakbai/lakbai1.jpg"
+            style="
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              transition: transform 0.3s ease;
+            "
+            onmouseover="this.style.transform = 'scale(1.05)'"
+            onmouseout="this.style.transform = 'scale(1)'"
+            alt="Coffee"
+          />
+        </div>
+        
+        <!-- Grid of 6 clickable images -->
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/Lakbai/lakbai2.jpg')">
+          <img src="Images/Lakbai/lakbai2.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/Lakbai/Lakbai3.jpg')">
+          <img src="Images/Lakbai/Lakbai3.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/Lakbai/lakbai4.jpg')">
+          <img src="Images/Lakbai/lakbai4.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/Lakbai/lakbai5.jpg')">
+          <img src="Images/Lakbai/lakbai5.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/Lakbai/Lakbai6.jpg')">
+          <img src="Images/Lakbai/Lakbai6.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/Lakbai/lakbai7.jpg')">
+          <img src="Images/Lakbai/lakbai7.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+      </div>
+    `;
   } else {
     // Original photos for other cafes
     photoTab.innerHTML = `
@@ -239,6 +291,16 @@ function getCafeImages(cafeId) {
       "Images/coffeecapital/coffeecapital4.jpg",
       "Images/coffeecapital/coffeecapital5.jpg",
       "Images/coffeecapital/coffeecapital6.jpg",
+    ];
+  } else if (cafeId === 10) {
+    return [
+      "Images/Lakbai/lakbai1.jpg",
+      "Images/Lakbai/lakbai2.jpg",
+      "Images/Lakbai/Lakbai3.jpg",
+      "Images/Lakbai/lakbai4.jpg",
+      "Images/Lakbai/lakbai5.jpg",
+      "Images/Lakbai/Lakbai6.jpg",
+      "Images/Lakbai/lakbai7.jpg",
     ];
   }
   return [];
@@ -425,6 +487,17 @@ function loadCafeProfile(cafeId) {
         <img class="profile-slide" src="Images/coffeecapital/coffeecapital4.jpg" alt="${cafe.name}"/>
         <img class="profile-slide" src="Images/coffeecapital/coffeecapital5.jpg" alt="${cafe.name}"/>
         <img class="profile-slide" src="Images/coffeecapital/coffeecapital6.jpg" alt="${cafe.name}"/>
+      `;
+    } else if (cafeId === 10) {
+      // Use Lakbai Coffee images for Lakbai Coffee (ID 10)
+      carouselHTML = `
+        <img class="profile-slide" src="Images/Lakbai/lakbai1.jpg" alt="${cafe.name}"/>
+        <img class="profile-slide" src="Images/Lakbai/lakbai2.jpg" alt="${cafe.name}"/>
+        <img class="profile-slide" src="Images/Lakbai/Lakbai3.jpg" alt="${cafe.name}"/>
+        <img class="profile-slide" src="Images/Lakbai/lakbai4.jpg" alt="${cafe.name}"/>
+        <img class="profile-slide" src="Images/Lakbai/lakbai5.jpg" alt="${cafe.name}"/>
+        <img class="profile-slide" src="Images/Lakbai/Lakbai6.jpg" alt="${cafe.name}"/>
+        <img class="profile-slide" src="Images/Lakbai/lakbai7.jpg" alt="${cafe.name}"/>
       `;
     } else {
       // Original images for other cafes
