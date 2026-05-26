@@ -152,6 +152,6 @@ const cafeDatabase = [
     category: ["toprated", "nearme"],
     hiring: false,
     events: false,
-    img: "https://images.unsplash.com/photo-1559056199-641a0ac8b3f7?w=200&q=70",
+    img: "Images/Lakbai/lakbai1.jpg",
   },
 ];
