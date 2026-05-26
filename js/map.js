@@ -103,37 +103,9 @@ function updatePhotosTab(cafeId) {
   if (!photoTab) return;
 
   if (cafeId === 1) {
-    // Paramount coffee - show Paramount images
+    // Paramount coffee - show only images 2-6 (skip 1 as it's main cover)
     photoTab.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 0 0 20px 0;">
-        <!-- Featured large image -->
-        <div
-          style="
-            grid-column: 1/-1;
-            height: 240px;
-            border-radius: 14px;
-            overflow: hidden;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-            position: relative;
-          "
-          onclick="openPhotoModal('Images/paramount/paramount1.jpg')"
-        >
-          <img
-            src="Images/paramount/paramount1.jpg"
-            style="
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-              transition: transform 0.3s ease;
-            "
-            onmouseover="this.style.transform = 'scale(1.05)'"
-            onmouseout="this.style.transform = 'scale(1)'"
-            alt="Coffee"
-          />
-        </div>
-        
-        <!-- Grid of 6 clickable images -->
         <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/paramount/paramount2.jpg')">
           <img src="Images/paramount/paramount2.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
         </div>
@@ -152,40 +124,9 @@ function updatePhotosTab(cafeId) {
       </div>
     `;
   } else if (cafeId === 2) {
-    // Craft Coffee Roastery - show Craft Coffee images
+    // Craft Coffee Roastery - show only images 2-6 (skip 1 as it's main cover)
     photoTab.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 0 0 20px 0;">
-        <!-- Featured large image -->
-        <div
-          style="
-            grid-column: 1/-1;
-            height: 240px;
-            border-radius: 14px;
-            overflow: hidden;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-            position: relative;
-          "
-          onclick="openPhotoModal('Images/craftcoffee/craftcoffe1.jpg')"
-        >
-          <img
-            src="Images/craftcoffee/craftcoffe1.jpg"
-            style="
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-              transition: transform 0.3s ease;
-            "
-            onmouseover="this.style.transform = 'scale(1.05)'"
-            onmouseout="this.style.transform = 'scale(1)'"
-            alt="Coffee"
-          />
-        </div>
-        
-        <!-- Grid of 6 clickable images -->
-        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/craftcoffee/craftcoffe1.jpg')">
-          <img src="Images/craftcoffee/craftcoffe1.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
-        </div>
         <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/craftcoffee/craftcoffe2.jpg')">
           <img src="Images/craftcoffee/craftcoffe2.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
         </div>
@@ -204,37 +145,9 @@ function updatePhotosTab(cafeId) {
       </div>
     `;
   } else if (cafeId === 9) {
-    // Coffee Capital - show Coffee Capital images
+    // Coffee Capital - show only images 1-6 (skip main_image as it's main cover)
     photoTab.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 0 0 20px 0;">
-        <!-- Featured large image -->
-        <div
-          style="
-            grid-column: 1/-1;
-            height: 240px;
-            border-radius: 14px;
-            overflow: hidden;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-            position: relative;
-          "
-          onclick="openPhotoModal('Images/coffeecapital/coffeecapital_main_image.jpg')"
-        >
-          <img
-            src="Images/coffeecapital/coffeecapital_main_image.jpg"
-            style="
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-              transition: transform 0.3s ease;
-            "
-            onmouseover="this.style.transform = 'scale(1.05)'"
-            onmouseout="this.style.transform = 'scale(1)'"
-            alt="Coffee"
-          />
-        </div>
-        
-        <!-- Grid of 6 clickable images -->
         <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/coffeecapital/coffecapital1.jpg')">
           <img src="Images/coffeecapital/coffecapital1.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
         </div>
@@ -259,34 +172,7 @@ function updatePhotosTab(cafeId) {
     // Lakbai Coffee - show Lakbai images
     photoTab.innerHTML = `
       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 0 0 20px 0;">
-        <!-- Featured large image -->
-        <div
-          style="
-            grid-column: 1/-1;
-            height: 240px;
-            border-radius: 14px;
-            overflow: hidden;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-            position: relative;
-          "
-          onclick="openPhotoModal('Images/Lakbai/lakbai1.jpg')"
-        >
-          <img
-            src="Images/Lakbai/lakbai1.jpg"
-            style="
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-              transition: transform 0.3s ease;
-            "
-            onmouseover="this.style.transform = 'scale(1.05)'"
-            onmouseout="this.style.transform = 'scale(1)'"
-            alt="Coffee"
-          />
-        </div>
-        
-        <!-- Grid of 6 clickable images -->
+        <!-- Grid of 6 clickable images (skip first image as it's the main cover) -->
         <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/Lakbai/lakbai2.jpg')">
           <img src="Images/Lakbai/lakbai2.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
         </div>
@@ -530,69 +416,34 @@ function loadCafeProfile(cafeId) {
   if (carousel) {
     let carouselHTML = "";
 
-    // Use Paramount coffee images for Paramount (ID 1)
+    // Use Paramount coffee images for Paramount (ID 1) - only first image
     if (cafeId === 1) {
       carouselHTML = `
         <img class="profile-slide" src="Images/paramount/paramount1.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/paramount/paramount2.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/paramount/paramount3.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/paramount/paramount4.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/paramount/paramount5.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/paramount/paramount6.jpg" alt="${cafe.name}"/>
       `;
     } else if (cafeId === 9) {
-      // Use Coffee Capital images for Coffee Capital (ID 9)
+      // Use Coffee Capital images for Coffee Capital (ID 9) - only first image
       carouselHTML = `
         <img class="profile-slide" src="Images/coffeecapital/coffeecapital_main_image.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/coffeecapital/coffecapital1.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/coffeecapital/coffeecapital2.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/coffeecapital/coffeecapital3.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/coffeecapital/coffeecapital4.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/coffeecapital/coffeecapital5.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/coffeecapital/coffeecapital6.jpg" alt="${cafe.name}"/>
       `;
     } else if (cafeId === 2) {
-      // Use Craft Coffee Roastery images for Craft Coffee Roastery (ID 2)
+      // Use Craft Coffee Roastery images for Craft Coffee Roastery (ID 2) - only first image
       carouselHTML = `
         <img class="profile-slide" src="Images/craftcoffee/craftcoffe1.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/craftcoffee/craftcoffe2.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/craftcoffee/craftcoffe3.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/craftcoffee/craftcoffe4.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/craftcoffee/craftcoffe5.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/craftcoffee/craftcoffe6.jpg" alt="${cafe.name}"/>
       `;
     } else if (cafeId === 10) {
-      // Use Lakbai Coffee images for Lakbai Coffee (ID 10)
+      // Lakbai Coffee - only show first image as main cover (no carousel)
       carouselHTML = `
         <img class="profile-slide" src="Images/Lakbai/lakbai1.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/Lakbai/lakbai2.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/Lakbai/Lakbai3.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/Lakbai/lakbai4.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/Lakbai/lakbai5.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/Lakbai/Lakbai6.jpg" alt="${cafe.name}"/>
-        <img class="profile-slide" src="Images/Lakbai/lakbai7.jpg" alt="${cafe.name}"/>
       `;
     } else {
-      // Original images for other cafes
+      // Original images for other cafes - only first image
       carouselHTML = `
         <img class="profile-slide" src="${cafe.img}" alt="${cafe.name}"/>
-        <img class="profile-slide" src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=900&q=80" alt=""/>
-        <img class="profile-slide" src="https://images.unsplash.com/photo-1611174743420-3d7df880ce32?w=900&q=80" alt=""/>
       `;
     }
     carousel.innerHTML = carouselHTML;
   }
-
-  // Reset carousel to first slide and update dots
-  const dots = document.querySelectorAll(".cdot");
-  const numSlides = carousel
-    ? carousel.querySelectorAll(".profile-slide").length
-    : 3;
-  dots.forEach((dot, idx) => {
-    dot.style.display = idx < numSlides ? "block" : "none";
-    dot.classList.remove("on");
-    if (idx === 0) dot.classList.add("on");
-  });
 
   // Update photos tab based on cafe ID
   updatePhotosTab(cafeId);

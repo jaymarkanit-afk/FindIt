@@ -3,12 +3,6 @@
    ═══════════════════════════════════════════════════════════════ */
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Restore last viewed panel from localStorage
-  const lastPanel = localStorage.getItem("lastPanel");
-  if (lastPanel && document.getElementById("panel-" + lastPanel)) {
-    showPanel(lastPanel);
-  }
-
   // Wait for pages to load first
   setTimeout(() => {
     // Set up greeting based on time of day
