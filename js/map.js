@@ -41,7 +41,7 @@ function initializeMap() {
         .bindPopup("📍 Your location");
     }
 
-    // Add café markers
+    // Add café markers - show all cafes initially
     addCafeMarkers(cafeDatabase);
 
     // Update geolocation info card
@@ -52,7 +52,9 @@ function initializeMap() {
       setTimeout(() => initializeGeolocation(), 500);
     }
 
-    console.log("Map initialized successfully");
+    console.log(
+      "Map initialized successfully with " + cafeDatabase.length + " cafes",
+    );
   } catch (e) {
     console.error("Map initialization failed:", e);
   }

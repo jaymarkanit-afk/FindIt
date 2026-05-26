@@ -53,6 +53,10 @@ function showPanel(name) {
     setTimeout(() => {
       try {
         initializeMap();
+        // Ensure all cafes are displayed on map
+        if (typeof updateMap === "function") {
+          updateMap(cafeDatabase);
+        }
       } catch (e) {
         console.error("Map initialization error:", e);
         showToast("Map failed to load. Try again.");
