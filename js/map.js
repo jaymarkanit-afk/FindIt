@@ -548,7 +548,8 @@ function loadCafeProfile(cafeId) {
         <img class="profile-slide" src="Images/coffeecapital/coffeecapital4.jpg" alt="${cafe.name}"/>
         <img class="profile-slide" src="Images/coffeecapital/coffeecapital5.jpg" alt="${cafe.name}"/>
         <img class="profile-slide" src="Images/coffeecapital/coffeecapital6.jpg" alt="${cafe.name}"/>
-      `;    } else if (cafeId === 2) {
+      `;
+    } else if (cafeId === 2) {
       // Use Craft Coffee Roastery images for Craft Coffee Roastery (ID 2)
       carouselHTML = `
         <img class="profile-slide" src="Images/craftcoffee/craftcoffe1.jpg" alt="${cafe.name}"/>
@@ -557,7 +558,8 @@ function loadCafeProfile(cafeId) {
         <img class="profile-slide" src="Images/craftcoffee/craftcoffe4.jpg" alt="${cafe.name}"/>
         <img class="profile-slide" src="Images/craftcoffee/craftcoffe5.jpg" alt="${cafe.name}"/>
         <img class="profile-slide" src="Images/craftcoffee/craftcoffe6.jpg" alt="${cafe.name}"/>
-      `;    } else if (cafeId === 10) {
+      `;
+    } else if (cafeId === 10) {
       // Use Lakbai Coffee images for Lakbai Coffee (ID 10)
       carouselHTML = `
         <img class="profile-slide" src="Images/Lakbai/lakbai1.jpg" alt="${cafe.name}"/>
