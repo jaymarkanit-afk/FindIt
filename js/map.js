@@ -490,9 +490,9 @@ function displayNearbyCafesList() {
   const list = document.getElementById("nearby-cafes-list");
   if (!list) return;
 
-  // Get nearby cafes (below 10km, sorted by distance)
+  // Get nearby cafes (below 5km, sorted by distance)
   const nearbyCafes = cafeDatabase
-    .filter((c) => parseFloat(c.distance) < 10)
+    .filter((c) => parseFloat(c.distance) < 5)
     .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
 
   if (nearbyCafes.length === 0) {
