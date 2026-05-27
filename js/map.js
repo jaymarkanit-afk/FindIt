@@ -195,6 +195,30 @@ function updatePhotosTab(cafeId) {
         </div>
       </div>
     `;
+  } else if (cafeId === 11) {
+    // Kold Coffee - show koldcoffee images
+    photoTab.innerHTML = `
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 0 0 20px 0;">
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/koldcoffee/koldcoffee2.jpg')">
+          <img src="Images/koldcoffee/koldcoffee2.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/koldcoffee/koldcoffee3.jpg')">
+          <img src="Images/koldcoffee/koldcoffee3.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/koldcoffee/koldcoffee4.jpg')">
+          <img src="Images/koldcoffee/koldcoffee4.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/koldcoffee/koldcoffee5.jpg')">
+          <img src="Images/koldcoffee/koldcoffee5.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/koldcoffee/koldcoffee6.jpg')">
+          <img src="Images/koldcoffee/koldcoffee6.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+        <div style="height: 150px; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); position: relative;" onclick="openPhotoModal('Images/koldcoffee/koldcoffee7.jpg')">
+          <img src="Images/koldcoffee/koldcoffee7.jpg" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform = 'scale(1.08)'" onmouseout="this.style.transform = 'scale(1)'" alt="Coffee"/>
+        </div>
+      </div>
+    `;
   } else {
     // Original photos for other cafes
     photoTab.innerHTML = `
@@ -252,6 +276,16 @@ function getCafeImages(cafeId) {
       "Images/Lakbai/lakbai5.jpg",
       "Images/Lakbai/Lakbai6.jpg",
       "Images/Lakbai/lakbai7.jpg",
+    ];
+  } else if (cafeId === 11) {
+    return [
+      "Images/koldcoffee/koldcoffee1.jpg",
+      "Images/koldcoffee/koldcoffee2.jpg",
+      "Images/koldcoffee/koldcoffee3.jpg",
+      "Images/koldcoffee/koldcoffee4.jpg",
+      "Images/koldcoffee/koldcoffee5.jpg",
+      "Images/koldcoffee/koldcoffee6.jpg",
+      "Images/koldcoffee/koldcoffee7.jpg",
     ];
   }
   return [];
@@ -408,7 +442,7 @@ function loadCafeProfile(cafeId) {
   if (statsEl) {
     statsEl.innerHTML = `
       <span class="ps">⭐ ${cafe.rating} (${cafe.reviews} reviews)</span>
-      <span class="ps">📍 ${cafe.address}</span>
+      <span class="ps" style="cursor: pointer; text-decoration: underline;" onclick="showPanel('map'); setTimeout(() => { const cafe = cafeDatabase.find(c => c.id === selectedCafeId); if (cafe && map) { map.setView([cafe.lat, cafe.lng], 17); showToast('📍 Zoomed to ' + cafe.name); } }, 300);">📍 ${cafe.address}</span>
       <span class="ps">🕐 Open · Closes 9 PM</span>
     `;
   }

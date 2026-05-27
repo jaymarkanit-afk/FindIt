@@ -89,6 +89,64 @@ function locateMe() {
   }
 }
 
+function zoomToUserLocation() {
+  // Navigate to map page first
+  if (typeof showPanel === "function") {
+    showPanel("map");
+  } else {
+    console.error("showPanel function not available");
+    showToast("Error: Cannot navigate to map");
+    return;
+  }
+
+  // After panel loads and map initializes, zoom to location
+  setTimeout(() => {
+    // Ensure map is initialized
+    if (!map) {
+      try {
+        initializeMap();
+      } catch (e) {
+        console.error("Error initializing map:", e);
+      }
+    }
+
+    // Wait for map to be ready
+    setTimeout(() => {
+      if (userLocation && map) {
+        // Zoom to user location with higher zoom level
+        map.setView([userLocation.lat, userLocation.lng], 17);
+        showToast("📍 Zoomed to your location");
+      } else if (!userLocation) {
+        // Get location first
+        showToast("📍 Getting your location...");
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            userLocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+            if (map) {
+              map.setView([userLocation.lat, userLocation.lng], 17);
+              showToast("📍 Zoomed to your location");
+            }
+          },
+          function (error) {
+            showToast(
+              "❌ Unable to get your location. Please enable location access.",
+            );
+            console.error("Geolocation error:", error);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0,
+          },
+        );
+      }
+    }, 500);
+  }, 300);
+}
+
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 6371; // Earth's radius in km
   const dLat = ((lat2 - lat1) * Math.PI) / 180;

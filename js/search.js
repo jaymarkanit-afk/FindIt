@@ -47,6 +47,25 @@ function handleSearch(query) {
     );
     displaySearchResults(results);
     updateMap(results);
+
+    // Zoom to first result if available and map exists
+    if (results.length > 0 && map) {
+      zoomToLocation(results[0]);
+    }
+  }
+}
+
+function zoomToLocation(cafe) {
+  // Zoom map to cafe location
+  if (map) {
+    map.setView([cafe.lat, cafe.lng], 17);
+    // Flash the marker
+    setTimeout(() => {
+      const marker = markers.find((m) => m.cafeId === cafe.id);
+      if (marker) {
+        marker.openPopup();
+      }
+    }, 500);
   }
 }
 
@@ -69,6 +88,8 @@ function submitSearch(query) {
     // Navigate to the first matching café
     selectedCafeId = results[0].id;
     showPanel("profile");
+    // Zoom map to the location
+    zoomToLocation(results[0]);
     showToast(`Navigating to ${results[0].name}...`);
   } else {
     showToast(`No café found matching "${searchQuery}"`);

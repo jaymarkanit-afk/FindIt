@@ -48,7 +48,19 @@
       ❤️ Save
     </div>
     <div class="profile-action" onclick="followProfile(this)">🔔 Follow</div>
-    <div class="profile-action" onclick="showToast('Opening directions…')">
+    <div
+      class="profile-action"
+      onclick="
+        showPanel('map');
+        setTimeout(() => {
+          const cafe = cafeDatabase.find((c) => c.id === selectedCafeId);
+          if (cafe && map) {
+            map.setView([cafe.lat, cafe.lng], 17);
+            showToast('📍 Zoomed to ' + cafe.name);
+          }
+        }, 300);
+      "
+    >
       🗺️ Map
     </div>
   </div>
