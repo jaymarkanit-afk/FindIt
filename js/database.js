@@ -1,6 +1,8 @@
 /* ═══════════════════════════════════════════════════════════════
-   DATABASE — Café database with Butuan City coordinates
+   DATABASE — cafés and their posts
    ═══════════════════════════════════════════════════════════════ */
+
+const DEFAULT_HOURS = "Open daily · Closes 9 PM";
 
 const cafeDatabase = [
   {
@@ -16,7 +18,15 @@ const cafeDatabase = [
     category: ["trending", "toprated", "nearme"],
     hiring: false,
     events: true,
-    img: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200&q=70",
+    img: "Images/paramount/paramount4.jpg",
+    images: [
+      "Images/paramount/paramount4.jpg",
+      "Images/paramount/paramount5.jpg",
+      "Images/paramount/paramount6.jpg",
+      "Images/paramount/paramount1.jpg",
+      "Images/paramount/paramount2.jpg",
+      "Images/paramount/paramount3.jpg",
+    ],
   },
   {
     id: 2,
@@ -31,7 +41,15 @@ const cafeDatabase = [
     category: ["trending", "toprated", "nearme"],
     hiring: false,
     events: false,
-    img: "Images/craftcoffee/craftcoffe1.jpg",
+    img: "Images/craftcoffee/craftcoffe5.jpg",
+    images: [
+      "Images/craftcoffee/craftcoffe5.jpg",
+      "Images/craftcoffee/craftcoffe2.jpg",
+      "Images/craftcoffee/craftcoffe3.jpg",
+      "Images/craftcoffee/craftcoffe4.jpg",
+      "Images/craftcoffee/craftcoffe6.jpg",
+      "Images/craftcoffee/craftcoffe1.jpg",
+    ],
   },
   {
     id: 3,
@@ -47,6 +65,9 @@ const cafeDatabase = [
     hiring: false,
     events: false,
     img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200&q=70",
+    images: [
+      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=900&q=75",
+    ],
   },
   {
     id: 4,
@@ -62,6 +83,9 @@ const cafeDatabase = [
     hiring: false,
     events: false,
     img: "https://images.unsplash.com/photo-1517960413843-0aee8e2b3285?w=200&q=70",
+    images: [
+      "https://images.unsplash.com/photo-1517960413843-0aee8e2b3285?w=900&q=75",
+    ],
   },
   {
     id: 5,
@@ -77,6 +101,9 @@ const cafeDatabase = [
     hiring: true,
     events: false,
     img: "https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=200&q=70",
+    images: [
+      "https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=900&q=75",
+    ],
   },
   {
     id: 6,
@@ -92,6 +119,9 @@ const cafeDatabase = [
     hiring: false,
     events: true,
     img: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=200&q=70",
+    images: [
+      "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=900&q=75",
+    ],
   },
   {
     id: 7,
@@ -107,6 +137,9 @@ const cafeDatabase = [
     hiring: false,
     events: true,
     img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200&q=70",
+    images: [
+      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=900&q=75",
+    ],
   },
   {
     id: 8,
@@ -122,6 +155,9 @@ const cafeDatabase = [
     hiring: true,
     events: false,
     img: "https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=200&q=70",
+    images: [
+      "https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=900&q=75",
+    ],
   },
   {
     id: 9,
@@ -137,6 +173,15 @@ const cafeDatabase = [
     hiring: false,
     events: true,
     img: "Images/coffeecapital/coffeecapital_main_image.jpg",
+    images: [
+      "Images/coffeecapital/coffeecapital_main_image.jpg",
+      "Images/coffeecapital/coffecapital1.jpg",
+      "Images/coffeecapital/coffeecapital2.jpg",
+      "Images/coffeecapital/coffeecapital3.jpg",
+      "Images/coffeecapital/coffeecapital4.jpg",
+      "Images/coffeecapital/coffeecapital5.jpg",
+      "Images/coffeecapital/coffeecapital6.jpg",
+    ],
   },
   {
     id: 10,
@@ -153,6 +198,15 @@ const cafeDatabase = [
     hiring: false,
     events: false,
     img: "Images/Lakbai/lakbai1.jpg",
+    images: [
+      "Images/Lakbai/lakbai1.jpg",
+      "Images/Lakbai/lakbai2.jpg",
+      "Images/Lakbai/Lakbai3.jpg",
+      "Images/Lakbai/lakbai4.jpg",
+      "Images/Lakbai/lakbai5.jpg",
+      "Images/Lakbai/Lakbai6.jpg",
+      "Images/Lakbai/lakbai7.jpg",
+    ],
   },
   {
     id: 11,
@@ -167,6 +221,151 @@ const cafeDatabase = [
     category: ["nearme", "trending"],
     hiring: false,
     events: false,
-    img: "Images/koldcoffee/koldcoffee1.jpg",
+    img: "Images/koldcoffee/koldcoffee6.jpg",
+    images: [
+      "Images/koldcoffee/koldcoffee6.jpg",
+      "Images/koldcoffee/koldcoffee4.jpg",
+      "Images/koldcoffee/koldcoffee2.jpg",
+      "Images/koldcoffee/koldcoffee3.jpg",
+      "Images/koldcoffee/koldcoffee5.jpg",
+      "Images/koldcoffee/koldcoffee7.jpg",
+      "Images/koldcoffee/koldcoffee8.jpg",
+      "Images/koldcoffee/koldcoffee1.jpg",
+    ],
+  },
+];
+
+/* ════════════════════════════════════════════════════════════
+   POSTS — one entry per café update.
+   type:    "new" | "promo" | "event" | "hiring"
+   time:    timestamp (ms). Seed posts are relative to page load.
+   sips:    starting reaction count (the user's own sip is stored
+            separately in localStorage — see store.js)
+   event:   { title, when, price }      (type "event")
+   job:     { role, schedule }          (type "hiring")
+   promo:   { until }                   (type "promo")
+   ════════════════════════════════════════════════════════════ */
+
+function minsAgo(minutes) {
+  return Date.now() - minutes * 60 * 1000;
+}
+
+const posts = [
+  {
+    id: "p1",
+    cafeId: 1,
+    type: "promo",
+    title: "Sustainability Week: all drinks 20% off",
+    caption:
+      "We're celebrating local farming and sustainable sourcing this week. All drinks are 20% off, dine in only. Come support local!",
+    photo: "Images/paramount/paramount5.jpg",
+    time: minsAgo(2),
+    sips: 138,
+    promo: { until: "This week only" },
+  },
+  {
+    id: "p2",
+    cafeId: 2,
+    type: "new",
+    title: "New batch: Agusan Highlands single origin",
+    caption:
+      "Fresh off the roaster — our latest small batch from the Agusan del Norte highlands. Fruity, clean and smooth. Available at Alviola Village, Baan Km 3.",
+    photo: "Images/craftcoffee/craftcoffe3.jpg",
+    time: minsAgo(20),
+    sips: 109,
+  },
+  {
+    id: "p3",
+    cafeId: 7,
+    type: "event",
+    title: "Heritage Night",
+    caption:
+      "Explore Butuan's history through antiques, local artworks and curated coffee. Limited seats, so come early.",
+    photo:
+      "https://images.unsplash.com/photo-1459257831348-f0cdd359235f?w=900&q=75",
+    time: minsAgo(60),
+    sips: 82,
+    event: { title: "Heritage Night", when: "Friday, 7 PM", price: "Free" },
+  },
+  {
+    id: "p4",
+    cafeId: 8,
+    type: "hiring",
+    title: "Hiring: brewer and front-of-house",
+    caption:
+      "Second Shot is growing! We're looking for passionate coffee people. Great team, flexible hours and staff perks.",
+    photo:
+      "https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=900&q=75",
+    time: minsAgo(180),
+    sips: 38,
+    job: {
+      role: "Brewer & front-of-house staff",
+      schedule: "Full-time & part-time",
+    },
+  },
+  {
+    id: "p5",
+    cafeId: 1,
+    type: "event",
+    title: "Latte Art Workshop",
+    caption:
+      "Learn milk steaming and rosette patterns with our baristas. Bring a friend!",
+    photo: "Images/paramount/paramount6.jpg",
+    time: minsAgo(300),
+    sips: 97,
+    event: {
+      title: "Latte Art Workshop",
+      when: "Saturday, 10 AM",
+      price: "₱350",
+    },
+  },
+  {
+    id: "p6",
+    cafeId: 5,
+    type: "hiring",
+    title: "Hiring: part-time barista",
+    caption: "Join the Fulcrum team at SM City Butuan.",
+    photo:
+      "https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=900&q=75",
+    time: minsAgo(480),
+    sips: 29,
+    job: { role: "Barista", schedule: "Part-time · SM City Butuan" },
+  },
+  {
+    id: "p7",
+    cafeId: 2,
+    type: "hiring",
+    title: "Hiring: head roaster",
+    caption: "Lead our roasting at Baan Km 3.",
+    photo: "Images/craftcoffee/craftcoffe5.jpg",
+    time: minsAgo(60 * 22),
+    sips: 51,
+    job: { role: "Head Roaster", schedule: "Full-time · Baan Km 3" },
+  },
+  {
+    id: "p8",
+    cafeId: 1,
+    type: "event",
+    title: "Acoustic Sunday Sessions",
+    caption: "Chill live music every Sunday at Paramount. All welcome.",
+    photo: "Images/paramount/paramount4.jpg",
+    time: minsAgo(60 * 26),
+    sips: 63,
+    event: {
+      title: "Acoustic Sunday Sessions",
+      when: "Sunday, 2 PM",
+      price: "Free",
+    },
+  },
+  {
+    id: "p9",
+    cafeId: 1,
+    type: "hiring",
+    title: "Hiring: weekend barista and cashier",
+    caption: "Part-time positions with a friendly team. Apply at J.C. Aquino Ave.",
+    photo: "Images/paramount/paramount4.jpg",
+    time: minsAgo(60 * 30),
+    sips: 17,
+    job: { role: "Weekend Barista & Cashier", schedule: "Part-time" },
   },
 ];
