@@ -1,213 +1,81 @@
 # FindIt — Butuan City Café Discovery
 
-A modern web application for discovering and exploring cafés in Butuan City. Features interactive maps, geolocation support, café profiles, and personalized recommendations.
+A static web app for following what cafés in and around Butuan City are doing
+right now: new items, promos, events and job openings, shown as a feed, plus a
+map and café profiles.
 
 ## Features
 
-- 🗺️ **Interactive Map** - Explore cafés using Leaflet.js with OpenStreetMap integration
-- 📍 **Geolocation** - Auto-detect your location and find nearest cafés
-- ⭐ **Café Profiles** - Browse detailed café information, ratings, and reviews
-- 🔖 **Save Favorites** - Bookmark your favorite spots
-- 🎨 **Smart Recommendations** - AI-powered café suggestions based on mood and preferences
-- 📱 **Responsive Design** - Fully functional on desktop and mobile devices
-- 🌙 **Theme Toggle** - Dark mode support
+- **Feed** of café updates with a New / Events / Hiring filter
+- **Fresh right now** strip with each café's latest update
+- **Get alerts** for a café; its updates then show under the bell
+- **Sips** and **Keep** on updates, and saved cafés, all remembered between visits
+- **Café profiles** with an "On the board today" panel, photos and info
+- **Map** (Leaflet + OpenStreetMap) with geolocation and nearest cafés
+- **Owner composer** to publish an update, with a live preview
+- Light and dark themes
 
-## Project Structure
+## Project structure
 
 ```
 FindIt/
-├── findit.html           # Main entry point
-├── pages/                # Modular page templates
-│   ├── home.html        # Home page content
-│   ├── map.html         # Map page content
-│   ├── profile.html     # Café profile page
-│   ├── saved.html       # Saved cafés page
-│   └── owner.html       # Owner dashboard
-├── css/                  # Stylesheets
-│   ├── reset.css        # Reset styles
-│   ├── tokens.css       # Design tokens & variables
-│   ├── layout.css       # Layout & flexbox
-│   ├── findit.css       # Main styles
-│   └── [component].css  # Component-specific styles
-├── js/                   # JavaScript modules
-│   ├── main.js          # App initialization
-│   ├── ui.js            # UI interactions
-│   ├── map.js           # Map functionality
-│   ├── geolocation.js   # Location services
-│   ├── database.js      # Café database
-│   ├── search.js        # Search functionality
-│   └── [feature].js     # Feature modules
-├── package.json         # Project metadata
-├── vercel.json          # Vercel deployment config
-└── .gitignore           # Git ignore rules
+├── findit.html        # App shell: top bar, panels, sidebar, bottom nav, icon sprite
+├── index.html         # Redirects to findit.html
+├── pages/             # Page fragments loaded into the panels
+│   ├── home.html      #   Brevi bar, Fresh right now, filter, feed
+│   ├── map.html
+│   ├── profile.html
+│   ├── saved.html
+│   └── owner.html
+├── css/
+│   ├── tokens.css     # Design tokens (colours, radii, fonts) incl. dark theme
+│   ├── cards.css      # Shared components: tiles, buttons, pills, segmented control
+│   ├── feed.css       # Post cards
+│   └── …              # One file per area
+├── js/                # See js/README.md for the modules and load order
+├── Images/            # Café photos
+└── vercel.json
 ```
 
-## Local Development
+## Running locally
 
-### Prerequisites
+The pages are loaded with `fetch`, so the app must be served over HTTP —
+opening `findit.html` straight from disk will show empty pages.
 
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-- Basic HTTP server (for local development)
+```bash
+# from the project folder
+python -m http.server 8000
+# or
+npx http-server -p 8000
+```
 
-### Running Locally
+Then open <http://localhost:8000/findit.html>.
 
-1. **Clone the repository**
-
-   ```bash
-   git clone <repository-url>
-   cd FindIt
-   ```
-
-2. **Start a local server**
-
-   Using Python 3:
-
-   ```bash
-   python -m http.server 8000
-   ```
-
-   Or using Node.js/npm:
-
-   ```bash
-   npx http-server
-   ```
-
-3. **Open in browser**
-   Navigate to `http://localhost:8000`
+To see the phone layout, open the browser dev tools, switch on device
+emulation and pick a 390px-wide device.
 
 ## Deployment
 
-### Vercel Deployment
+The project deploys to Vercel as a static site with no build step
+(`vercel.json`). HTTPS is needed for geolocation, which Vercel provides.
 
-This project is configured for seamless Vercel deployment.
+## Technology
 
-1. **Push to Git**
+- HTML, CSS and JavaScript — no framework, no build
+- Leaflet 1.9.4 + OpenStreetMap tiles
+- Fonts: Space Grotesk (headings, wordmark) and Inter
+- Data: `js/database.js`; user state in `localStorage`
 
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git push origin main
-   ```
+## Known limitations
 
-2. **Deploy on Vercel**
-   - Visit [vercel.com](https://vercel.com)
-   - Click "Add New Project"
-   - Import your Git repository
-   - Vercel will auto-detect it's a static site
-   - Click "Deploy"
-
-3. **Custom Domain (Optional)**
-   - In Vercel dashboard, go to "Settings" > "Domains"
-   - Add your custom domain
-   - Update DNS records as instructed
-
-### Environment Configuration
-
-The app uses geolocation APIs that work best with HTTPS. Vercel automatically provides HTTPS on all deployments.
-
-## Technology Stack
-
-- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-- **Mapping**: Leaflet.js v1.9.4 + OpenStreetMap
-- **Geolocation**: HTML5 Geolocation API
-- **Data**: In-memory café database (JavaScript)
-- **Styling**: Custom CSS with design tokens system
-
-## Features Documentation
-
-### Geolocation
-
-- Auto-detects user location using browser permission
-- Calculates distances to all cafés using Haversine formula
-- Displays nearest café and count of nearby cafés
-- Updates map view to user's current position
-
-### Map
-
-- Interactive Leaflet map centered on Butuan City
-- Café markers with clickable popups
-- User location marker
-- Click café markers to view profiles
-
-### Café Profiles
-
-- Dynamic profile loading with café images
-- Ratings and review counts
-- Address and hours information
-- Related action buttons (Save, Follow, View on Map)
-- Image carousel gallery
-
-### Search
-
-- Real-time café search by name and tags
-- Filtered results with café details
-- Click results to view full profile
-
-### Sidebar Navigation
-
-- Recommended cafés
-- Quick access to features
-- Clickable cards for profile navigation
-
-## Browser Support
-
-- Chrome/Edge 90+
-- Firefox 88+
-- Safari 14+
-- Modern mobile browsers
-
-## API & Third-Party Services
-
-- **Leaflet.js** - Open-source mapping library
-- **OpenStreetMap** - Map tiles provider
-- **HTML5 Geolocation API** - Browser location services
-
-## Known Limitations
-
-- Café database is stored in-memory (refreshes on page reload)
-- Search functionality is client-side only
-- No backend API (static deployment)
-
-## Future Enhancements
-
-- Backend API for persistent data storage
-- User authentication & accounts
-- Real-time café ratings & reviews
-- Social features (sharing, recommendations)
-- PWA capabilities (offline support)
-- Advanced filtering & sorting
-- Admin dashboard for café owners
-
-## Troubleshooting
-
-### Geolocation not working
-
-- Check browser permissions for location access
-- Ensure HTTPS is enabled (auto on Vercel)
-- Try incognito/private mode
-- Check browser console for errors
-
-### Map not displaying
-
-- Verify Leaflet library is loaded
-- Check browser developer console for errors
-- Ensure internet connection is active
-
-### Pages showing blank
-
-- Clear browser cache
-- Check browser console for JavaScript errors
-- Verify all page files are loading correctly
+- There is no backend. Posts, alerts, keeps and sips live in the browser's
+  `localStorage` only, so they are per device and nobody else sees them.
+- Owner sign-in is a demo gate: any email and password is accepted, and the
+  owner always posts as Paramount Coffee.
+- "Remind me" and "Apply" only record the choice locally; nothing is sent.
+- Distances are placeholder values until the user shares their location.
+- Opening hours and contact details are not in the data yet.
 
 ## License
 
 ISC
-
-## Support
-
-For issues and feature requests, please create an issue in the repository.
-
----
-
-**Made with ❤️ for Butuan City café lovers**
