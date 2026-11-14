@@ -42,19 +42,81 @@ function showToast(msg, dur = 2200) {
   t._t = setTimeout(() => t.classList.remove("show"), dur);
 }
 
+/* ── Overlays (filter drawer, alerts panel) ────────────────
+   While open: focus stays inside, Escape closes.
+   On close: focus goes back to the control that opened it.
+   While closed they are visibility:hidden (see the CSS).      */
+
+let activeOverlay = null; // { el, close, opener }
+
+function overlayFocusables(el) {
+  return Array.from(
+    el.querySelectorAll(
+      'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    ),
+  ).filter((n) => !n.disabled && n.offsetParent !== null);
+}
+
+function openOverlay(el, close) {
+  if (activeOverlay && activeOverlay.el !== el) activeOverlay.close();
+  activeOverlay = { el, close, opener: document.activeElement };
+  el.classList.add("open");
+  const first = overlayFocusables(el)[0];
+  if (first) first.focus();
+}
+
+function closeOverlay(el) {
+  if (!el.classList.contains("open")) return;
+  el.classList.remove("open");
+  if (activeOverlay && activeOverlay.el === el) {
+    const opener = activeOverlay.opener;
+    activeOverlay = null;
+    if (opener && document.contains(opener) && opener.focus) opener.focus();
+  }
+}
+
+document.addEventListener("keydown", (e) => {
+  if (!activeOverlay) return;
+
+  if (e.key === "Escape") {
+    e.preventDefault();
+    activeOverlay.close();
+    return;
+  }
+
+  if (e.key === "Tab") {
+    const items = overlayFocusables(activeOverlay.el);
+    if (!items.length) {
+      e.preventDefault();
+      return;
+    }
+    const first = items[0];
+    const last = items[items.length - 1];
+    const inside = activeOverlay.el.contains(document.activeElement);
+    if (e.shiftKey && (!inside || document.activeElement === first)) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && (!inside || document.activeElement === last)) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+});
+
 function toggleNotif() {
   const backdrop = document.getElementById("notif-backdrop");
-  const opening = !backdrop.classList.contains("open");
-  if (opening) {
-    renderNotifications(); // new items are still marked "New" in this render
-    markAlertsSeen(); // …and the badge clears
+  if (backdrop.classList.contains("open")) {
+    closeNotif();
+    return;
   }
-  backdrop.classList.toggle("open");
+  renderNotifications(); // new items are still marked "New" in this render
+  markAlertsSeen(); // …and the badge clears
+  openOverlay(backdrop, closeNotif);
 }
 
 function closeNotif(e) {
-  if (!e || e.target === document.getElementById("notif-backdrop"))
-    document.getElementById("notif-backdrop").classList.remove("open");
+  const backdrop = document.getElementById("notif-backdrop");
+  if (!e || e.target === backdrop) closeOverlay(backdrop);
 }
 
 function showPanel(name) {

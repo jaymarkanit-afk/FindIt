@@ -12,12 +12,19 @@
   justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.25s;
+  /* visibility (not opacity alone) takes the closed drawer out of the
+     tab order and the accessibility tree; it flips after the fade-out */
+  visibility: hidden;
+  transition:
+    opacity 0.25s,
+    visibility 0s linear 0.25s;
 }
 
 .drawer-overlay.open {
   opacity: 1;
   pointer-events: all;
+  visibility: visible;
+  transition-delay: 0s;
 }
 
 .filter-drawer {

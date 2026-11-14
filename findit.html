@@ -165,7 +165,7 @@
       id="drawer-overlay"
       onclick="drawerClose(event)"
     >
-      <div class="filter-drawer" role="dialog" aria-label="Filters">
+      <div class="filter-drawer" role="dialog" aria-modal="true" aria-label="Filters">
         <div class="drawer-pill"></div>
         <div class="drawer-head">
           <div class="drawer-title">Filters</div>
@@ -297,6 +297,7 @@
       <div
         class="notif-panel"
         role="dialog"
+        aria-modal="true"
         aria-label="Alerts"
         onclick="event.stopPropagation()"
       >

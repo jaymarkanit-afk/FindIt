@@ -236,16 +236,20 @@ textarea.fi {
   font-weight: 600;
   opacity: 0;
   pointer-events: none;
+  visibility: hidden; /* its "View" button must not be reachable while hidden */
   transform: translate(-50%, 16px);
   transition:
     opacity 0.25s,
-    transform 0.25s;
+    transform 0.25s,
+    visibility 0s linear 0.25s;
 }
 
 .publish-bar.show {
   opacity: 1;
   pointer-events: all;
+  visibility: visible;
   transform: translate(-50%, 0);
+  transition-delay: 0s;
 }
 
 .publish-bar span {

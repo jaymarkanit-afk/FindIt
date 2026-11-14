@@ -13,11 +13,11 @@ function openDrawer() {
     .forEach((c) =>
       c.classList.toggle("active", c.dataset.filter === currentFilter),
     );
-  document.getElementById("drawer-overlay").classList.add("open");
+  openOverlay(document.getElementById("drawer-overlay"), closeDrawer);
 }
 
 function closeDrawer() {
-  document.getElementById("drawer-overlay").classList.remove("open");
+  closeOverlay(document.getElementById("drawer-overlay"));
 }
 
 function drawerClose(e) {
