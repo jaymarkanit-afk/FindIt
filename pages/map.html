@@ -1,90 +1,60 @@
-<div class="hero" style="padding-bottom: 18px">
-  <div class="hero-gradient"></div>
-  <div class="hero-grain"></div>
-  <div class="hero-deco"></div>
-  <div class="hero-inner">
-    <div class="hero-badge">
-      <span class="live-dot"></span>Map View · Butuan City
-    </div>
-    <h1 class="hero-h1">Explore<br /><em>cafés</em> near you</h1>
-    <div class="hero-search">
-      <span style="font-size: 17px">📍</span
-      ><input
-        type="text"
-        id="topbar-search"
-        placeholder="Search in Butuan City…"
-        oninput="handleSearch(this.value)"
-        onkeypress="if (event.key === 'Enter') submitSearch(this.value);"
-      /><button class="filter-trigger" onclick="openDrawer()">
-        ☰ Filters
-      </button>
-    </div>
-  </div>
+<div class="page-head">
+  <h1>Map</h1>
+  <p>Cafés around Butuan City</p>
 </div>
-<div class="map-container">
-  <!-- GEOLOCATION INFO CARD (LEFT SIDE) -->
-  <div
-    class="geo-info-card"
-    style="cursor: pointer"
+
+<div class="map-search">
+  <label class="search-field">
+    <svg class="ico sm" aria-hidden="true"><use href="#i-search" /></svg>
+    <input
+      type="search"
+      id="map-search"
+      placeholder="Search cafés"
+      aria-label="Search cafés"
+      oninput="handleSearch(this.value)"
+      onkeydown="if (event.key === 'Enter') submitSearch(this.value);"
+    />
+  </label>
+  <button class="btn btn-ghost" onclick="openDrawer()">
+    <svg class="ico sm" aria-hidden="true"><use href="#i-sliders" /></svg>
+    Filters
+  </button>
+</div>
+
+<!-- LOCATION STRIP -->
+<div class="geo-strip">
+  <button
+    class="geo-where"
     onclick="zoomToUserLocation()"
+    aria-label="Zoom the map to your location"
   >
-    <div class="geo-header">📍 Your Location</div>
-    <div class="geo-location" id="geo-location">Butuan City, Philippines</div>
-    <div class="geo-stats">
-      <div class="geo-stat">
-        <div class="geo-stat-label">Cafés Nearby</div>
-        <div class="geo-stat-value" id="geo-cafe-count">8</div>
-      </div>
-      <div class="geo-stat">
-        <div class="geo-stat-label">Nearest</div>
-        <div class="geo-stat-value" id="geo-nearest-dist">2.5 km</div>
-      </div>
-    </div>
-    <button class="geo-refresh-btn" onclick="locateMe()">🔄 Locate Me</button>
-  </div>
-
-  <div
-    id="butuan-map"
-    class="osm-map"
-    style="width: 100%; height: 500px; border-radius: var(--r)"
-  ></div>
-  <div class="map-ui-overlay">
-    <div class="map-toggle-btn">
-      <div class="mtg on" onclick="mtgClick(this, 'map')">🗺 Map</div>
-      <div class="mtg" onclick="mtgClick(this, 'list')">☰ List</div>
-    </div>
-    <button class="map-locate" onclick="locateMe()">◎</button>
-  </div>
-  <div class="map-popup" id="map-popup">
-    <button class="popup-close" onclick="closePopup()">✕</button>
-    <img class="popup-img" id="popup-img" src="" alt="" />
-    <div class="popup-body">
-      <div class="popup-name" id="popup-name"></div>
-      <div class="popup-meta" id="popup-meta"></div>
-      <div class="popup-actions">
-        <div
-          class="popup-btn"
-          onclick="
-            closePopup();
-            showToast('Saved! 🔖');
-          "
-        >
-          📌 Save
-        </div>
-        <div
-          class="popup-btn primary"
-          onclick="
-            showPanel('profile');
-            closePopup();
-          "
-        >
-          View Café →
-        </div>
-      </div>
-    </div>
-  </div>
+    <svg class="ico" aria-hidden="true"><use href="#i-pin" /></svg>
+    <span class="geo-text">
+      <span class="geo-location" id="geo-location">Butuan City</span>
+      <span class="geo-stats">
+        <span id="geo-cafe-count">–</span> cafés · nearest
+        <span id="geo-nearest-dist">–</span>
+      </span>
+    </span>
+  </button>
+  <button class="btn btn-dark" onclick="locateMe()">Locate me</button>
 </div>
 
-<!-- NEARBY CAFES CARDS -->
+<div class="map-container">
+  <div id="butuan-map" class="osm-map"></div>
+  <button
+    class="round-btn map-locate"
+    onclick="locateMe()"
+    aria-label="Locate me"
+  >
+    <svg class="ico" aria-hidden="true"><use href="#i-locate" /></svg>
+  </button>
+</div>
+
+<!-- NEARBY CAFÉS -->
+<div class="sec">
+  <div class="sec-head">
+    <h2 class="sec-title">Nearby</h2>
+  </div>
+</div>
 <div class="nearby-cafes-list" id="nearby-cafes-list"></div>
-<div style="height: 32px"></div>

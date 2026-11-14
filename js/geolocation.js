@@ -5,6 +5,8 @@
 let userLocation = null;
 let locationInitialized = false;
 
+const GEO_OPTIONS = { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 };
+
 function initializeGeolocation() {
   if (locationInitialized) return; // Prevent duplicate calls
   locateMe();
@@ -12,139 +14,73 @@ function initializeGeolocation() {
 }
 
 function locateMe() {
-  showToast("📍 Getting your location...");
-
-  if ("geolocation" in navigator) {
-    navigator.geolocation.getCurrentPosition(
-      function (position) {
-        userLocation = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        };
-
-        // Recalculate distances
-        cafeDatabase.forEach((cafe) => {
-          cafe.distance = calculateDistance(
-            userLocation.lat,
-            userLocation.lng,
-            cafe.lat,
-            cafe.lng,
-          );
-        });
-
-        // Re-sort by distance
-        const filtered = getFilteredCafes();
-        displaySearchResults(filtered);
-        updateMap(filtered);
-
-        if (map) {
-          map.setView([userLocation.lat, userLocation.lng], 15);
-          // Update user marker
-          const userIcon = L.divIcon({
-            html: '<div style="width:20px;height:20px;background:var(--accent);border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.3)"></div>',
-            iconSize: [20, 20],
-            className: "user-marker",
-          });
-          // Remove old markers and readd
-          markers.forEach((m) => map.removeLayer(m));
-          markers = [];
-          L.marker([userLocation.lat, userLocation.lng], { icon: userIcon })
-            .addTo(map)
-            .bindPopup("📍 Your location");
-          addCafeMarkers(cafeDatabase);
-        }
-
-        showToast("📍 Location found! Showing cafés near you.");
-        updateGeoInfoCard();
-        if (typeof displayNearbyCafesList === "function")
-          displayNearbyCafesList();
-      },
-      function (error) {
-        let msg = "Unable to get location.";
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            msg =
-              "📍 Location access denied. Please enable location in settings to see cafés near you.";
-            break;
-          case error.POSITION_UNAVAILABLE:
-            msg = "📍 Location service unavailable. Please try again.";
-            break;
-          case error.TIMEOUT:
-            msg = "📍 Location request timed out. Please try again.";
-            break;
-        }
-        showToast(msg);
-        console.log("Geolocation error:", error);
-        updateGeoInfoCard();
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 0,
-      },
-    );
-  } else {
-    showToast("❌ Geolocation not supported on this device.");
-    console.log("Geolocation API not available");
-  }
-}
-
-function zoomToUserLocation() {
-  // Navigate to map page first
-  if (typeof showPanel === "function") {
-    showPanel("map");
-  } else {
-    console.error("showPanel function not available");
-    showToast("Error: Cannot navigate to map");
+  if (!("geolocation" in navigator)) {
+    showToast("Location is not supported on this device.");
     return;
   }
 
-  // After panel loads and map initializes, zoom to location
-  setTimeout(() => {
-    // Ensure map is initialized
-    if (!map) {
-      try {
-        initializeMap();
-      } catch (e) {
-        console.error("Error initializing map:", e);
-      }
-    }
+  showToast("Getting your location…");
 
-    // Wait for map to be ready
-    setTimeout(() => {
-      if (userLocation && map) {
-        // Zoom to user location with higher zoom level
-        map.setView([userLocation.lat, userLocation.lng], 17);
-        showToast("📍 Zoomed to your location");
-      } else if (!userLocation) {
-        // Get location first
-        showToast("📍 Getting your location...");
-        navigator.geolocation.getCurrentPosition(
-          function (position) {
-            userLocation = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            };
-            if (map) {
-              map.setView([userLocation.lat, userLocation.lng], 17);
-              showToast("📍 Zoomed to your location");
-            }
-          },
-          function (error) {
-            showToast(
-              "❌ Unable to get your location. Please enable location access.",
-            );
-            console.error("Geolocation error:", error);
-          },
-          {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0,
-          },
+  navigator.geolocation.getCurrentPosition(
+    function (position) {
+      userLocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+
+      // Recalculate distances from the real position
+      cafeDatabase.forEach((cafe) => {
+        cafe.distance = calculateDistance(
+          userLocation.lat,
+          userLocation.lng,
+          cafe.lat,
+          cafe.lng,
         );
+      });
+
+      // Re-render everything that shows or sorts by distance
+      filterAndDisplayCafes();
+      populateNearYouCafes();
+
+      if (map) {
+        setUserMarker(); // replaces any previous "you are here" marker
+        map.setView([userLocation.lat, userLocation.lng], 15);
       }
-    }, 500);
-  }, 300);
+
+      showToast("Location found. Showing cafés near you.");
+      updateGeoInfoCard();
+    },
+    function (error) {
+      let msg = "Unable to get your location.";
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          msg = "Location access denied. Enable it in your browser settings.";
+          break;
+        case error.POSITION_UNAVAILABLE:
+          msg = "Location unavailable. Please try again.";
+          break;
+        case error.TIMEOUT:
+          msg = "Location request timed out. Please try again.";
+          break;
+      }
+      showToast(msg);
+      console.log("Geolocation error:", error);
+      updateGeoInfoCard();
+    },
+    GEO_OPTIONS,
+  );
+}
+
+function zoomToUserLocation() {
+  showPanel("map"); // initialises the map if needed
+  if (!map) return;
+
+  if (userLocation) {
+    map.setView([userLocation.lat, userLocation.lng], 17);
+    showToast("Zoomed to your location");
+  } else {
+    locateMe();
+  }
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -158,34 +94,22 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return (R * c).toFixed(1);
+  return Number((R * c).toFixed(1));
 }
 
 function updateGeoInfoCard() {
-  // Get nearest cafe distance
-  const sortedByCafe = [...cafeDatabase].sort(
-    (a, b) => a.distance - b.distance,
-  );
-  const nearestDistance = sortedByCafe[0]?.distance || "N/A";
+  const nearest = [...cafeDatabase].sort((a, b) => a.distance - b.distance)[0];
 
-  // Update card elements
   const geoLocation = document.getElementById("geo-location");
   const geoCafeCount = document.getElementById("geo-cafe-count");
   const geoNearestDist = document.getElementById("geo-nearest-dist");
 
   if (geoLocation) {
-    if (userLocation) {
-      geoLocation.textContent = `${userLocation.lat.toFixed(4)}°N, ${userLocation.lng.toFixed(4)}°E`;
-    } else {
-      geoLocation.textContent = "📍 Waiting for location...";
-    }
+    geoLocation.textContent = userLocation
+      ? `${userLocation.lat.toFixed(4)}°N, ${userLocation.lng.toFixed(4)}°E`
+      : "Butuan City";
   }
-
-  if (geoCafeCount) {
-    geoCafeCount.textContent = cafeDatabase.length;
-  }
-
-  if (geoNearestDist) {
-    geoNearestDist.textContent = nearestDistance + " km";
-  }
+  if (geoCafeCount) geoCafeCount.textContent = cafeDatabase.length;
+  if (geoNearestDist)
+    geoNearestDist.textContent = nearest ? nearest.distance + " km" : "–";
 }
