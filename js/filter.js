@@ -1,10 +1,18 @@
 /* ═══════════════════════════════════════════════════════════════
    FILTER — Filter functionality for café discovery
+   Filters: all, findItNearMe, findItTrending, findItTopRated,
+            findItNew, findItEvents, findItJob
    ═══════════════════════════════════════════════════════════════ */
 
 let currentFilter = "all";
 
 function openDrawer() {
+  // Show the filter that is currently applied
+  document
+    .querySelectorAll(".drawer-card")
+    .forEach((c) =>
+      c.classList.toggle("active", c.dataset.filter === currentFilter),
+    );
   document.getElementById("drawer-overlay").classList.add("open");
 }
 
@@ -16,71 +24,48 @@ function drawerClose(e) {
   if (e.target === document.getElementById("drawer-overlay")) closeDrawer();
 }
 
-function quickFilter(filterName) {
-  // Clear search when using quick filter
-  const heroSearch = document.getElementById("hero-search");
-  const topbarSearch = document.getElementById("topbar-search");
-  if (heroSearch) heroSearch.value = "";
-  if (topbarSearch) topbarSearch.value = "";
-  currentSearchQuery = "";
-
-  // Update currentFilter
-  if (filterName !== "all") {
-    currentFilter = filterName;
-  } else {
-    currentFilter = "findItNearMe";
-  }
-
-  // Update active tab
-  document.querySelectorAll(".filter-tab").forEach((tab) => {
-    tab.classList.remove("active");
+// Highlight the home segmented control to match currentFilter
+function syncFilterTabs() {
+  document.querySelectorAll("#feed-filter .seg-btn").forEach((tab) => {
+    const on = tab.dataset.filter === currentFilter;
+    tab.classList.toggle("active", on);
+    tab.setAttribute("aria-pressed", on);
   });
-  event.target.classList.add("active");
-
-  // Apply filter and display
-  filterAndDisplayCafes();
-  showToast("Showing: " + filterName + " ✓");
 }
 
-function pickFilter(el, label) {
+function clearSearch() {
+  currentSearchQuery = "";
+  syncSearchInputs("");
+}
+
+// Home segmented control: All / New / Events / Hiring
+function quickFilter(filterName) {
+  clearSearch();
+  currentFilter = filterName;
+  syncFilterTabs();
+  filterAndDisplayCafes();
+}
+
+// Drawer: pick a card, then "Apply filter"
+function pickFilter(el) {
   document
     .querySelectorAll(".drawer-card")
     .forEach((c) => c.classList.remove("active"));
   el.classList.add("active");
-  currentFilter = label;
 }
 
 function applyFilter() {
   const active = document.querySelector(".drawer-card.active");
   if (!active) return;
-  currentFilter = active.getAttribute("onclick").match(/'(\w+)'/)[1];
+  currentFilter = active.dataset.filter;
   closeDrawer();
-
-  // Update active tab in filter tabs
-  document.querySelectorAll(".filter-tab").forEach((tab) => {
-    tab.classList.remove("active");
-  });
-  const filterName =
-    currentFilter === "findItNearMe"
-      ? "findItNearMe"
-      : currentFilter === "findItTopRated"
-        ? "findItTopRated"
-        : currentFilter === "findItTrending"
-          ? "findItTrending"
-          : currentFilter === "finditJob"
-            ? "finditJob"
-            : currentFilter === "finditEvents"
-              ? "finditEvents"
-              : currentFilter === "findItNew"
-                ? "findItNew"
-                : "all";
-  const matchingTab = Array.from(document.querySelectorAll(".filter-tab")).find(
-    (tab) => tab.textContent.includes(filterName.replace("findit", "findit")),
-  );
-  if (matchingTab) matchingTab.classList.add("active");
-
+  syncFilterTabs();
   filterAndDisplayCafes();
-  showToast("Showing: " + active.querySelector(".dc-label").textContent + " ✓");
+  showToast("Showing: " + active.textContent.trim());
+}
+
+function cafeHasPost(cafe, type) {
+  return getAllPosts().some((p) => p.cafeId === cafe.id && p.type === type);
 }
 
 function getFilteredCafes() {
@@ -88,15 +73,10 @@ function getFilteredCafes() {
 
   // Apply search filter first
   if (currentSearchQuery) {
-    filtered = filtered.filter(
-      (cafe) =>
-        cafe.name.toLowerCase().includes(currentSearchQuery) ||
-        cafe.address.toLowerCase().includes(currentSearchQuery) ||
-        cafe.tags.some((tag) => tag.toLowerCase().includes(currentSearchQuery)),
-    );
+    filtered = filtered.filter((cafe) => cafeMatches(cafe, currentSearchQuery));
   }
 
-  // Apply category filter
+  // Apply category filter ("all" leaves every café in)
   switch (currentFilter) {
     case "findItNearMe":
       filtered = filtered
@@ -108,17 +88,17 @@ function getFilteredCafes() {
         .filter((c) => c.category.includes("trending"))
         .sort((a, b) => b.rating - a.rating);
       break;
-    case "findItNew":
-      filtered = filtered.slice(0, 3);
-      break;
-    case "findItJob":
-      filtered = filtered.filter((c) => c.hiring);
-      break;
-    case "findItEvents":
-      filtered = filtered.filter((c) => c.events);
-      break;
     case "findItTopRated":
       filtered.sort((a, b) => b.rating - a.rating);
+      break;
+    case "findItNew":
+      filtered = filtered.filter((c) => cafeHasPost(c, "new"));
+      break;
+    case "findItJob":
+      filtered = filtered.filter((c) => c.hiring || cafeHasPost(c, "hiring"));
+      break;
+    case "findItEvents":
+      filtered = filtered.filter((c) => c.events || cafeHasPost(c, "event"));
       break;
   }
 
@@ -128,6 +108,7 @@ function getFilteredCafes() {
 function filterAndDisplayCafes() {
   const filtered = getFilteredCafes();
   displaySearchResults(filtered);
+  renderFeed();
   updateMap(filtered);
-  if (typeof displayNearbyCafesList === "function") displayNearbyCafesList();
+  displayNearbyCafesList();
 }

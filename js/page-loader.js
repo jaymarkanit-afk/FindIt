@@ -16,20 +16,14 @@ async function loadPageModule(pageName) {
     if (!response.ok) throw new Error(`Failed to load ${pageName}`);
 
     const html = await response.text();
-    const panelId = `panel-${pageName}`;
-    const panel = document.getElementById(panelId);
-
-    if (panel) {
-      panel.innerHTML = html;
-    }
+    const panel = document.getElementById(`panel-${pageName}`);
+    if (panel) panel.innerHTML = html;
   } catch (error) {
     console.error(`Error loading page module ${pageName}:`, error);
   }
 }
 
-// Load all page modules on page load
-document.addEventListener("DOMContentLoaded", () => {
-  Object.keys(pageModules).forEach((pageName) => {
-    loadPageModule(pageName);
-  });
-});
+// Resolves once every page has been inserted (or has failed to load).
+// main.js waits on this instead of guessing with a timeout. The script tag
+// sits at the end of <body>, so the panels already exist here.
+const pagesReady = Promise.all(Object.keys(pageModules).map(loadPageModule));

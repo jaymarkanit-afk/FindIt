@@ -1,19 +1,35 @@
 /* ═══════════════════════════════════════════════════════════════
-   UI — Theme, toast, notifications, and panel management
+   UI — Theme, toast, alerts panel, and panel management
    ═══════════════════════════════════════════════════════════════ */
 
+function applyThemeIcon() {
+  const dark = document.documentElement.getAttribute("data-theme") === "dark";
+  const icon = document.getElementById("theme-ico");
+  if (icon) icon.setAttribute("href", dark ? "#i-sun" : "#i-moon");
+  const btn = document.getElementById("theme-btn");
+  if (btn)
+    btn.setAttribute(
+      "aria-label",
+      dark ? "Switch to light theme" : "Switch to dark theme",
+    );
+}
+
 function toggleTheme(e) {
-  const html = document.documentElement,
-    dark = html.getAttribute("data-theme") === "dark";
+  const html = document.documentElement;
+  const dark = html.getAttribute("data-theme") === "dark";
   const flash = document.getElementById("theme-flash");
-  const x = e ? (e.clientX / window.innerWidth) * 100 : 50,
-    y = e ? (e.clientY / window.innerHeight) * 100 : 50;
+  const x = e ? (e.clientX / window.innerWidth) * 100 : 50;
+  const y = e ? (e.clientY / window.innerHeight) * 100 : 50;
   flash.style.setProperty("--fx", x + "%");
   flash.style.setProperty("--fy", y + "%");
   flash.style.opacity = ".18";
   setTimeout(() => {
-    html.setAttribute("data-theme", dark ? "light" : "dark");
-    document.getElementById("theme-knob").textContent = dark ? "☀️" : "🌙";
+    const next = dark ? "light" : "dark";
+    html.setAttribute("data-theme", next);
+    try {
+      localStorage.setItem("findit.theme", next);
+    } catch (err) {}
+    applyThemeIcon();
     flash.style.opacity = "0";
   }, 130);
 }
@@ -27,8 +43,13 @@ function showToast(msg, dur = 2200) {
 }
 
 function toggleNotif() {
-  document.getElementById("notif-backdrop").classList.toggle("open");
-  document.getElementById("notif-badge").style.display = "none";
+  const backdrop = document.getElementById("notif-backdrop");
+  const opening = !backdrop.classList.contains("open");
+  if (opening) {
+    renderNotifications(); // new items are still marked "New" in this render
+    markAlertsSeen(); // …and the badge clears
+  }
+  backdrop.classList.toggle("open");
 }
 
 function closeNotif(e) {
@@ -37,41 +58,42 @@ function closeNotif(e) {
 }
 
 function showPanel(name) {
+  if (!document.getElementById("panel-" + name)) name = "home";
+
   document
     .querySelectorAll(".panel")
     .forEach((p) => p.classList.remove("active"));
   document.getElementById("panel-" + name).classList.add("active");
-  document.querySelectorAll(".nav-it").forEach((n) => n.classList.remove("on"));
+
+  document.querySelectorAll(".nav-it").forEach((n) => {
+    n.classList.remove("on");
+    n.removeAttribute("aria-current");
+  });
   const ni = document.getElementById("nav-" + name);
-  if (ni) ni.classList.add("on");
-  window.scrollTo({ top: 0, behavior: "smooth" });
-  // Save current panel to localStorage for persistence
-  localStorage.setItem("lastPanel", name);
-
-  // Initialize map when map panel is shown
-  if (name === "map" && !map) {
-    setTimeout(() => {
-      try {
-        initializeMap();
-        // Ensure all cafes are displayed on map
-        if (typeof updateMap === "function") {
-          updateMap(cafeDatabase);
-        }
-      } catch (e) {
-        console.error("Map initialization error:", e);
-        showToast("Map failed to load. Try again.");
-      }
-    }, 150);
+  if (ni) {
+    ni.classList.add("on");
+    ni.setAttribute("aria-current", "page");
   }
 
-  // Load café profile when profile panel is shown
-  if (name === "profile" && typeof loadCafeProfile === "function") {
-    setTimeout(() => {
-      try {
-        loadCafeProfile(selectedCafeId || 1);
-      } catch (e) {
-        console.error("Profile loading error:", e);
-      }
-    }, 150);
+  window.scrollTo({ top: 0 });
+
+  // Remember where the user was for the next visit
+  try {
+    localStorage.setItem("lastPanel", name);
+    localStorage.setItem("findit.cafe", String(selectedCafeId));
+  } catch (err) {}
+
+  // Pages are already in the DOM (main.js waits for page-loader),
+  // so each panel can be set up straight away.
+  if (name === "map") {
+    try {
+      initializeMap(); // creates the map, or just fixes its size
+    } catch (e) {
+      console.error("Map initialization error:", e);
+      showToast("Map failed to load. Try again.");
+    }
   }
+  if (name === "profile") loadCafeProfile(selectedCafeId || 1);
+  if (name === "saved") renderSaved();
+  if (name === "owner") updateAnnPreview();
 }

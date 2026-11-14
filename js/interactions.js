@@ -1,65 +1,120 @@
 /* ═══════════════════════════════════════════════════════════════
-   INTERACTIONS — User interactions (reactions, follow, save)
+   INTERACTIONS — sips, alerts (follow), keep/save, share
+   All of these persist through store.js.
    ═══════════════════════════════════════════════════════════════ */
 
+// "N sips" pill: toggles the user's sip on a post
 function bumpRxn(el) {
-  const n = el.querySelector(".rxn-n");
-  n.textContent = parseInt(n.textContent) + 1;
-  const e = el.querySelector(".rxn-e");
-  e.style.transform = "scale(1.55)";
-  setTimeout(() => (e.style.transform = ""), 200);
+  const card = el.closest("[data-post]");
+  const post = card && getPost(card.dataset.post);
+  if (!post) return;
+
+  const on = toggleInState("sips", post.id);
+  const count = sipCount(post);
+  el.classList.toggle("on", on);
+  el.setAttribute("aria-pressed", on);
+  el.querySelector(".rxn-n").textContent = count;
+  el.querySelector(".rxn-l").textContent = sipLabel(count);
 }
 
-function fReact(el) {
-  if (el.classList.contains("reacted")) return;
-  el.classList.add("reacted");
-  const n = el.querySelector(".f-rxn-n");
-  n.textContent = parseInt(n.textContent) + 1;
-  const e = el.querySelector(".f-rxn-e");
-  e.style.transform = "scale(1.5)";
-  setTimeout(() => (e.style.transform = ""), 180);
+// Make every "Get alerts" button for a café show the same state
+function syncAlertButtons(cafeId) {
+  const on = inState("alerts", Number(cafeId));
+  document
+    .querySelectorAll(`.alert-btn[data-cafe="${cafeId}"]`)
+    .forEach((btn) => {
+      btn.classList.toggle("on", on);
+      btn.setAttribute("aria-pressed", on);
+      const label = btn.querySelector(".alert-label");
+      if (label) label.textContent = on ? "Alerts on" : "Get alerts";
+    });
 }
 
+// "Get alerts" pill (feed cards and the café profile)
 function toggleFollow(btn) {
-  const on = btn.classList.contains("on");
-  btn.classList.toggle("on");
-  btn.textContent = on ? "Follow" : "Following";
-  showToast(on ? "Unfollowed" : "Following this café ☕");
+  const cafeId = Number(btn.dataset.cafe);
+  const cafe = getCafe(cafeId);
+  if (!cafe) return;
+
+  const on = toggleInState("alerts", cafeId);
+  syncAlertButtons(cafeId);
+  updateNotifBadge();
+  showToast(on ? `Alerts on for ${cafe.name}` : `Alerts off for ${cafe.name}`);
 }
 
+// "Keep" pill on a post. `id` is the button id: "keep-<postId>"
 function doSave(id, e) {
-  e.stopPropagation();
+  if (e) e.stopPropagation();
   const btn = document.getElementById(id);
-  const saving = !btn.classList.contains("saved");
-  btn.classList.toggle("saved");
-  btn.textContent = saving ? "✓" : "🔖";
-  if (saving) {
-    btn.style.transform = "scale(1.45)";
-    setTimeout(() => (btn.style.transform = ""), 350);
-    showToast("Café saved! 🔖");
-  }
+  if (!btn) return;
+
+  const kept = toggleInState("keeps", id.replace(/^keep-/, ""));
+  btn.classList.toggle("on", kept);
+  btn.setAttribute("aria-pressed", kept);
+  btn.querySelector(".keep-label").textContent = kept ? "Kept" : "Keep";
+  renderSaved();
+  showToast(kept ? "Kept. Find it under Saved." : "Removed from Saved");
+}
+
+// Bookmark button on the café profile
+function setSaveButton(btn, saved) {
+  btn.classList.toggle("saved-state", saved);
+  btn.setAttribute("aria-pressed", saved);
+  btn.setAttribute(
+    "aria-label",
+    saved ? "Remove this café from Saved" : "Save this café",
+  );
 }
 
 function saveProfile(btn) {
-  if (btn.classList.contains("saved-state")) {
-    btn.classList.remove("saved-state", "primary");
-    btn.textContent = "❤️ Save";
-    showToast("Removed from saved");
+  const saved = toggleInState("savedCafes", selectedCafeId);
+  setSaveButton(btn, saved);
+  renderSaved();
+  showToast(saved ? "Café saved" : "Removed from Saved");
+}
+
+// "Remind me" (events) and "Apply" (jobs) — demo only, stored locally
+function postCta(btn, postId) {
+  const post = getPost(postId);
+  if (!post) return;
+  const cafe = getCafe(post.cafeId);
+  const done = toggleInState("cta", postId);
+  const isEvent = post.type === "event";
+
+  btn.classList.toggle("done", done);
+  btn.setAttribute("aria-pressed", done);
+  btn.textContent = isEvent
+    ? done
+      ? "Reminder set"
+      : "Remind me"
+    : done
+      ? "Interest sent"
+      : "Apply";
+
+  if (isEvent) showToast(done ? "Reminder set" : "Reminder removed");
+  else
+    showToast(
+      done ? `${cafe.name} will see you're interested` : "Interest withdrawn",
+    );
+}
+
+// Share via the system share sheet, or copy to the clipboard
+function shareText(title, text) {
+  if (navigator.share) {
+    navigator.share({ title, text }).catch(() => {});
+  } else if (navigator.clipboard) {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => showToast("Copied to clipboard"))
+      .catch(() => showToast("Could not copy"));
   } else {
-    btn.classList.add("saved-state", "primary");
-    btn.textContent = "✓ Saved!";
-    btn.style.transform = "scale(1.06)";
-    setTimeout(() => (btn.style.transform = ""), 300);
-    showToast("Café saved! 🔖");
+    showToast("Sharing is not supported on this browser");
   }
 }
 
-function followProfile(btn) {
-  const on = btn.classList.contains("following");
-  btn.classList.toggle("following");
-  btn.textContent = on ? "🔔 Follow" : "🔔 Following";
-  btn.style.background = on ? "" : "var(--accent-pale)";
-  btn.style.borderColor = on ? "" : "var(--accent)";
-  btn.style.color = on ? "" : "var(--accent)";
-  showToast(on ? "Unfollowed" : "Now following 🔔");
+function sharePost(postId) {
+  const post = getPost(postId);
+  if (!post) return;
+  const cafe = getCafe(post.cafeId);
+  shareText(cafe.name, `${cafe.name}: ${post.title} — on FindIt`);
 }
