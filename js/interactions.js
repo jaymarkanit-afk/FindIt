@@ -42,13 +42,13 @@ function toggleFollow(btn) {
   showToast(on ? `Alerts on for ${cafe.name}` : `Alerts off for ${cafe.name}`);
 }
 
-// "Keep" pill on a post. `id` is the button id: "keep-<postId>"
-function doSave(id, e) {
+// "Keep" pill on a post. Takes the button; the post is its [data-post] card.
+function doSave(btn, e) {
   if (e) e.stopPropagation();
-  const btn = document.getElementById(id);
-  if (!btn) return;
+  const card = btn && btn.closest("[data-post]");
+  if (!card) return;
 
-  const kept = toggleInState("keeps", id.replace(/^keep-/, ""));
+  const kept = toggleInState("keeps", card.dataset.post);
   btn.classList.toggle("on", kept);
   btn.setAttribute("aria-pressed", kept);
   btn.querySelector(".keep-label").textContent = kept ? "Kept" : "Keep";

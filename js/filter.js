@@ -20,10 +20,6 @@ function closeDrawer() {
   closeOverlay(document.getElementById("drawer-overlay"));
 }
 
-function drawerClose(e) {
-  if (e.target === document.getElementById("drawer-overlay")) closeDrawer();
-}
-
 // Highlight the home segmented control to match currentFilter
 function syncFilterTabs() {
   document.querySelectorAll("#feed-filter .seg-btn").forEach((tab) => {

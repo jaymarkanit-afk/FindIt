@@ -29,6 +29,17 @@ function initializeMap() {
       attribution: "© OpenStreetMap contributors",
     }).addTo(map);
 
+    // Leaflet stops clicks inside popups from bubbling, so the delegated
+    // listeners never see them. Bind the popup's button each time it opens.
+    map.on("popupopen", (e) => {
+      const btn = e.popup.getElement().querySelector("button[data-cafe]");
+      if (btn)
+        btn.addEventListener("click", () => {
+          closePopup();
+          openCafe(btn.dataset.cafe);
+        });
+    });
+
     setUserMarker();
     addCafeMarkers(getFilteredCafes());
     updateGeoInfoCard();
@@ -86,7 +97,7 @@ function addCafeMarkers(cafes) {
         `<div class="map-pop">
           <div class="map-pop-name">${esc(cafe.name)}</div>
           <div class="map-pop-meta">${cafe.rating} rating · ${cafe.distance} km ${distanceFrom()}<br>${esc(cafe.address)}</div>
-          <button class="btn" onclick="closePopup(); openCafe(${cafe.id})">View café</button>
+          <button class="btn" data-cafe="${cafe.id}">View café</button>
         </div>`,
       )
       .addTo(map);

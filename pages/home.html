@@ -7,8 +7,7 @@
       id="home-search"
       placeholder="Search cafés"
       aria-label="Search cafés"
-      oninput="handleSearch(this.value)"
-      onkeydown="if (event.key === 'Enter') submitSearch(this.value);"
+      data-search
     />
   </label>
 </div>
@@ -41,7 +40,7 @@
       class="seg-btn active"
       data-filter="all"
       aria-pressed="true"
-      onclick="quickFilter('all', this)"
+      data-action="feed-filter"
     >
       All
     </button>
@@ -49,7 +48,7 @@
       class="seg-btn"
       data-filter="findItNew"
       aria-pressed="false"
-      onclick="quickFilter('findItNew', this)"
+      data-action="feed-filter"
     >
       New
     </button>
@@ -57,7 +56,7 @@
       class="seg-btn"
       data-filter="findItEvents"
       aria-pressed="false"
-      onclick="quickFilter('findItEvents', this)"
+      data-action="feed-filter"
     >
       Events
     </button>
@@ -65,7 +64,7 @@
       class="seg-btn"
       data-filter="findItJob"
       aria-pressed="false"
-      onclick="quickFilter('findItJob', this)"
+      data-action="feed-filter"
     >
       Hiring
     </button>

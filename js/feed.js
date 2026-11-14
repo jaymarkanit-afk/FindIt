@@ -15,14 +15,13 @@ function alertButtonHTML(cafe) {
   const on = inState("alerts", cafe.id);
   return `
     <button class="alert-btn${on ? " on" : ""}" data-cafe="${cafe.id}"
-      aria-pressed="${on}" onclick="toggleFollow(this)">
+      aria-pressed="${on}" data-action="toggle-alerts">
       ${ico("bell", "sm")}<span class="alert-label">${on ? "Alerts on" : "Get alerts"}</span>
     </button>`;
 }
 
-// One feed card. `preview: true` renders a non-interactive copy for Owner.
-function postCardHTML(post, opts) {
-  const preview = opts && opts.preview;
+// One feed card. The Owner preview reuses it (made non-interactive in CSS).
+function postCardHTML(post) {
   const cafe = getCafe(post.cafeId);
   if (!cafe) return "";
   const type = POST_TYPES[post.type] || POST_TYPES.new;
@@ -52,7 +51,7 @@ function postCardHTML(post, opts) {
           ${details ? `<div class="inset-info">${esc(details)}</div>` : ""}
         </div>
         <button class="btn btn-dark${done ? " done" : ""}" aria-pressed="${done}"
-          onclick="postCta(this, '${post.id}')">${label}</button>
+          data-action="post-cta">${label}</button>
       </div>`;
   }
 
@@ -63,7 +62,7 @@ function postCardHTML(post, opts) {
   return `
     <article class="post" data-post="${post.id}">
       <header class="post-head">
-        <button class="post-cafe" onclick="openCafe(${cafe.id})"
+        <button class="post-cafe" data-action="open-cafe" data-cafe="${cafe.id}"
           aria-label="Open ${esc(cafe.name)}">
           ${cafeTile(cafe)}
           <span class="post-cafe-text">
@@ -84,14 +83,13 @@ function postCardHTML(post, opts) {
       }</p>
       ${inset}
       <footer class="post-actions">
-        <button class="pill sip${sipped ? " on" : ""}" aria-pressed="${sipped}" onclick="bumpRxn(this)">
+        <button class="pill sip${sipped ? " on" : ""}" aria-pressed="${sipped}" data-action="sip">
           ${ico("cup", "sm")}<span><span class="rxn-n">${count}</span> <span class="rxn-l">${sipLabel(count)}</span></span>
         </button>
-        <button class="pill keep${kept ? " on" : ""}" ${preview ? "" : `id="keep-${post.id}"`}
-          aria-pressed="${kept}" onclick="doSave('keep-${post.id}', event)">
+        <button class="pill keep${kept ? " on" : ""}" aria-pressed="${kept}" data-action="keep">
           ${ico("bookmark", "sm fillable")}<span class="keep-label">${kept ? "Kept" : "Keep"}</span>
         </button>
-        <button class="round-btn" aria-label="Share this update" onclick="sharePost('${post.id}')">
+        <button class="round-btn" aria-label="Share this update" data-action="share-post">
           ${ico("share")}
         </button>
       </footer>
@@ -140,7 +138,7 @@ function renderFreshStrip() {
     .map((p) => {
       const cafe = getCafe(p.cafeId);
       return `
-      <button class="fresh-card" onclick="openCafe(${cafe.id})">
+      <button class="fresh-card" data-action="open-cafe" data-cafe="${cafe.id}">
         <span class="fresh-top">${cafeTile(cafe, "sm")}<span class="fresh-time">${agoHTML(p.time)}</span></span>
         <span class="fresh-what">${esc(p.title)}</span>
         <span class="fresh-name">${esc(cafe.name)}</span>
@@ -184,7 +182,7 @@ function renderNotifications() {
       const type = POST_TYPES[p.type] || POST_TYPES.new;
       const unread = !inState("seen", p.id);
       return `
-      <button class="notif-row${unread ? " unread" : ""}" onclick="closeNotif(); openCafe(${cafe.id})">
+      <button class="notif-row${unread ? " unread" : ""}" data-action="open-cafe" data-cafe="${cafe.id}">
         ${cafeTile(cafe, "sm")}
         <span class="notif-body">
           <span class="notif-n">${esc(cafe.name)}</span>
@@ -208,7 +206,7 @@ function markAlertsSeen() {
 
 function cafeRowHTML(cafe, chip) {
   return `
-    <button class="rec-row" onclick="openCafe(${cafe.id})">
+    <button class="rec-row" data-action="open-cafe" data-cafe="${cafe.id}">
       <img class="rec-thumb" src="${esc(cafe.img)}" alt="" loading="lazy" />
       <span class="rec-info">
         <span class="rec-name">${esc(cafe.name)}</span>
@@ -235,7 +233,7 @@ function renderSaved() {
           const cafe = getCafe(p.cafeId);
           const type = POST_TYPES[p.type] || POST_TYPES.new;
           return `
-          <button class="rec-row" onclick="openCafe(${cafe.id})">
+          <button class="rec-row" data-action="open-cafe" data-cafe="${cafe.id}">
             <img class="rec-thumb" src="${esc(p.photo || cafe.img)}" alt="" loading="lazy" />
             <span class="rec-info">
               <span class="rec-name">${esc(p.title)}</span>
@@ -267,7 +265,7 @@ function renderSidebar() {
                 : (p.job && p.job.role) || p.title;
             const sub = [cafe.name, postDetails(p)].filter(Boolean).join(" · ");
             return `
-            <button class="side-item" onclick="openCafe(${cafe.id})">
+            <button class="side-item" data-action="open-cafe" data-cafe="${cafe.id}">
               <span class="side-item-title">${esc(heading)}</span>
               <span class="side-item-sub">${esc(sub)}</span>
             </button>`;

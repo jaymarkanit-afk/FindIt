@@ -25,7 +25,7 @@
         autocomplete="current-password"
       />
     </div>
-    <button class="btn btn-accent btn-block" onclick="ownerLogin()">
+    <button class="btn btn-accent btn-block" data-action="owner-login">
       Sign in
     </button>
     <div class="fg-note">Demo: any email and password works</div>
@@ -37,13 +37,13 @@
   <header class="compose-head">
     <button
       class="round-btn"
-      onclick="showPanel('home')"
+      data-action="show-panel" data-panel="home"
       aria-label="Close and go back to home"
     >
       <svg class="ico" aria-hidden="true"><use href="#i-close" /></svg>
     </button>
     <h1>Post an update</h1>
-    <button class="btn btn-accent" onclick="postAnn()">Publish</button>
+    <button class="btn btn-accent" data-action="publish">Publish</button>
   </header>
   <p class="compose-as">Posting as <strong id="ow-cafe-name"></strong></p>
 
@@ -54,20 +54,20 @@
         <button
           class="seg-btn ann-type on"
           data-type="new"
-          onclick="annType(this)"
+          data-action="ann-type"
         >
           New item
         </button>
-        <button class="seg-btn ann-type" data-type="promo" onclick="annType(this)">
+        <button class="seg-btn ann-type" data-type="promo" data-action="ann-type">
           Promo
         </button>
-        <button class="seg-btn ann-type" data-type="event" onclick="annType(this)">
+        <button class="seg-btn ann-type" data-type="event" data-action="ann-type">
           Event
         </button>
         <button
           class="seg-btn ann-type"
           data-type="hiring"
-          onclick="annType(this)"
+          data-action="ann-type"
         >
           Hiring
         </button>
@@ -82,7 +82,6 @@
         id="ann-photo"
         accept="image/*"
         aria-label="Add a photo"
-        onchange="annPhoto(this)"
       />
     </label>
 
@@ -93,7 +92,6 @@
         id="ann-text"
         maxlength="280"
         placeholder="What's new today?"
-        oninput="updateAnnPreview()"
       ></textarea>
     </div>
 
@@ -105,7 +103,6 @@
           class="fi"
           type="date"
           id="ann-until"
-          oninput="updateAnnPreview()"
         />
       </div>
     </div>
@@ -117,7 +114,6 @@
           class="fi"
           type="date"
           id="ann-date"
-          oninput="updateAnnPreview()"
         />
       </div>
       <div class="fg">
@@ -126,7 +122,6 @@
           class="fi"
           type="time"
           id="ann-time"
-          oninput="updateAnnPreview()"
         />
       </div>
       <div class="fg wide">
@@ -137,7 +132,6 @@
           id="ann-price"
           placeholder="Free, or ₱350"
           maxlength="30"
-          oninput="updateAnnPreview()"
         />
       </div>
     </div>
@@ -151,7 +145,6 @@
           id="ann-role"
           placeholder="Barista"
           maxlength="50"
-          oninput="updateAnnPreview()"
         />
       </div>
       <div class="fg wide">
@@ -162,7 +155,6 @@
           id="ann-schedule"
           placeholder="Part-time · Weekends"
           maxlength="50"
-          oninput="updateAnnPreview()"
         />
       </div>
     </div>
@@ -183,7 +175,7 @@
   </div>
 
   <div class="owner-foot">
-    <button class="btn btn-ghost" onclick="ownerLogout()">
+    <button class="btn btn-ghost" data-action="owner-logout">
       <svg class="ico sm" aria-hidden="true"><use href="#i-logout" /></svg>
       Sign out
     </button>

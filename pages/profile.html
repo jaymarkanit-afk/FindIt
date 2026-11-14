@@ -2,12 +2,12 @@
 <div class="pf-bar">
   <button
     class="round-btn"
-    onclick="showPanel('home')"
+    data-action="show-panel" data-panel="home"
     aria-label="Back to home"
   >
     <svg class="ico" aria-hidden="true"><use href="#i-back" /></svg>
   </button>
-  <button class="round-btn" onclick="shareCafe()" aria-label="Share this café">
+  <button class="round-btn" data-action="share-cafe" aria-label="Share this café">
     <svg class="ico" aria-hidden="true"><use href="#i-share" /></svg>
   </button>
 </div>
@@ -35,12 +35,12 @@
       id="pf-alert"
       data-cafe=""
       aria-pressed="false"
-      onclick="toggleFollow(this)"
+      data-action="toggle-alerts"
     >
       <svg class="ico sm" aria-hidden="true"><use href="#i-bell" /></svg>
       <span class="alert-label">Get alerts</span>
     </button>
-    <button class="btn btn-ghost" onclick="showCafeOnMap()">
+    <button class="btn btn-ghost" data-action="directions">
       <svg class="ico sm" aria-hidden="true"><use href="#i-route" /></svg>
       Directions
     </button>
@@ -49,7 +49,7 @@
       id="pf-save"
       aria-label="Save this café"
       aria-pressed="false"
-      onclick="saveProfile(this)"
+      data-action="save-cafe"
     >
       <svg class="ico" aria-hidden="true"><use href="#i-bookmark" /></svg>
     </button>
@@ -62,7 +62,7 @@
     class="seg-btn ptab on"
     data-tab="today"
     aria-pressed="true"
-    onclick="setPTab(this, 'today')"
+    data-action="profile-tab"
   >
     Today
   </button>
@@ -70,7 +70,7 @@
     class="seg-btn ptab"
     data-tab="photos"
     aria-pressed="false"
-    onclick="setPTab(this, 'photos')"
+    data-action="profile-tab"
   >
     Photos
   </button>
@@ -78,7 +78,7 @@
     class="seg-btn ptab"
     data-tab="info"
     aria-pressed="false"
-    onclick="setPTab(this, 'info')"
+    data-action="profile-tab"
   >
     Info
   </button>

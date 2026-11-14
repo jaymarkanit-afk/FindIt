@@ -17,7 +17,7 @@ function photoAlt(cafe, index) {
 function photoButtonHTML(cafe, index, cls) {
   const src = getCafeImages(cafe.id)[index];
   return `
-    <button class="${cls}" onclick="openPhotoModal('${esc(src)}')"
+    <button class="${cls}" data-action="open-photo" data-src="${esc(src)}"
       aria-label="Open ${esc(photoAlt(cafe, index))}">
       <img src="${esc(src)}" alt="${esc(photoAlt(cafe, index))}" loading="lazy" />
     </button>`;
@@ -70,7 +70,7 @@ function renderGallery(cafe) {
   if (n >= 3) {
     const rest = n - 2;
     html += `
-      <button class="g-cell g-more" onclick="showProfileTab('photos')"
+      <button class="g-cell g-more" data-action="profile-tab" data-tab="photos"
         aria-label="See all ${n} photos of ${esc(cafe.name)}">
         <span class="g-more-n">+${rest}</span>
         <span class="g-more-l">See all photos</span>

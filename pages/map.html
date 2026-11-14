@@ -11,11 +11,10 @@
       id="map-search"
       placeholder="Search cafés"
       aria-label="Search cafés"
-      oninput="handleSearch(this.value)"
-      onkeydown="if (event.key === 'Enter') submitSearch(this.value);"
+      data-search
     />
   </label>
-  <button class="btn btn-ghost" onclick="openDrawer()">
+  <button class="btn btn-ghost" data-action="open-drawer">
     <svg class="ico sm" aria-hidden="true"><use href="#i-sliders" /></svg>
     Filters
   </button>
@@ -25,7 +24,7 @@
 <div class="geo-strip">
   <button
     class="geo-where"
-    onclick="zoomToUserLocation()"
+    data-action="zoom-to-me"
     aria-label="Zoom the map to your location"
   >
     <svg class="ico" aria-hidden="true"><use href="#i-pin" /></svg>
@@ -38,14 +37,14 @@
       </span>
     </span>
   </button>
-  <button class="btn btn-dark" onclick="locateMe()">Locate me</button>
+  <button class="btn btn-dark" data-action="locate">Locate me</button>
 </div>
 
 <div class="map-container">
   <div id="butuan-map" class="osm-map"></div>
   <button
     class="round-btn map-locate"
-    onclick="locateMe()"
+    data-action="locate"
     aria-label="Locate me"
   >
     <svg class="ico" aria-hidden="true"><use href="#i-locate" /></svg>

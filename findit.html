@@ -163,7 +163,6 @@
     <div
       class="drawer-overlay"
       id="drawer-overlay"
-      onclick="drawerClose(event)"
     >
       <div class="filter-drawer" role="dialog" aria-modal="true" aria-label="Filters">
         <div class="drawer-pill"></div>
@@ -171,7 +170,7 @@
           <div class="drawer-title">Filters</div>
           <button
             class="round-btn"
-            onclick="closeDrawer()"
+            data-action="close-drawer"
             aria-label="Close filters"
           >
             <svg class="ico" aria-hidden="true"><use href="#i-close" /></svg>
@@ -181,7 +180,7 @@
           <button
             class="drawer-card active"
             data-filter="all"
-            onclick="pickFilter(this, 'all')"
+            data-action="pick-filter"
           >
             <svg class="ico" aria-hidden="true"><use href="#i-cup" /></svg>
             All cafés
@@ -189,7 +188,7 @@
           <button
             class="drawer-card"
             data-filter="findItNearMe"
-            onclick="pickFilter(this, 'findItNearMe')"
+            data-action="pick-filter"
           >
             <svg class="ico" aria-hidden="true"><use href="#i-pin" /></svg>
             Near me
@@ -197,7 +196,7 @@
           <button
             class="drawer-card"
             data-filter="findItTrending"
-            onclick="pickFilter(this, 'findItTrending')"
+            data-action="pick-filter"
           >
             <svg class="ico" aria-hidden="true"><use href="#i-flame" /></svg>
             Trending
@@ -205,7 +204,7 @@
           <button
             class="drawer-card"
             data-filter="findItTopRated"
-            onclick="pickFilter(this, 'findItTopRated')"
+            data-action="pick-filter"
           >
             <svg class="ico" aria-hidden="true"><use href="#i-star" /></svg>
             Top rated
@@ -213,7 +212,7 @@
           <button
             class="drawer-card"
             data-filter="findItNew"
-            onclick="pickFilter(this, 'findItNew')"
+            data-action="pick-filter"
           >
             <svg class="ico" aria-hidden="true"><use href="#i-spark" /></svg>
             New
@@ -221,7 +220,7 @@
           <button
             class="drawer-card"
             data-filter="findItEvents"
-            onclick="pickFilter(this, 'findItEvents')"
+            data-action="pick-filter"
           >
             <svg class="ico" aria-hidden="true">
               <use href="#i-calendar" />
@@ -231,7 +230,7 @@
           <button
             class="drawer-card"
             data-filter="findItJob"
-            onclick="pickFilter(this, 'findItJob')"
+            data-action="pick-filter"
           >
             <svg class="ico" aria-hidden="true">
               <use href="#i-briefcase" />
@@ -239,7 +238,7 @@
             Hiring
           </button>
         </div>
-        <button class="btn btn-accent btn-block" onclick="applyFilter()">
+        <button class="btn btn-accent btn-block" data-action="apply-filter">
           Apply filter
         </button>
       </div>
@@ -250,10 +249,8 @@
       <a
         class="logo"
         href="#"
-        onclick="
-          showPanel('home');
-          return false;
-        "
+        data-action="show-panel"
+        data-panel="home"
         aria-label="FindIt home"
         >Find<span>It</span></a
       >
@@ -269,20 +266,19 @@
             id="topbar-search"
             placeholder="Search cafés"
             aria-label="Search cafés"
-            oninput="handleSearch(this.value)"
-            onkeydown="if (event.key === 'Enter') submitSearch(this.value);"
+            data-search
           />
         </label>
       </div>
       <div class="topbar-right">
-        <button class="icon-btn" onclick="toggleNotif()" aria-label="Alerts">
+        <button class="icon-btn" data-action="toggle-alerts-panel" aria-label="Alerts">
           <svg class="ico" aria-hidden="true"><use href="#i-bell" /></svg>
           <span class="badge" id="notif-badge" hidden></span>
         </button>
         <button
           class="icon-btn"
           id="theme-btn"
-          onclick="toggleTheme(event)"
+          data-action="toggle-theme"
           aria-label="Switch theme"
         >
           <svg class="ico" aria-hidden="true">
@@ -293,19 +289,18 @@
     </header>
 
     <!-- ══════════ ALERTS PANEL ══════════ -->
-    <div class="notif-backdrop" id="notif-backdrop" onclick="closeNotif(event)">
+    <div class="notif-backdrop" id="notif-backdrop">
       <div
         class="notif-panel"
         role="dialog"
         aria-modal="true"
         aria-label="Alerts"
-        onclick="event.stopPropagation()"
       >
         <div class="notif-head">
           <div class="notif-title">Alerts</div>
           <button
             class="round-btn"
-            onclick="closeNotif()"
+            data-action="close-alerts"
             aria-label="Close alerts"
           >
             <svg class="ico" aria-hidden="true"><use href="#i-close" /></svg>
@@ -351,36 +346,36 @@
     <div class="publish-bar" id="publish-bar" role="status" aria-live="polite">
       <svg class="ico" aria-hidden="true"><use href="#i-check" /></svg>
       <span id="publish-bar-text">Posted to the feed</span>
-      <button class="btn" onclick="viewPublished()">View</button>
+      <button class="btn" data-action="view-published">View</button>
     </div>
 
     <!-- ══════════ BOTTOM NAV ══════════ -->
     <nav class="bottom-nav" aria-label="Primary">
-      <button class="nav-it on" id="nav-home" onclick="showPanel('home')">
+      <button class="nav-it on" id="nav-home" data-action="show-panel" data-panel="home">
         <span class="nav-ico"
           ><svg class="ico" aria-hidden="true"><use href="#i-home" /></svg
         ></span>
         <span class="nav-lbl">Home</span>
       </button>
-      <button class="nav-it" id="nav-map" onclick="showPanel('map')">
+      <button class="nav-it" id="nav-map" data-action="show-panel" data-panel="map">
         <span class="nav-ico"
           ><svg class="ico" aria-hidden="true"><use href="#i-map" /></svg
         ></span>
         <span class="nav-lbl">Map</span>
       </button>
-      <button class="nav-it" id="nav-profile" onclick="showPanel('profile')">
+      <button class="nav-it" id="nav-profile" data-action="show-panel" data-panel="profile">
         <span class="nav-ico"
           ><svg class="ico" aria-hidden="true"><use href="#i-cup" /></svg
         ></span>
         <span class="nav-lbl">Café</span>
       </button>
-      <button class="nav-it" id="nav-saved" onclick="showPanel('saved')">
+      <button class="nav-it" id="nav-saved" data-action="show-panel" data-panel="saved">
         <span class="nav-ico"
           ><svg class="ico" aria-hidden="true"><use href="#i-bookmark" /></svg
         ></span>
         <span class="nav-lbl">Saved</span>
       </button>
-      <button class="nav-it" id="nav-owner" onclick="showPanel('owner')">
+      <button class="nav-it" id="nav-owner" data-action="show-panel" data-panel="owner">
         <span class="nav-ico"
           ><svg class="ico" aria-hidden="true"><use href="#i-store" /></svg
         ></span>
@@ -403,6 +398,7 @@
     <script src="js/interactions.js"></script>
     <script src="js/tabs.js"></script>
     <script src="js/owner.js"></script>
+    <script src="js/actions.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>

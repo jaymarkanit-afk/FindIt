@@ -166,7 +166,7 @@ function updateAnnPreview() {
   const post = buildAnnPost();
   post.id = "preview";
   if (!post.caption) post.caption = "Your message will appear here.";
-  preview.innerHTML = postCardHTML(post, { preview: true });
+  preview.innerHTML = postCardHTML(post);
 }
 
 /* ── Publish ──────────────────────────────────────────────── */

@@ -18,7 +18,8 @@ order in `findit.html` matters:
 | 11  | `interactions.js` | `bumpRxn` (sips), `toggleFollow` (Get alerts), `doSave` (Keep), `saveProfile`, `postCta`, sharing.                                                        |
 | 12  | `tabs.js`         | `setPTab` for the profile tabs.                                                                                                                           |
 | 13  | `owner.js`        | Owner sign-in gate and the "Post an update" composer: `annType`, `annPhoto`, `updateAnnPreview`, `postAnn`.                                               |
-| 14  | `main.js`         | Waits for `pagesReady`, then renders everything and restores the last panel.                                                                              |
+| 14  | `actions.js`      | All event wiring. Markup uses `data-action` (no inline handlers); one delegated listener per container looks the action up in `ACTIONS`. |
+| 15  | `main.js`         | Waits for `pagesReady`, then renders everything and restores the last panel.                                                                              |
 
 ## Data
 
