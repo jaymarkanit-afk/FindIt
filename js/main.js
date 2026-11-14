@@ -15,6 +15,7 @@ function startApp() {
   renderPostViews();
   populateNearYouCafes();
   updateGeoInfoCard();
+  updateDistanceLabels();
 
   // Restore the last page and café
   let lastPanel = "home";

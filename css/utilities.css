@@ -29,3 +29,14 @@
 .side-item-sub {
   display: block;
 }
+
+/* "from city centre" / "from you" note next to distance lists */
+.sec-title .dist-from,
+.side-title .dist-from {
+  margin-left: 4px;
+  font-family: var(--font-b);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+}

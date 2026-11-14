@@ -5,6 +5,29 @@
 let userLocation = null;
 let locationInitialized = false;
 
+// Distances are measured from here until the user shares their location
+const CITY_CENTRE = { lat: 8.9475, lng: 125.5406 };
+
+// Set every café's `distance` (km) from the user, or from the city centre
+function updateDistances() {
+  const from = userLocation || CITY_CENTRE;
+  cafeDatabase.forEach((cafe) => {
+    cafe.distance = calculateDistance(from.lat, from.lng, cafe.lat, cafe.lng);
+  });
+}
+
+// "from you" once location is known, otherwise "from city centre"
+function distanceFrom() {
+  return userLocation ? "from you" : "from city centre";
+}
+
+// Keep every "from …" label on the page in step with the distances
+function updateDistanceLabels() {
+  document.querySelectorAll(".dist-from").forEach((el) => {
+    el.textContent = distanceFrom();
+  });
+}
+
 const GEO_OPTIONS = { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 };
 
 function initializeGeolocation() {
@@ -29,14 +52,8 @@ function locateMe() {
       };
 
       // Recalculate distances from the real position
-      cafeDatabase.forEach((cafe) => {
-        cafe.distance = calculateDistance(
-          userLocation.lat,
-          userLocation.lng,
-          cafe.lat,
-          cafe.lng,
-        );
-      });
+      updateDistances();
+      updateDistanceLabels();
 
       // Re-render everything that shows or sorts by distance
       filterAndDisplayCafes();
@@ -113,3 +130,6 @@ function updateGeoInfoCard() {
   if (geoNearestDist)
     geoNearestDist.textContent = nearest ? nearest.distance + " km" : "–";
 }
+
+// Distances from the city centre are available as soon as this file loads
+updateDistances();

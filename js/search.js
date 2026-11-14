@@ -74,7 +74,7 @@ function displaySearchResults(results) {
 
   const smartTitle = document.getElementById("smart-title");
   if (smartTitle) {
-    smartTitle.textContent = `${results.length} café${results.length !== 1 ? "s" : ""} matching "${currentSearchQuery}"`;
+    smartTitle.textContent = `${results.length} café${results.length !== 1 ? "s" : ""} matching "${currentSearchQuery}" · km ${distanceFrom()}`;
   }
 
   smartRecs.innerHTML =

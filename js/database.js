@@ -3,6 +3,8 @@
    ═══════════════════════════════════════════════════════════════ */
 
 // Optional café fields: `logo` (image path), `hours`, `contact`.
+// `distance` (km) is not stored here: geolocation.js computes it from the
+// city centre, then from the user once they share their location.
 // `images` holds photo paths; the first one is the featured photo.
 
 const cafeDatabase = [
@@ -14,7 +16,6 @@ const cafeDatabase = [
     lng: 125.53678236689736,
     rating: 4.9,
     reviews: 312,
-    distance: 0.3,
     tags: ["Sustainable", "Local", "Fast WiFi"],
     category: ["trending", "toprated", "nearme"],
     hiring: false,
@@ -37,7 +38,6 @@ const cafeDatabase = [
     lng: 125.58639774084497,
     rating: 4.8,
     reviews: 287,
-    distance: 0.8,
     tags: ["Roastery", "Artisan", "Local roasts"],
     category: ["trending", "toprated", "nearme"],
     hiring: false,
@@ -60,7 +60,6 @@ const cafeDatabase = [
     lng: 125.505,
     rating: 4.8,
     reviews: 156,
-    distance: 1.0,
     tags: ["Specialty", "Minimalist", "Quiet"],
     category: ["toprated", "nearme"],
     hiring: false,
@@ -76,7 +75,6 @@ const cafeDatabase = [
     lng: 125.536,
     rating: 4.8,
     reviews: 198,
-    distance: 1.2,
     tags: ["Study spot", "WiFi", "Power outlets"],
     category: ["toprated", "nearme"],
     hiring: false,
@@ -92,7 +90,6 @@ const cafeDatabase = [
     lng: 125.525,
     rating: 4.9,
     reviews: 267,
-    distance: 1.5,
     tags: ["Specialty", "Modern", "Hiring"],
     category: ["trending", "toprated", "hiring"],
     hiring: true,
@@ -108,7 +105,6 @@ const cafeDatabase = [
     lng: 125.54,
     rating: 4.7,
     reviews: 134,
-    distance: 1.8,
     tags: ["Cozy", "Modern", "Events"],
     category: ["toprated", "nearme", "events"],
     hiring: false,
@@ -124,7 +120,6 @@ const cafeDatabase = [
     lng: 125.531,
     rating: 4.8,
     reviews: 143,
-    distance: 0.5,
     tags: ["Heritage", "Arts", "Events"],
     category: ["toprated", "events", "nearme"],
     hiring: false,
@@ -140,7 +135,6 @@ const cafeDatabase = [
     lng: 125.515,
     rating: 4.8,
     reviews: 112,
-    distance: 1.1,
     tags: ["Quality brews", "Hiring", "Specialty"],
     category: ["toprated", "hiring", "nearme"],
     hiring: true,
@@ -156,7 +150,6 @@ const cafeDatabase = [
     lng: 125.94004069370828,
     rating: 4.7,
     reviews: 89,
-    distance: 3.2,
     tags: ["Premium", "Local vibe", "Community"],
     category: ["toprated", "nearme"],
     hiring: false,
@@ -181,7 +174,6 @@ const cafeDatabase = [
     lng: 125.968360677675,
     rating: 4.6,
     reviews: 67,
-    distance: 4.1,
     tags: ["Cozy", "Local favorite", "Casual"],
     category: ["toprated", "nearme"],
     hiring: false,
@@ -204,7 +196,6 @@ const cafeDatabase = [
     lng: 125.97906359812762,
     rating: 4.7,
     reviews: 45,
-    distance: 5.2,
     tags: ["Cool vibes", "New venue", "Relaxing"],
     category: ["nearme", "trending"],
     hiring: false,

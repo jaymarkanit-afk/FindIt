@@ -85,7 +85,7 @@ function addCafeMarkers(cafes) {
       .bindPopup(
         `<div class="map-pop">
           <div class="map-pop-name">${esc(cafe.name)}</div>
-          <div class="map-pop-meta">${cafe.rating} rating · ${cafe.distance} km away<br>${esc(cafe.address)}</div>
+          <div class="map-pop-meta">${cafe.rating} rating · ${cafe.distance} km ${distanceFrom()}<br>${esc(cafe.address)}</div>
           <button class="btn" onclick="closePopup(); openCafe(${cafe.id})">View café</button>
         </div>`,
       )
@@ -127,5 +127,5 @@ function displayNearbyCafesList() {
 
   list.innerHTML = nearbyCafes.length
     ? nearbyCafes.map((c) => cafeRowHTML(c, c.distance + " km")).join("")
-    : '<div class="empty">No cafés within 5 km of you.</div>';
+    : `<div class="empty">No cafés within 5 km ${userLocation ? "of you" : "of the city centre"}.</div>`;
 }
