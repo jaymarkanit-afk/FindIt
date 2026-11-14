@@ -31,13 +31,17 @@
   --tag-event: #1d4ed8;
   --tag-hiring: #0f6b4f;
   --tag-promo: #7c3aed;
+  --tag-photos: #0e7490;
 
   /* Tag colours used as TEXT on cards (same as above in light mode) */
   --tag-new-text: #c2410c;
   --tag-event-text: #1d4ed8;
   --tag-hiring-text: #0f6b4f;
   --tag-promo-text: #7c3aed;
+  --tag-photos-text: #0e7490;
   --open-green: #15803d;
+  --warn: #b45309; /* caption counter near the limit */
+  --danger: #b91c1c;
 
   /* Radii */
   --r-card: 22px;
@@ -83,7 +87,10 @@
   --tag-event-text: #93b4ff;
   --tag-hiring-text: #5fd1a5;
   --tag-promo-text: #c4b5fd;
+  --tag-photos-text: #67d8ec;
   --open-green: #4ade80;
+  --warn: #fbbf24;
+  --danger: #f87171;
 
   --ink-surface: #2e2119;
   --on-ink: #ffffff;

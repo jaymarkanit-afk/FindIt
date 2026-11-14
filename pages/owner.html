@@ -38,125 +38,141 @@
     <button
       class="round-btn"
       data-action="show-panel" data-panel="home"
-      aria-label="Close and go back to home"
+      aria-label="Close and go back to Today"
     >
       <i class="ico" data-icon="close"></i>
     </button>
     <h1>Post an update</h1>
     <button class="btn btn-accent" data-action="publish">Publish</button>
   </header>
+  <p class="form-error compose-error" id="ann-error" role="alert" hidden></p>
   <p class="compose-as">Posting as <strong id="ow-cafe-name"></strong></p>
 
   <div class="card compose-card">
     <div class="fg">
       <span class="field-label" id="ann-type-label">Post type</span>
-      <div class="seg" role="group" aria-labelledby="ann-type-label">
-        <button
-          class="seg-btn ann-type on"
-          data-type="new"
-          data-action="ann-type"
-        >
+      <div class="seg seg-scroll" role="group" aria-labelledby="ann-type-label">
+        <button class="seg-btn ann-type on" data-type="new" data-action="ann-type" aria-pressed="true">
           New item
         </button>
-        <button class="seg-btn ann-type" data-type="promo" data-action="ann-type">
+        <button class="seg-btn ann-type" data-type="photos" data-action="ann-type" aria-pressed="false">
+          Photos
+        </button>
+        <button class="seg-btn ann-type" data-type="promo" data-action="ann-type" aria-pressed="false">
           Promo
         </button>
-        <button class="seg-btn ann-type" data-type="event" data-action="ann-type">
+        <button class="seg-btn ann-type" data-type="event" data-action="ann-type" aria-pressed="false">
           Event
         </button>
-        <button
-          class="seg-btn ann-type"
-          data-type="hiring"
-          data-action="ann-type"
-        >
+        <button class="seg-btn ann-type" data-type="hiring" data-action="ann-type" aria-pressed="false">
           Hiring
         </button>
       </div>
     </div>
 
-    <label class="photo-drop" id="ann-photo-drop">
-      <i class="ico" data-icon="camera"></i>
-      <span id="ann-photo-label">Add a photo</span>
-      <input
-        type="file"
-        id="ann-photo"
-        accept="image/*"
-        aria-label="Add a photo"
-      />
-    </label>
-
-    <div class="fg">
-      <label for="ann-text">Tell your customers</label>
-      <textarea
-        class="fi"
-        id="ann-text"
-        maxlength="280"
-        placeholder="What's new today?"
-      ></textarea>
+    <!-- Photos: thumbnails you can describe, reorder and remove -->
+    <div class="fg" id="ann-photos-field">
+      <span class="field-label" id="ann-photos-label">Photos</span>
+      <p class="field-hint" id="ann-photos-hint"></p>
+      <ul class="thumbs" id="ann-thumbs" aria-labelledby="ann-photos-label"></ul>
+      <label class="photo-add" id="ann-photo-add">
+        <i class="ico" data-icon="camera"></i>
+        <span id="ann-photo-add-label">Add photos</span>
+        <input
+          type="file"
+          id="ann-photo"
+          accept="image/*"
+          multiple
+          aria-describedby="ann-photos-hint ann-photos-error"
+        />
+      </label>
+      <p class="field-error" id="ann-photos-error" hidden></p>
     </div>
 
-    <!-- Extra fields per post type -->
+    <!-- Structured fields per post type -->
+    <div class="extra-fields" id="extra-new">
+      <div class="fg wide">
+        <label for="ann-item">Item name <span class="req">(required)</span></label>
+        <input class="fi" type="text" id="ann-item" maxlength="60" placeholder="Ube cheesecake" aria-describedby="ann-item-error" />
+        <p class="field-error" id="ann-item-error" hidden></p>
+      </div>
+      <div class="fg">
+        <label for="ann-new-price">Price</label>
+        <input class="fi" type="text" id="ann-new-price" maxlength="30" placeholder="₱180" />
+      </div>
+      <div class="fg">
+        <label for="ann-avail">Availability</label>
+        <input class="fi" type="text" id="ann-avail" maxlength="40" placeholder="Available today" />
+      </div>
+    </div>
+
     <div class="extra-fields" id="extra-promo" hidden>
       <div class="fg wide">
+        <label for="ann-promo-title">Title <span class="req">(required)</span></label>
+        <input class="fi" type="text" id="ann-promo-title" maxlength="60" placeholder="Rainy-day special" aria-describedby="ann-promo-title-error" />
+        <p class="field-error" id="ann-promo-title-error" hidden></p>
+      </div>
+      <div class="fg wide">
+        <label for="ann-offer">Offer</label>
+        <input class="fi" type="text" id="ann-offer" maxlength="120" placeholder="Buy one, get one on iced drinks" />
+      </div>
+      <div class="fg wide">
         <label for="ann-until">Valid until</label>
-        <input
-          class="fi"
-          type="date"
-          id="ann-until"
-        />
+        <input class="fi" type="date" id="ann-until" />
       </div>
     </div>
 
     <div class="extra-fields" id="extra-event" hidden>
+      <div class="fg wide">
+        <label for="ann-event-title">Title <span class="req">(required)</span></label>
+        <input class="fi" type="text" id="ann-event-title" maxlength="60" placeholder="Poetry night" aria-describedby="ann-event-title-error" />
+        <p class="field-error" id="ann-event-title-error" hidden></p>
+      </div>
       <div class="fg">
-        <label for="ann-date">Date</label>
-        <input
-          class="fi"
-          type="date"
-          id="ann-date"
-        />
+        <label for="ann-date">Date <span class="req">(required)</span></label>
+        <input class="fi" type="date" id="ann-date" aria-describedby="ann-date-error" />
+        <p class="field-error" id="ann-date-error" hidden></p>
       </div>
       <div class="fg">
         <label for="ann-time">Time</label>
-        <input
-          class="fi"
-          type="time"
-          id="ann-time"
-        />
+        <input class="fi" type="time" id="ann-time" />
       </div>
       <div class="fg wide">
         <label for="ann-price">Price</label>
-        <input
-          class="fi"
-          type="text"
-          id="ann-price"
-          placeholder="Free, or ₱350"
-          maxlength="30"
-        />
+        <input class="fi" type="text" id="ann-price" placeholder="Free, or ₱350" maxlength="30" />
       </div>
     </div>
 
     <div class="extra-fields" id="extra-hiring" hidden>
       <div class="fg wide">
-        <label for="ann-role">Role</label>
-        <input
-          class="fi"
-          type="text"
-          id="ann-role"
-          placeholder="Barista"
-          maxlength="50"
-        />
+        <label for="ann-role">Role <span class="req">(required)</span></label>
+        <input class="fi" type="text" id="ann-role" placeholder="Barista" maxlength="50" aria-describedby="ann-role-error" />
+        <p class="field-error" id="ann-role-error" hidden></p>
       </div>
       <div class="fg wide">
         <label for="ann-schedule">Schedule</label>
-        <input
-          class="fi"
-          type="text"
-          id="ann-schedule"
-          placeholder="Part-time · Weekends"
-          maxlength="50"
-        />
+        <input class="fi" type="text" id="ann-schedule" placeholder="Part-time · Weekends" maxlength="50" />
       </div>
+      <div class="fg wide">
+        <label for="ann-perks">Perks</label>
+        <input class="fi" type="text" id="ann-perks" placeholder="Free meals, flexible hours" maxlength="80" />
+      </div>
+    </div>
+
+    <!-- Caption: the café's own words -->
+    <div class="fg">
+      <div class="fg-row">
+        <label for="ann-text">Caption <span class="req" id="ann-text-req">(required)</span></label>
+        <span class="char-count" id="ann-count">0 / 500</span>
+      </div>
+      <textarea
+        class="fi caption-input"
+        id="ann-text"
+        maxlength="500"
+        placeholder="Tell customers about it"
+        aria-describedby="ann-count ann-text-error"
+      ></textarea>
+      <p class="field-error" id="ann-text-error" hidden></p>
     </div>
   </div>
 
@@ -173,6 +189,11 @@
     <span class="sec-label">Preview</span>
     <div id="ann-preview"></div>
   </div>
+
+  <section class="my-posts" aria-labelledby="my-posts-h">
+    <h2 class="sec-title" id="my-posts-h" tabindex="-1">Your posts</h2>
+    <div id="my-posts"></div>
+  </section>
 
   <div class="owner-foot">
     <button class="btn btn-ghost" data-action="owner-logout">

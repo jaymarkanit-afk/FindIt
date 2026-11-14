@@ -251,6 +251,10 @@
   background: var(--tag-promo);
 }
 
+.tag-photos {
+  background: var(--tag-photos);
+}
+
 .chip {
   display: inline-flex;
   align-items: center;
@@ -415,4 +419,21 @@
   border-radius: 50%;
   background: var(--open-green);
   vertical-align: middle;
+}
+
+/* Segmented control that scrolls sideways on narrow screens instead of
+   squeezing its labels; segments share the width when there is room */
+.seg-scroll {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.seg-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.seg-scroll .seg-btn {
+  flex: 1 0 auto;
+  padding: 0 14px;
+  white-space: nowrap;
 }

@@ -94,20 +94,78 @@ function getPost(id) {
 
 const POST_TYPES = {
   new: { label: "New", cls: "tag-new" },
+  photos: { label: "Photos", cls: "tag-photos" },
   event: { label: "Event", cls: "tag-event" },
   hiring: { label: "Hiring", cls: "tag-hiring" },
   promo: { label: "Promo", cls: "tag-promo" },
 };
 
-// The type-specific part of a post ({ item, … } for "new", and so on)
+// How many photos each type may carry (and how many it needs)
+const PHOTO_LIMITS = {
+  new: { max: 4, min: 0 },
+  photos: { max: 6, min: 1 },
+  promo: { max: 1, min: 0 },
+  event: { max: 1, min: 0 },
+  hiring: { max: 0, min: 0 },
+};
+
+// Captions: the café's own words, separate from the structured fields
+const CAPTION_MAX = 500;
+const CAPTION_MIN = 3; // required for every type except "photos"
+
+// The type-specific part of a post ({ item, … } for "new", and so on).
+// "photos" posts have none (post.photos is their photo list).
 function postData(post) {
-  return (post && post[post.type]) || {};
+  if (!post || post.type === "photos") return {};
+  const d = post[post.type];
+  return d && typeof d === "object" && !Array.isArray(d) ? d : {};
 }
 
-// One-line name for a post: the menu item, event or promo title, or role
+// A post's photos as [{ src, alt }]
+function postPhotos(post) {
+  if (!post) return [];
+  if (Array.isArray(post.photos))
+    return post.photos
+      .map((p) => (typeof p === "string" ? { src: p } : p))
+      .filter((p) => p && p.src);
+  return post.photo ? [{ src: post.photo }] : []; // older saved posts
+}
+
+// Alt text: what the owner typed, otherwise "<Café name> photo N"
+function postPhotoAlt(post, index) {
+  const photo = postPhotos(post)[index];
+  if (photo && photo.alt && photo.alt.trim()) return photo.alt.trim();
+  const cafe = getCafe(post.cafeId);
+  return `${cafe ? cafe.name : "Café"} photo ${index + 1}`;
+}
+
+// One-line name for a post: the menu item, event or promo title, or role.
+// Photos posts use the first line of the caption, or "3 photos".
 function postHeadline(post) {
   const d = postData(post);
-  return d.item || d.title || d.role || "Update";
+  if (d.item || d.title || d.role) return d.item || d.title || d.role;
+  if (post && post.type === "photos") {
+    const first = (post.caption || "").trim().split("\n")[0];
+    if (first) return first.length > 60 ? first.slice(0, 57).trim() + "…" : first;
+    const n = postPhotos(post).length;
+    return n === 1 ? "1 photo" : `${n} photos`;
+  }
+  return "Update";
+}
+
+// Owner posts saved by earlier versions of the app use older field names.
+// Bring them to the current shape; drop anything that cannot be shown.
+function normalizePost(p) {
+  if (!p || !POST_TYPES[p.type] || !p.cafeId) return null;
+  const post = { ...p };
+  if (!Array.isArray(post.photos)) post.photos = postPhotos(p);
+  delete post.photo;
+  if (post.type === "hiring" && !post.hiring && post.job) post.hiring = post.job;
+  const d = post.type === "photos" ? null : post[post.type];
+  if (post.type !== "photos" && (!d || typeof d !== "object")) return null;
+  if (typeof post.caption !== "string") post.caption = (d && d.description) || "";
+  if (d) delete d.description;
+  return post;
 }
 
 // "Sat, 21 Nov" from "2026-11-21"; "" when the date is missing or invalid
@@ -127,6 +185,7 @@ function postDetails(post) {
   const d = postData(post);
   const parts = {
     new: [d.price, d.availability],
+    photos: [],
     event: [[d.day, d.time].filter(Boolean).join(" "), d.price],
     promo: [d.offer, d.validUntil && "Valid until " + formatShortDate(d.validUntil)],
     hiring: [d.schedule, d.perks],
@@ -244,3 +303,7 @@ function openCafe(cafeId) {
   selectedCafeId = Number(cafeId);
   showPanel("profile");
 }
+
+// Owner posts saved by older versions are converted once, on load.
+// Kept at the end of the file: it needs POST_TYPES and the helpers above.
+userState.ownerPosts = userState.ownerPosts.map(normalizePost).filter(Boolean);

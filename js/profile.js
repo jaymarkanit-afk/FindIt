@@ -104,8 +104,7 @@ function renderBoard(cafe) {
         .map((p) => {
           const type = POST_TYPES[p.type] || POST_TYPES.new;
           const title = postHeadline(p);
-          const d = postData(p);
-          const info = postDetails(p) || d.description || "";
+          const info = postDetails(p) || p.caption || "";
           return `
           <li>
             <div class="board-meta">
@@ -223,11 +222,30 @@ function shareCafe() {
    PHOTO VIEWER
    ════════════════════════════════════════════════════════════ */
 
+// Café page photos: open the viewer on the photo with this src
 function openPhotoModal(src) {
-  const images = getCafeImages(selectedCafeId);
   const cafe = getCafe(selectedCafeId);
-  if (!images.length || !cafe) return;
-  let index = Math.max(0, images.indexOf(src));
+  const images = getCafeImages(selectedCafeId);
+  if (!cafe || !images.length) return;
+  openPhotoViewer(
+    images.map((s, i) => ({ src: s, alt: photoAlt(cafe, i) })),
+    Math.max(0, images.indexOf(src)),
+  );
+}
+
+// Board photos: open the viewer on this post's photos, at the tapped one
+function openPostPhoto(btn) {
+  const card = btn.closest(".post");
+  const post = card && getPost(card.dataset.post);
+  if (!post) return;
+  const items = postPhotos(post).map((p, i) => ({ src: p.src, alt: postPhotoAlt(post, i) }));
+  if (items.length) openPhotoViewer(items, Number(btn.dataset.index) || 0);
+}
+
+// The viewer itself: items = [{ src, alt }], with next / previous
+function openPhotoViewer(items, startIndex) {
+  const images = items.map((it) => it.src);
+  let index = Math.min(Math.max(0, startIndex || 0), images.length - 1);
 
   const modal = document.createElement("div");
   modal.className = "photo-modal";
@@ -247,7 +265,7 @@ function openPhotoModal(src) {
 
   function show() {
     img.src = images[index];
-    img.alt = photoAlt(cafe, index);
+    img.alt = items[index].alt;
     counter.textContent = `${index + 1} / ${images.length}`;
   }
   function step(dir) {

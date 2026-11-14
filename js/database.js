@@ -189,12 +189,16 @@ const cafeDatabase = [
 /* ════════════════════════════════════════════════════════════
    POSTS — one entry per café update. Only cafés post.
 
-   Every post:  id, cafeId, type, time (ms), sips (starting count; the
-                user's own sip is stored separately, see store.js)
-   Then one object named after its type:
-     new:    { item, description, price, availability }   + photo
-     event:  { title, day, time, price, description }      day "FRI", time "7 PM"
-     promo:  { title, offer, validUntil }                  validUntil "YYYY-MM-DD"
+   Every post:
+     id, cafeId, type, time (ms), sips (starting count; the user's own
+     sip is stored separately, see store.js),
+     caption   the café's own words ("" allowed only for "photos")
+     photos    [{ src, alt? }] — alt defaults to "<Café> photo N"
+     editedAt  (optional) ms timestamp of the last caption edit
+   Then, except for "photos", one object named after the type:
+     new:    { item, price, availability }
+     event:  { title, day, time, price }       day "FRI", time "7 PM"
+     promo:  { title, offer, validUntil }      validUntil "YYYY-MM-DD"
      hiring: { role, schedule, perks }
    Unknown values stay empty and the card hides that line. Never invent
    prices, offers or dates.
@@ -207,6 +211,9 @@ const posts = [
     type: "promo",
     time: Date.parse("2026-11-14T17:55+08:00"),
     sips: 138,
+    caption:
+      "We're celebrating local farming and sustainable sourcing this week. All drinks are 20% off, dine in only. Come support local!",
+    photos: [{ src: "Images/paramount/paramount5.jpg" }],
     promo: {
       title: "Sustainability Week",
       offer: "All drinks 20% off this week, dine in only.",
@@ -219,14 +226,23 @@ const posts = [
     type: "new",
     time: Date.parse("2026-11-14T17:37+08:00"),
     sips: 109,
-    photo: "Images/craftcoffee/craftcoffe3.jpg",
-    new: {
-      item: "Agusan Highlands single origin",
-      description:
-        "Fresh off the roaster: a small batch from the Agusan del Norte highlands. Fruity, clean and smooth.",
-      price: "",
-      availability: "",
-    },
+    caption:
+      "Fresh off the roaster — our latest small batch from the Agusan del Norte highlands. Fruity, clean and smooth. Available at Alviola Village, Baan Km 3.",
+    photos: [{ src: "Images/craftcoffee/craftcoffe3.jpg" }],
+    new: { item: "Agusan Highlands single origin", price: "", availability: "" },
+  },
+  {
+    id: "p10",
+    cafeId: 1,
+    type: "photos",
+    time: Date.parse("2026-11-14T16:20+08:00"),
+    sips: 0,
+    caption: "",
+    photos: [
+      { src: "Images/paramount/paramount1.jpg" },
+      { src: "Images/paramount/paramount2.jpg" },
+      { src: "Images/paramount/paramount3.jpg" },
+    ],
   },
   {
     id: "p3",
@@ -234,14 +250,22 @@ const posts = [
     type: "event",
     time: Date.parse("2026-11-14T16:57+08:00"),
     sips: 82,
-    event: {
-      title: "Heritage Night",
-      day: "FRI",
-      time: "7 PM",
-      price: "Free",
-      description:
-        "Butuan's history through antiques, local artworks and curated coffee. Limited seats, so come early.",
-    },
+    caption:
+      "Explore Butuan's history through antiques, local artworks and curated coffee. Limited seats, so come early.",
+    photos: [],
+    event: { title: "Heritage Night", day: "FRI", time: "7 PM", price: "Free" },
+  },
+  {
+    id: "p11",
+    cafeId: 2,
+    type: "photos",
+    time: Date.parse("2026-11-14T13:40+08:00"),
+    sips: 0,
+    caption: "",
+    photos: [
+      { src: "Images/craftcoffee/craftcoffe2.jpg" },
+      { src: "Images/craftcoffee/craftcoffe4.jpg" },
+    ],
   },
   {
     id: "p4",
@@ -249,6 +273,9 @@ const posts = [
     type: "hiring",
     time: Date.parse("2026-11-14T14:57+08:00"),
     sips: 38,
+    caption:
+      "Second Shot is growing! We're looking for passionate coffee people. Great team, flexible hours and staff perks.",
+    photos: [],
     hiring: {
       role: "Brewer & front-of-house staff",
       schedule: "Full-time & part-time",
@@ -261,14 +288,9 @@ const posts = [
     type: "event",
     time: Date.parse("2026-11-14T12:57+08:00"),
     sips: 97,
-    event: {
-      title: "Latte Art Workshop",
-      day: "SAT",
-      time: "10 AM",
-      price: "₱350",
-      description:
-        "Learn milk steaming and rosette patterns with our baristas.",
-    },
+    caption: "Learn milk steaming and rosette patterns with our baristas.",
+    photos: [{ src: "Images/paramount/paramount6.jpg" }],
+    event: { title: "Latte Art Workshop", day: "SAT", time: "10 AM", price: "₱350" },
   },
   {
     id: "p6",
@@ -276,7 +298,24 @@ const posts = [
     type: "hiring",
     time: Date.parse("2026-11-14T09:57+08:00"),
     sips: 29,
+    caption: "Join the Fulcrum team at SM City Butuan.",
+    photos: [],
     hiring: { role: "Barista", schedule: "Part-time · SM City Butuan", perks: "" },
+  },
+  {
+    id: "p12",
+    cafeId: 11,
+    type: "photos",
+    time: Date.parse("2026-11-13T21:10+08:00"),
+    sips: 0,
+    caption: "",
+    photos: [
+      { src: "Images/koldcoffee/koldcoffee6.jpg" },
+      { src: "Images/koldcoffee/koldcoffee4.jpg" },
+      { src: "Images/koldcoffee/koldcoffee3.jpg" },
+      { src: "Images/koldcoffee/koldcoffee5.jpg" },
+      { src: "Images/koldcoffee/koldcoffee7.jpg" },
+    ],
   },
   {
     id: "p7",
@@ -284,6 +323,8 @@ const posts = [
     type: "hiring",
     time: Date.parse("2026-11-13T19:57+08:00"),
     sips: 51,
+    caption: "Lead our roasting at Baan Km 3.",
+    photos: [],
     hiring: { role: "Head Roaster", schedule: "Full-time · Baan Km 3", perks: "" },
   },
   {
@@ -292,13 +333,9 @@ const posts = [
     type: "event",
     time: Date.parse("2026-11-13T15:57+08:00"),
     sips: 63,
-    event: {
-      title: "Acoustic Sunday Sessions",
-      day: "SUN",
-      time: "2 PM",
-      price: "Free",
-      description: "Chill live music every Sunday at Paramount. All welcome.",
-    },
+    caption: "Chill live music every Sunday at Paramount. All welcome.",
+    photos: [],
+    event: { title: "Acoustic Sunday Sessions", day: "SUN", time: "2 PM", price: "Free" },
   },
   {
     id: "p9",
@@ -306,10 +343,8 @@ const posts = [
     type: "hiring",
     time: Date.parse("2026-11-13T11:57+08:00"),
     sips: 17,
-    hiring: {
-      role: "Weekend Barista & Cashier",
-      schedule: "Part-time",
-      perks: "",
-    },
+    caption: "Part-time positions with a friendly team. Apply at J.C. Aquino Ave.",
+    photos: [],
+    hiring: { role: "Weekend Barista & Cashier", schedule: "Part-time", perks: "" },
   },
 ];

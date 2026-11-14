@@ -32,6 +32,8 @@ const ACTIONS = {
   sip: (el) => bumpRxn(el),
   keep: (el, e) => doSave(el, e),
   "toggle-thread": (el) => toggleThread(el),
+  "toggle-caption": (el) => toggleCaption(el),
+  "open-post-photo": (el) => openPostPhoto(el),
   "post-cta": (el) => postCta(el, el.closest("[data-post]").dataset.post),
 
   // Café profile
@@ -50,6 +52,15 @@ const ACTIONS = {
   "owner-login": () => ownerLogin(),
   "owner-logout": () => ownerLogout(),
   "ann-type": (el) => annType(el),
+  "photo-earlier": (el) => movePhoto(el, -1),
+  "photo-later": (el) => movePhoto(el, 1),
+  "photo-remove": (el) => removePhoto(el),
+  "edit-caption": (el) => editCaption(el),
+  "save-caption": (el) => saveCaption(el),
+  "cancel-caption": (el) => cancelCaption(el),
+  "delete-post": (el) => deletePost(el),
+  "confirm-delete": (el) => confirmDelete(el),
+  "cancel-delete": (el) => cancelDelete(el),
   publish: () => postAnn(),
   "view-published": () => viewPublished(),
 };
@@ -101,7 +112,7 @@ function onSearchKeydown(e) {
 
   // Owner composer: any field change redraws the live preview
   pages.addEventListener("input", (e) => {
-    if (e.target.closest("#owner-dash")) updateAnnPreview();
+    if (e.target.closest("#owner-dash")) onComposerInput(e.target);
   });
   pages.addEventListener("change", (e) => {
     if (e.target.id === "ann-photo") annPhoto(e.target);

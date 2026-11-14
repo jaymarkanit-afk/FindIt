@@ -22,23 +22,33 @@ order in `findit.html` matters:
 
 ## Data
 
-Only cafés post. A post has common fields plus one object named after its
-type; unknown values stay empty and the card hides that line.
+Only cafés post. A post has common fields plus, except for "photos", one
+object named after its type. Unknown values stay empty and the card hides
+that line.
 
 ```js
 {
   id: "p3",
   cafeId: 7,
-  type: "event",           // "new" | "promo" | "event" | "hiring"
+  type: "event",           // "new" | "photos" | "promo" | "event" | "hiring"
   time: 1731571200000,     // ms timestamp
   sips: 82,                // starting count; the user's own sip is stored separately
-  photo: "…",              // "new" cards only
-  new:    { item, description, price, availability },
-  event:  { title, day, time, price, description },   // day "FRI", time "7 PM"
-  promo:  { title, offer, validUntil },               // validUntil "YYYY-MM-DD"
+  caption: "…",            // the café's own words; may be "" only for "photos"
+  editedAt: 1731574800000, // optional, set when the owner edits the caption
+  photos: [{ src, alt }],  // alt optional: defaults to "<Café name> photo N"
+  new:    { item, price, availability },
+  event:  { title, day, time, price },   // day "FRI", time "7 PM"
+  promo:  { title, offer, validUntil },  // validUntil "YYYY-MM-DD"
   hiring: { role, schedule, perks },
 }
 ```
+
+Photo limits per type are in `PHOTO_LIMITS` (store.js): Photos 1–6, New item
+up to 4, Promo and Event 1, Hiring none. The composer resizes photos in the
+browser to at most 1200px wide, JPEG ~80%, before saving.
+
+Captions are rendered by `hydrateCaptions()` (feed.js) with `textContent`;
+only http(s) links become `<a target="_blank" rel="noopener noreferrer">`.
 
 Comments use the shape a backend will use later:
 `{ id, postId, authorName, text, createdAt }` (`createdAt` is an ISO string).

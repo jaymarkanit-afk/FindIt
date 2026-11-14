@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
    FILTER — Filter functionality for café discovery
    Filters: all, findItNearMe, findItTrending, findItTopRated,
-            findItNew, findItPromo, findItEvents, findItJob
+            findItNew, findItPhotos, findItPromo, findItEvents, findItJob
    ═══════════════════════════════════════════════════════════════ */
 
 let currentFilter = "all";
@@ -34,7 +34,7 @@ function clearSearch() {
   syncSearchInputs("");
 }
 
-// Board segmented control: All / New / Promos / Events / Hiring
+// Board segmented control: All / New / Photos / Promos / Events / Hiring
 function quickFilter(filterName) {
   clearSearch();
   currentFilter = filterName;
@@ -113,6 +113,9 @@ function getFilteredCafes() {
       break;
     case "findItNew":
       filtered = filtered.filter((c) => cafeHasPost(c, "new"));
+      break;
+    case "findItPhotos":
+      filtered = filtered.filter((c) => cafeHasPost(c, "photos"));
       break;
     case "findItPromo":
       filtered = filtered.filter((c) => cafeHasPost(c, "promo"));
