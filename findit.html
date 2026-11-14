@@ -290,11 +290,10 @@
         aria-label="FindIt, today"
         >Find<span>It</span></a
       >
-      <nav class="top-links" aria-label="Main">
-        <a class="top-link on" href="#" data-action="show-panel" data-panel="home" aria-current="page">Today</a>
-        <a class="top-link" href="#map" data-action="show-panel" data-panel="map">Map</a>
-        <a class="top-link" href="#saved" data-action="show-panel" data-panel="saved">Saved</a>
-      </nav>
+      <span class="loc-pill top-loc">
+        <svg class="ico sm" aria-hidden="true"><use href="#i-pin" /></svg>
+        Butuan City
+      </span>
       <div class="topbar-search">
         <label class="search-field">
           <svg class="ico sm" aria-hidden="true"><use href="#i-search" /></svg>
@@ -389,7 +388,7 @@
 
     <!-- ══════════ BOTTOM NAV ══════════ -->
     <nav class="bottom-nav" aria-label="Main">
-      <button class="nav-it on" id="nav-home" data-action="show-panel" data-panel="home">
+      <button class="nav-it on" id="nav-home" data-action="show-panel" data-panel="home" aria-current="page">
         <span class="nav-ico"
           ><svg class="ico" aria-hidden="true"><use href="#i-home" /></svg
         ></span>

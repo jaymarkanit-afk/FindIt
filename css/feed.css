@@ -36,6 +36,12 @@
   margin-bottom: 4px;
 }
 
+@media (min-width: 700px) {
+  .today-head .loc-pill {
+    display: none;
+  }
+}
+
 /* Phone-width search (the top bar has search from 700px up) */
 .home-search {
   padding: 14px var(--gutter) 0;

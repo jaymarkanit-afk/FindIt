@@ -136,12 +136,6 @@ function showPanel(name) {
     ni.classList.add("on");
     ni.setAttribute("aria-current", "page");
   }
-  document.querySelectorAll(".top-link").forEach((a) => {
-    const on = a.dataset.panel === name;
-    a.classList.toggle("on", on);
-    if (on) a.setAttribute("aria-current", "page");
-    else a.removeAttribute("aria-current");
-  });
 
   window.scrollTo({ top: 0 });
 
