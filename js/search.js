@@ -14,7 +14,7 @@ function cafeMatches(cafe, query) {
 }
 
 function syncSearchInputs(value) {
-  ["topbar-search", "map-search"].forEach((id) => {
+  ["topbar-search", "home-search", "map-search"].forEach((id) => {
     const input = document.getElementById(id);
     if (input && input.value !== value) input.value = value;
   });

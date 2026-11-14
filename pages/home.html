@@ -1,3 +1,18 @@
+<!-- SEARCH (phone width only — wider screens use the top-bar search) -->
+<div class="home-search">
+  <label class="search-field">
+    <svg class="ico sm" aria-hidden="true"><use href="#i-search" /></svg>
+    <input
+      type="search"
+      id="home-search"
+      placeholder="Search cafés"
+      aria-label="Search cafés"
+      oninput="handleSearch(this.value)"
+      onkeydown="if (event.key === 'Enter') submitSearch(this.value);"
+    />
+  </label>
+</div>
+
 <!-- BREVI BAR -->
 <div class="mascot-bar">
   <div class="mascot-ava">
