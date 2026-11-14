@@ -219,6 +219,7 @@ function openPhotoModal(src) {
   const modal = document.createElement("div");
   modal.className = "photo-modal";
   modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
   modal.setAttribute("aria-label", "Photo viewer");
   const many = images.length > 1;
   modal.innerHTML = `
@@ -240,14 +241,18 @@ function openPhotoModal(src) {
     index = (index + dir + images.length) % images.length;
     show();
   }
+  // Escape and the Tab focus trap come from the shared overlay handler in
+  // ui.js; on close, focus goes back to the photo that opened the viewer.
+  const opener = document.activeElement;
   function close() {
     document.removeEventListener("keydown", onKey);
     modal.remove();
+    if (activeOverlay && activeOverlay.el === modal) activeOverlay = null;
+    if (opener && document.contains(opener) && opener.focus) opener.focus();
   }
   function onKey(e) {
     if (e.key === "ArrowRight") step(1);
     if (e.key === "ArrowLeft") step(-1);
-    if (e.key === "Escape") close();
   }
 
   if (many) {
@@ -272,5 +277,7 @@ function openPhotoModal(src) {
 
   show();
   document.body.appendChild(modal);
+  if (activeOverlay) activeOverlay.close(); // only one overlay at a time
+  activeOverlay = { el: modal, close, opener };
   modal.querySelector(".pm-close").focus();
 }
