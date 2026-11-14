@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   BOTTOM NAVIGATION
+   BOTTOM NAVIGATION — labelled, dark pill behind the active icon
 ═══════════════════════════════════════════════════════════════ */
 
 .bottom-nav {
@@ -9,47 +9,47 @@
   right: 0;
   z-index: 250;
   height: var(--bottom-h);
-  background: color-mix(in srgb, var(--surface) 94%, transparent);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--surface);
+  border-top: 1px solid var(--card-border);
   display: flex;
-  align-items: center;
-  transition: background 0.45s;
+  justify-content: center;
 }
 
 .nav-it {
   flex: 1;
+  max-width: 120px;
+  min-height: 44px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 4px;
-  cursor: pointer;
-  padding: 7px 0;
-  transition: transform 0.2s;
-}
-
-.nav-it:active {
-  transform: scale(0.92);
+  color: var(--muted);
 }
 
 .nav-ico {
-  font-size: 22px;
-  line-height: 1;
-  transition: transform 0.25s;
+  width: 52px;
+  height: 30px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .nav-lbl {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  color: var(--ink3);
-  transition: color 0.2s;
+}
+
+.nav-it.on {
+  color: var(--ink);
 }
 
 .nav-it.on .nav-ico {
-  transform: translateY(-2px);
-}
-
-.nav-it.on .nav-lbl {
-  color: var(--accent);
+  background: var(--ink);
+  color: var(--surface);
 }

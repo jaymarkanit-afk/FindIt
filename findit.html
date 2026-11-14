@@ -4,8 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FindIt — Butuan City Café Discovery</title>
+    <script>
+      // Apply the saved theme before first paint
+      try {
+        var savedTheme = localStorage.getItem("findit.theme");
+        if (savedTheme === "dark" || savedTheme === "light")
+          document.documentElement.setAttribute("data-theme", savedTheme);
+      } catch (e) {}
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap"
       rel="stylesheet"
     />
     <link
@@ -15,8 +25,139 @@
     <link rel="stylesheet" href="css/findit.css" />
   </head>
   <body>
+    <!-- ══════════ ICON SPRITE (2px stroke, used via <use href="#i-…">) ══════════ -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <symbol id="i-bell" viewBox="0 0 24 24">
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+        </symbol>
+        <symbol id="i-pin" viewBox="0 0 24 24">
+          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+          <circle cx="12" cy="10" r="3" />
+        </symbol>
+        <symbol id="i-home" viewBox="0 0 24 24">
+          <path
+            d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"
+          />
+        </symbol>
+        <symbol id="i-map" viewBox="0 0 24 24">
+          <path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z" />
+          <path d="M9 4v14M15 6v14" />
+        </symbol>
+        <symbol id="i-cup" viewBox="0 0 24 24">
+          <path d="M5 9h12v5a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5z" />
+          <path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17" />
+          <path d="M8 3v2M11.5 3v2M15 3v2" />
+        </symbol>
+        <symbol id="i-bookmark" viewBox="0 0 24 24">
+          <path d="M6 4h12v17l-6-4-6 4z" />
+        </symbol>
+        <symbol id="i-store" viewBox="0 0 24 24">
+          <path d="M4 9v11h16V9" />
+          <path
+            d="M3 9l1.5-5h15L21 9a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z"
+          />
+          <path d="M10 20v-5h4v5" />
+        </symbol>
+        <symbol id="i-share" viewBox="0 0 24 24">
+          <path d="M12 15V3" />
+          <path d="m8 7 4-4 4 4" />
+          <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" />
+        </symbol>
+        <symbol id="i-back" viewBox="0 0 24 24">
+          <path d="M19 12H5" />
+          <path d="m12 19-7-7 7-7" />
+        </symbol>
+        <symbol id="i-chevron" viewBox="0 0 24 24">
+          <path d="m15 6-6 6 6 6" />
+        </symbol>
+        <symbol id="i-close" viewBox="0 0 24 24">
+          <path d="M18 6 6 18M6 6l12 12" />
+        </symbol>
+        <symbol id="i-search" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </symbol>
+        <symbol id="i-sliders" viewBox="0 0 24 24">
+          <path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1" />
+          <circle cx="15" cy="6" r="2" />
+          <circle cx="9" cy="12" r="2" />
+          <circle cx="17" cy="18" r="2" />
+        </symbol>
+        <symbol id="i-sun" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="4" />
+          <path
+            d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+          />
+        </symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24">
+          <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z" />
+        </symbol>
+        <symbol id="i-camera" viewBox="0 0 24 24">
+          <path
+            d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"
+          />
+          <circle cx="12" cy="13.5" r="3.5" />
+        </symbol>
+        <symbol id="i-check" viewBox="0 0 24 24">
+          <path d="m5 12.5 4.5 4.5L19 7.5" />
+        </symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 2" />
+        </symbol>
+        <symbol id="i-star" viewBox="0 0 24 24">
+          <path
+            d="m12 3 2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 16.9l-5.4 2.9 1.1-6.1L3.2 9.4l6.1-.8z"
+          />
+        </symbol>
+        <symbol id="i-route" viewBox="0 0 24 24">
+          <path d="M21 3 10 14" />
+          <path d="M21 3l-7 18-4-7-7-4z" />
+        </symbol>
+        <symbol id="i-phone" viewBox="0 0 24 24">
+          <path
+            d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"
+          />
+        </symbol>
+        <symbol id="i-locate" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="7" />
+          <circle cx="12" cy="12" r="2" />
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+        </symbol>
+        <symbol id="i-briefcase" viewBox="0 0 24 24">
+          <rect x="3" y="7" width="18" height="13" rx="2" />
+          <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18" />
+        </symbol>
+        <symbol id="i-calendar" viewBox="0 0 24 24">
+          <rect x="3" y="5" width="18" height="16" rx="2" />
+          <path d="M3 10h18M8 3v4M16 3v4" />
+        </symbol>
+        <symbol id="i-spark" viewBox="0 0 24 24">
+          <path d="M12 3v6M12 15v6M3 12h6M15 12h6" />
+        </symbol>
+        <symbol id="i-flame" viewBox="0 0 24 24">
+          <path
+            d="M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 .5 2 1.5 2.5 2 2.5C11 9 10.5 6 12 3z"
+          />
+        </symbol>
+        <symbol id="i-logout" viewBox="0 0 24 24">
+          <path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4" />
+          <path d="m10 8-4 4 4 4M6 12h10" />
+        </symbol>
+        <symbol id="i-bear" viewBox="0 0 24 24">
+          <circle cx="6.5" cy="6.5" r="2.5" />
+          <circle cx="17.5" cy="6.5" r="2.5" />
+          <circle cx="12" cy="13" r="8" />
+          <path d="M9 11.5v.5M15 11.5v.5" />
+          <path d="M10.5 15.5c.5.8 2.5.8 3 0" />
+        </symbol>
+      </defs>
+    </svg>
+
     <div id="theme-flash"></div>
-    <div id="toast"></div>
+    <div id="toast" role="status" aria-live="polite"></div>
 
     <!-- ══════════ FILTER DRAWER ══════════ -->
     <div
@@ -24,473 +165,239 @@
       id="drawer-overlay"
       onclick="drawerClose(event)"
     >
-      <div class="filter-drawer">
+      <div class="filter-drawer" role="dialog" aria-label="Filters">
         <div class="drawer-pill"></div>
-        <div
-          class="drawer-eyebrow"
-          style="
-            padding: 0 22px 2px;
-            font-family: var(--font-m);
-            font-size: 10px;
-            font-weight: 500;
-            color: var(--accent);
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-          "
-        >
-          FindIt Discovery
-        </div>
         <div class="drawer-head">
-          <div class="drawer-title">FindIt Filters</div>
-          <button class="drawer-close" onclick="closeDrawer()">✕</button>
-        </div>
-        <div class="drawer-body">
-          <div class="drawer-grid">
-            <div
-              class="drawer-card active"
-              onclick="pickFilter(this, 'findItNearMe')"
-            >
-              <div class="dc-icon">📍</div>
-              <div class="dc-label">findItNearMe</div>
-              <div class="dc-count">24 cafés nearby</div>
-            </div>
-            <div
-              class="drawer-card"
-              onclick="pickFilter(this, 'findItTrending')"
-            >
-              <div class="dc-icon">🔥</div>
-              <div class="dc-label">findItTrending</div>
-              <div class="dc-count">Hot right now</div>
-            </div>
-            <div class="drawer-card" onclick="pickFilter(this, 'findItNew')">
-              <div class="dc-icon">🆕</div>
-              <div class="dc-label">findItNew</div>
-              <div class="dc-count">5 just opened</div>
-            </div>
-            <div class="drawer-card" onclick="pickFilter(this, 'findItJob')">
-              <div class="dc-icon">💼</div>
-              <div class="dc-label">findItJob</div>
-              <div class="dc-count">7 with openings</div>
-            </div>
-            <div class="drawer-card" onclick="pickFilter(this, 'findItEvents')">
-              <div class="dc-icon">🎉</div>
-              <div class="dc-label">findItEvents</div>
-              <div class="dc-count">This week</div>
-            </div>
-            <div
-              class="drawer-card"
-              onclick="pickFilter(this, 'findItTopRated')"
-            >
-              <div class="dc-icon">⭐</div>
-              <div class="dc-label">findItTopRated</div>
-              <div class="dc-count">Community picks</div>
-            </div>
-          </div>
+          <div class="drawer-title">Filters</div>
           <button
-            class="drawer-apply"
-            onclick="applyFilter()"
-            id="apply-filter-btn"
+            class="round-btn"
+            onclick="closeDrawer()"
+            aria-label="Close filters"
           >
-            Apply Filter ✓
+            <svg class="ico" aria-hidden="true"><use href="#i-close" /></svg>
           </button>
         </div>
+        <div class="drawer-grid">
+          <button
+            class="drawer-card active"
+            data-filter="all"
+            onclick="pickFilter(this, 'all')"
+          >
+            <svg class="ico" aria-hidden="true"><use href="#i-cup" /></svg>
+            All cafés
+          </button>
+          <button
+            class="drawer-card"
+            data-filter="findItNearMe"
+            onclick="pickFilter(this, 'findItNearMe')"
+          >
+            <svg class="ico" aria-hidden="true"><use href="#i-pin" /></svg>
+            Near me
+          </button>
+          <button
+            class="drawer-card"
+            data-filter="findItTrending"
+            onclick="pickFilter(this, 'findItTrending')"
+          >
+            <svg class="ico" aria-hidden="true"><use href="#i-flame" /></svg>
+            Trending
+          </button>
+          <button
+            class="drawer-card"
+            data-filter="findItTopRated"
+            onclick="pickFilter(this, 'findItTopRated')"
+          >
+            <svg class="ico" aria-hidden="true"><use href="#i-star" /></svg>
+            Top rated
+          </button>
+          <button
+            class="drawer-card"
+            data-filter="findItNew"
+            onclick="pickFilter(this, 'findItNew')"
+          >
+            <svg class="ico" aria-hidden="true"><use href="#i-spark" /></svg>
+            New
+          </button>
+          <button
+            class="drawer-card"
+            data-filter="findItEvents"
+            onclick="pickFilter(this, 'findItEvents')"
+          >
+            <svg class="ico" aria-hidden="true">
+              <use href="#i-calendar" />
+            </svg>
+            Events
+          </button>
+          <button
+            class="drawer-card"
+            data-filter="findItJob"
+            onclick="pickFilter(this, 'findItJob')"
+          >
+            <svg class="ico" aria-hidden="true">
+              <use href="#i-briefcase" />
+            </svg>
+            Hiring
+          </button>
+        </div>
+        <button class="btn btn-accent btn-block" onclick="applyFilter()">
+          Apply filter
+        </button>
       </div>
     </div>
 
     <!-- ══════════ TOPBAR ══════════ -->
     <header class="topbar">
-      <a class="logo" href="#" onclick="return false;">
-        <div class="logo-icon">☕</div>
-        <div class="logo-text">Find<em>It</em></div>
-      </a>
+      <a
+        class="logo"
+        href="#"
+        onclick="
+          showPanel('home');
+          return false;
+        "
+        aria-label="FindIt home"
+        >Find<span>It</span></a
+      >
+      <span class="loc-pill">
+        <svg class="ico sm" aria-hidden="true"><use href="#i-pin" /></svg>
+        Butuan City
+      </span>
       <div class="topbar-search">
-        <div class="search-wrap">
-          <span class="search-icon">🔍</span>
+        <label class="search-field">
+          <svg class="ico sm" aria-hidden="true"><use href="#i-search" /></svg>
           <input
-            type="text"
+            type="search"
             id="topbar-search"
-            placeholder="Search cafés in Butuan City…"
+            placeholder="Search cafés"
+            aria-label="Search cafés"
             oninput="handleSearch(this.value)"
-            onkeypress="if (event.key === 'Enter') submitSearch(this.value);"
+            onkeydown="if (event.key === 'Enter') submitSearch(this.value);"
           />
-        </div>
+        </label>
       </div>
       <div class="topbar-right">
-        <div class="icon-btn" onclick="toggleNotif()" title="Notifications">
-          🔔<span class="badge" id="notif-badge"></span>
-        </div>
-        <div
-          class="theme-toggle"
+        <button class="icon-btn" onclick="toggleNotif()" aria-label="Alerts">
+          <svg class="ico" aria-hidden="true"><use href="#i-bell" /></svg>
+          <span class="badge" id="notif-badge" hidden></span>
+        </button>
+        <button
+          class="icon-btn"
+          id="theme-btn"
           onclick="toggleTheme(event)"
-          title="Toggle theme"
+          aria-label="Switch theme"
         >
-          <div class="toggle-knob" id="theme-knob">☀️</div>
-        </div>
+          <svg class="ico" aria-hidden="true">
+            <use id="theme-ico" href="#i-moon" />
+          </svg>
+        </button>
       </div>
     </header>
 
-    <!-- ══════════ NOTIFICATIONS ══════════ -->
+    <!-- ══════════ ALERTS PANEL ══════════ -->
     <div class="notif-backdrop" id="notif-backdrop" onclick="closeNotif(event)">
-      <div class="notif-panel" onclick="event.stopPropagation()">
+      <div
+        class="notif-panel"
+        role="dialog"
+        aria-label="Alerts"
+        onclick="event.stopPropagation()"
+      >
         <div class="notif-head">
-          <div class="notif-title">Notifications</div>
-          <div class="notif-clear" onclick="closeNotif()">Clear all</div>
+          <div class="notif-title">Alerts</div>
+          <button
+            class="round-btn"
+            onclick="closeNotif()"
+            aria-label="Close alerts"
+          >
+            <svg class="ico" aria-hidden="true"><use href="#i-close" /></svg>
+          </button>
         </div>
-        <div class="notif-list">
-          <div class="notif-row">
-            <div class="notif-dot"></div>
-            <div class="notif-ava">
-              <img
-                src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=80&q=70"
-                alt=""
-              />
-            </div>
-            <div>
-              <div class="notif-n">Paramount Coffee</div>
-              <div class="notif-m">
-                Fresh local brews ready — come visit at J.C. Aquino Ave! ☕
-              </div>
-              <div class="notif-t">2 min ago</div>
-            </div>
-          </div>
-          <div class="notif-row">
-            <div class="notif-dot"></div>
-            <div class="notif-ava">
-              <img
-                src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=80&q=70"
-                alt=""
-              />
-            </div>
-            <div>
-              <div class="notif-n">Craft Coffee Roastery</div>
-              <div class="notif-m">
-                New Agusan highlands roast is in — try it today! ☕🏔️
-              </div>
-              <div class="notif-t">20 min ago</div>
-            </div>
-          </div>
-          <div class="notif-row">
-            <div class="notif-ava">
-              <img
-                src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=80&q=70"
-                alt=""
-              />
-            </div>
-            <div>
-              <div class="notif-n">Historya by Antigo</div>
-              <div class="notif-m">
-                Heritage Night this Friday — art, history &amp; coffee! 🎨
-              </div>
-              <div class="notif-t">1 hr ago</div>
-            </div>
-          </div>
-          <div class="notif-row">
-            <div class="notif-ava">
-              <img
-                src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=80&q=70"
-                alt=""
-              />
-            </div>
-            <div>
-              <div class="notif-n">Second Shot Brewing Studio</div>
-              <div class="notif-m">
-                Now hiring! Brewer &amp; front-of-house positions open 💼
-              </div>
-              <div class="notif-t">3 hr ago</div>
-            </div>
-          </div>
-        </div>
+        <div class="notif-list" id="notif-list"></div>
       </div>
     </div>
 
     <!-- ══════════ PAGE WRAPPER ══════════ -->
     <div class="page-wrapper">
       <div class="layout-cols">
-        <div class="main-col" id="pages-container">
-          <!-- Pages load here -->
-          <!-- HOME (default) -->
+        <main class="main-col" id="pages-container">
+          <!-- Pages load here (js/page-loader.js) -->
           <div class="panel active" id="panel-home"></div>
-          <!-- MAP -->
           <div class="panel" id="panel-map"></div>
-          <!-- PROFILE -->
           <div class="panel" id="panel-profile"></div>
-          <!-- SAVED -->
           <div class="panel" id="panel-saved"></div>
-          <!-- OWNER -->
           <div class="panel" id="panel-owner"></div>
-        </div>
+        </main>
 
-        <!-- SIDEBAR (1200px+) -->
-        <aside class="side-col">
+        <!-- SIDEBAR (desktop) — rendered from the database -->
+        <aside class="side-col" aria-label="More around Butuan">
           <div class="side-sec">
-            <div class="mascot-bar" style="margin: 0 0 18px">
-              <div class="mascot-ava">🐻</div>
-              <div class="mascot-content">
-                <div class="mascot-name">BREVI</div>
-                <div class="mascot-msg" style="font-size: 12px">
-                  Try the House Blend at Paramount — locally sourced Mindanao
-                  beans, so smooth! ☕🌿
-                </div>
-              </div>
-            </div>
-            <div class="sec-eyebrow" style="margin-bottom: 4px">
-              Recommended
-            </div>
-            <div class="side-title" style="margin-bottom: 12px">
-              ⭐ Based on your <em>taste</em>
-            </div>
-            <div class="rec-stack">
-              <div class="rec-row" onclick="showPanel('profile')">
-                <img
-                  class="rec-thumb"
-                  src="https://images.unsplash.com/photo-1498804103079-a6351b050096?w=200&q=70"
-                  alt=""
-                />
-                <div class="rec-info">
-                  <div class="rec-name">12.25 Coffee House</div>
-                  <div class="rec-sub">
-                    Villa Kananga · Alfresco &amp; indoor dining
-                  </div>
-                </div>
-                <span class="rec-chip chip-study">For you</span>
-              </div>
-              <div class="rec-row" onclick="showPanel('profile')">
-                <img
-                  class="rec-thumb"
-                  src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=200&q=70"
-                  alt=""
-                />
-                <div class="rec-info">
-                  <div class="rec-name">Second Shot Brewing Studio</div>
-                  <div class="rec-sub">
-                    Ochoa Ave · Quality brewed selections
-                  </div>
-                </div>
-                <span class="rec-chip chip-morn">For you</span>
-              </div>
-            </div>
+            <div class="side-title">Closest cafés</div>
+            <div class="rec-stack" id="near-you-list"></div>
           </div>
           <div class="side-sec">
-            <div class="sec-eyebrow" style="margin-bottom: 4px">
-              💼 findItJob Now
-            </div>
-            <div class="side-title" style="margin-bottom: 12px">
-              Join a <em>café team</em>
-            </div>
-            <div class="rec-stack">
-              <div class="rec-row">
-                <img
-                  class="rec-thumb"
-                  src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=200&q=70"
-                  alt=""
-                />
-                <div class="rec-info">
-                  <div class="rec-name">Craft Coffee Roastery</div>
-                  <div class="rec-sub">
-                    Head Roaster · Full-time · Baan Km 3
-                  </div>
-                </div>
-                <span class="rec-chip chip-date">Hiring</span>
-              </div>
-              <div class="rec-row">
-                <img
-                  class="rec-thumb"
-                  src="https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=200&q=70"
-                  alt=""
-                />
-                <div class="rec-info">
-                  <div class="rec-name">Fulcrum Coffee</div>
-                  <div class="rec-sub">
-                    Barista · Part-time · SM City Butuan
-                  </div>
-                </div>
-                <span class="rec-chip chip-date">Hiring</span>
-              </div>
-            </div>
+            <div class="side-title">Events this week</div>
+            <div class="rec-stack" id="side-events"></div>
           </div>
           <div class="side-sec">
-            <div class="sec-eyebrow" style="margin-bottom: 4px">
-              🆕 findItNew
-            </div>
-            <div class="side-title" style="margin-bottom: 12px">
-              Also in <em>Butuan City</em>
-            </div>
-            <div class="rec-stack">
-              <div class="rec-row">
-                <img
-                  class="rec-thumb"
-                  src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=200&q=70"
-                  alt="Matu Sikwate"
-                />
-                <div class="rec-info">
-                  <div class="rec-name">Matu Sikwate &amp; Coffee</div>
-                  <div class="rec-sub">
-                    Dairy Farm · Local cacao &amp; sikwate · Family-run
-                  </div>
-                </div>
-                <span class="rec-chip chip-chill">New</span>
-              </div>
-              <div class="rec-row">
-                <img
-                  class="rec-thumb"
-                  src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=200&q=70"
-                  alt="Columns Coffee"
-                />
-                <div class="rec-info">
-                  <div class="rec-name">Columns Coffee + Kitchen</div>
-                  <div class="rec-sub">
-                    Butuan City · Plant-based · Oat milk · Modern
-                  </div>
-                </div>
-                <span class="rec-chip chip-chill">New</span>
-              </div>
-            </div>
-            <div style="margin-top: 14px">
-              <div class="sec-eyebrow" style="margin-bottom: 8px">
-                More around Butuan
-              </div>
-              <div style="display: flex; gap: 6px; flex-wrap: wrap">
-                <span
-                  style="
-                    padding: 5px 11px;
-                    background: var(--surface2);
-                    border: 1px solid var(--line);
-                    border-radius: 99px;
-                    font-size: 11px;
-                    font-weight: 500;
-                    color: var(--ink2);
-                  "
-                  >Streetside Café</span
-                >
-                <span
-                  style="
-                    padding: 5px 11px;
-                    background: var(--surface2);
-                    border: 1px solid var(--line);
-                    border-radius: 99px;
-                    font-size: 11px;
-                    font-weight: 500;
-                    color: var(--ink2);
-                  "
-                  >Gold 'n Pearl</span
-                >
-                <span
-                  style="
-                    padding: 5px 11px;
-                    background: var(--surface2);
-                    border: 1px solid var(--line);
-                    border-radius: 99px;
-                    font-size: 11px;
-                    font-weight: 500;
-                    color: var(--ink2);
-                  "
-                  >12 D Cafe</span
-                >
-                <span
-                  style="
-                    padding: 5px 11px;
-                    background: var(--surface2);
-                    border: 1px solid var(--line);
-                    border-radius: 99px;
-                    font-size: 11px;
-                    font-weight: 500;
-                    color: var(--ink2);
-                  "
-                  >3FE Café</span
-                >
-                <span
-                  style="
-                    padding: 5px 11px;
-                    background: var(--surface2);
-                    border: 1px solid var(--line);
-                    border-radius: 99px;
-                    font-size: 11px;
-                    font-weight: 500;
-                    color: var(--ink2);
-                  "
-                  >Atreza Sweets &amp; Café</span
-                >
-                <span
-                  style="
-                    padding: 5px 11px;
-                    background: var(--surface2);
-                    border: 1px solid var(--line);
-                    border-radius: 99px;
-                    font-size: 11px;
-                    font-weight: 500;
-                    color: var(--ink2);
-                  "
-                  >721 Cups &amp; Plates</span
-                >
-              </div>
-            </div>
-          </div>
-          <div class="side-sec">
-            <div class="sec-eyebrow" style="margin-bottom: 4px">
-              🎉 findItEvents
-            </div>
-            <div class="side-title" style="margin-bottom: 12px">
-              This <em>week</em>
-            </div>
-            <div class="event-list">
-              <div class="event-item">
-                <div class="event-date">FRI · 7 PM</div>
-                <div class="event-name">Open Mic Night</div>
-                <div class="event-desc">
-                  Historya by Antigo · Marcos Calo St · Free
-                </div>
-              </div>
-              <div class="event-item">
-                <div class="event-date">SAT · 10 AM</div>
-                <div class="event-name">Latte Art Workshop</div>
-                <div class="event-desc">
-                  Paramount Coffee · J.C. Aquino Ave · ₱350
-                </div>
-              </div>
-            </div>
+            <div class="side-title">Now hiring</div>
+            <div class="rec-stack" id="side-jobs"></div>
           </div>
         </aside>
       </div>
     </div>
 
+    <!-- Dark confirmation bar shown after an owner publishes -->
+    <div class="publish-bar" id="publish-bar" role="status" aria-live="polite">
+      <svg class="ico" aria-hidden="true"><use href="#i-check" /></svg>
+      <span id="publish-bar-text">Posted to the feed</span>
+      <button class="btn" onclick="viewPublished()">View</button>
+    </div>
+
     <!-- ══════════ BOTTOM NAV ══════════ -->
-    <nav class="bottom-nav">
-      <div class="nav-it on" id="nav-home" onclick="showPanel('home')">
-        <div class="nav-ico">🏠</div>
-        <div class="nav-lbl">Home</div>
-      </div>
-      <div class="nav-it" id="nav-map" onclick="showPanel('map')">
-        <div class="nav-ico">🗺️</div>
-        <div class="nav-lbl">Map</div>
-      </div>
-      <div class="nav-it" id="nav-profile" onclick="showPanel('profile')">
-        <div class="nav-ico">☕</div>
-        <div class="nav-lbl">Café</div>
-      </div>
-      <div class="nav-it" id="nav-saved" onclick="showPanel('saved')">
-        <div class="nav-ico">🔖</div>
-        <div class="nav-lbl">Saved</div>
-      </div>
-      <div class="nav-it" id="nav-owner" onclick="showPanel('owner')">
-        <div class="nav-ico">🏪</div>
-        <div class="nav-lbl">Owner</div>
-      </div>
+    <nav class="bottom-nav" aria-label="Primary">
+      <button class="nav-it on" id="nav-home" onclick="showPanel('home')">
+        <span class="nav-ico"
+          ><svg class="ico" aria-hidden="true"><use href="#i-home" /></svg
+        ></span>
+        <span class="nav-lbl">Home</span>
+      </button>
+      <button class="nav-it" id="nav-map" onclick="showPanel('map')">
+        <span class="nav-ico"
+          ><svg class="ico" aria-hidden="true"><use href="#i-map" /></svg
+        ></span>
+        <span class="nav-lbl">Map</span>
+      </button>
+      <button class="nav-it" id="nav-profile" onclick="showPanel('profile')">
+        <span class="nav-ico"
+          ><svg class="ico" aria-hidden="true"><use href="#i-cup" /></svg
+        ></span>
+        <span class="nav-lbl">Café</span>
+      </button>
+      <button class="nav-it" id="nav-saved" onclick="showPanel('saved')">
+        <span class="nav-ico"
+          ><svg class="ico" aria-hidden="true"><use href="#i-bookmark" /></svg
+        ></span>
+        <span class="nav-lbl">Saved</span>
+      </button>
+      <button class="nav-it" id="nav-owner" onclick="showPanel('owner')">
+        <span class="nav-ico"
+          ><svg class="ico" aria-hidden="true"><use href="#i-store" /></svg
+        ></span>
+        <span class="nav-lbl">Owner</span>
+      </button>
     </nav>
 
-    <!-- ══════════ LOAD PAGE MODULES ══════════ -->
+    <!-- ══════════ SCRIPTS (order matters — see js/README.md) ══════════ -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script src="js/page-loader.js"></script>
-
-    <!-- Modular JavaScript Files -->
     <script src="js/database.js"></script>
+    <script src="js/store.js"></script>
     <script src="js/geolocation.js"></script>
     <script src="js/map.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/feed.js"></script>
     <script src="js/search.js"></script>
     <script src="js/filter.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/interactions.js"></script>
-    <script src="js/mood.js"></script>
-    <script src="js/carousel.js"></script>
     <script src="js/tabs.js"></script>
     <script src="js/owner.js"></script>
     <script src="js/main.js"></script>
