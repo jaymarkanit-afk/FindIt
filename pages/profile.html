@@ -1,40 +1,32 @@
-<!-- COVER -->
-<div class="pf-cover">
-  <img id="pf-cover-img" src="" alt="" />
+<!-- BACK / SHARE ROW (above the gallery, never on top of a photo) -->
+<div class="pf-bar">
   <button
-    class="round-btn pf-back"
+    class="round-btn"
     onclick="showPanel('home')"
     aria-label="Back to home"
   >
     <svg class="ico" aria-hidden="true"><use href="#i-back" /></svg>
   </button>
-  <button
-    class="round-btn pf-share"
-    onclick="shareCafe()"
-    aria-label="Share this café"
-  >
+  <button class="round-btn" onclick="shareCafe()" aria-label="Share this café">
     <svg class="ico" aria-hidden="true"><use href="#i-share" /></svg>
   </button>
 </div>
 
+<!-- FEATURED GALLERY (rendered by js/profile.js from the café's images) -->
+<div id="pf-gallery"></div>
+
 <!-- INFO CARD -->
 <section class="card pf-card">
   <div class="pf-top">
-    <span class="tile lg" id="pf-tile" aria-hidden="true"></span>
+    <span id="pf-tile"></span>
     <div>
       <h1 class="profile-name"></h1>
       <p class="pf-address" id="pf-address"></p>
     </div>
   </div>
   <div class="pf-facts">
-    <span>
-      <svg class="ico sm" aria-hidden="true"><use href="#i-star" /></svg>
-      <span id="pf-rating"></span>
-    </span>
-    <span>
-      <svg class="ico sm" aria-hidden="true"><use href="#i-clock" /></svg>
-      <span id="pf-open"></span>
-    </span>
+    <span id="pf-rating"></span>
+    <span id="pf-open" hidden></span>
   </div>
   <div class="pf-tags" id="pf-tags"></div>
   <div class="pf-actions">
@@ -66,11 +58,30 @@
 
 <!-- TABS -->
 <div class="seg pf-tabs" role="group" aria-label="Café sections">
-  <button class="seg-btn ptab on" onclick="setPTab(this, 'today')">
+  <button
+    class="seg-btn ptab on"
+    data-tab="today"
+    aria-pressed="true"
+    onclick="setPTab(this, 'today')"
+  >
     Today
   </button>
-  <button class="seg-btn ptab" onclick="setPTab(this, 'photos')">Photos</button>
-  <button class="seg-btn ptab" onclick="setPTab(this, 'info')">Info</button>
+  <button
+    class="seg-btn ptab"
+    data-tab="photos"
+    aria-pressed="false"
+    onclick="setPTab(this, 'photos')"
+  >
+    Photos
+  </button>
+  <button
+    class="seg-btn ptab"
+    data-tab="info"
+    aria-pressed="false"
+    onclick="setPTab(this, 'info')"
+  >
+    Info
+  </button>
 </div>
 
 <div class="tab-content on" id="tab-today">

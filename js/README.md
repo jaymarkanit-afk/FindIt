@@ -6,11 +6,11 @@ order in `findit.html` matters:
 | #   | File              | What it does                                                                                                                                             |
 | --- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | `page-loader.js`  | Fetches `pages/*.html` into the panels. Exposes `pagesReady`, a promise that resolves when every page is in the DOM.                                      |
-| 2   | `database.js`     | `cafeDatabase` (each café has `images: []`) and the seed `posts` array.                                                                                   |
+| 2   | `database.js`     | `cafeDatabase` (each café has `images: []`, first one featured, and an optional `logo`) and the seed `posts` array.                                                                                   |
 | 3   | `store.js`        | `localStorage` helpers and `userState` (alerts, keeps, saved cafés, sips, owner posts). Shared helpers: `getCafe`, `getAllPosts`, `esc`, `timeAgo`, `ico`, `cafeTile`, `openCafe`. |
 | 4   | `geolocation.js`  | `locateMe`, `zoomToUserLocation`, `calculateDistance`, `updateGeoInfoCard`.                                                                               |
 | 5   | `map.js`          | Leaflet map: `initializeMap`, `addCafeMarkers`, `setUserMarker`, `showCafeOnMap`, `displayNearbyCafesList`.                                               |
-| 6   | `profile.js`      | Café profile: `loadCafeProfile`, the "On the board today" panel, photo grid, info, photo viewer.                                                          |
+| 6   | `profile.js`      | Café profile: `loadCafeProfile`, featured gallery, info card, "On the board today" panel, photo grid, info, photo viewer.                                                          |
 | 7   | `feed.js`         | Everything rendered from posts: `postCardHTML`, `renderFeed`, `renderFreshStrip`, alerts list and badge, Saved page, sidebar. `renderPostViews()` redraws all of it. |
 | 8   | `search.js`       | `handleSearch`, `submitSearch`, `displaySearchResults`, `cafeMatches`.                                                                                    |
 | 9   | `filter.js`       | `currentFilter`, `quickFilter` (home segmented control), drawer filters, `getFilteredCafes`, `filterAndDisplayCafes`.                                     |

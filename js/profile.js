@@ -1,11 +1,26 @@
 /* ═══════════════════════════════════════════════════════════════
    PROFILE — Café profile page and photo viewer
+   Photos come from each café's `images` array (database.js).
+   The logo is only ever shown in the info-card tile, never as a cover.
    ═══════════════════════════════════════════════════════════════ */
 
 function getCafeImages(cafeId) {
   const cafe = getCafe(cafeId);
-  if (!cafe) return [];
-  return cafe.images && cafe.images.length ? cafe.images : [cafe.img];
+  return cafe && Array.isArray(cafe.images) ? cafe.images : [];
+}
+
+function photoAlt(cafe, index) {
+  return `${cafe.name} photo ${index + 1}`;
+}
+
+// A tappable photo that opens the photo viewer
+function photoButtonHTML(cafe, index, cls) {
+  const src = getCafeImages(cafe.id)[index];
+  return `
+    <button class="${cls}" onclick="openPhotoModal('${esc(src)}')"
+      aria-label="Open ${esc(photoAlt(cafe, index))}">
+      <img src="${esc(src)}" alt="${esc(photoAlt(cafe, index))}" loading="lazy" />
+    </button>`;
 }
 
 function loadCafeProfile(cafeId) {
@@ -16,29 +31,104 @@ function loadCafeProfile(cafeId) {
   }
   selectedCafeId = cafe.id;
 
+  renderGallery(cafe);
+  renderInfoCard(cafe);
+  renderBoard(cafe);
+  updatePhotosTab(cafe.id);
+  renderInfo(cafe);
+
+  // Always open on "Today"
+  showProfileTab("today");
+}
+
+function showProfileTab(tab) {
+  const btn = document.querySelector(`.pf-tabs .ptab[data-tab="${tab}"]`);
+  if (btn) setPTab(btn, tab);
+}
+
+/* ── Featured gallery ─────────────────────────────────────── */
+
+function renderGallery(cafe) {
+  const gallery = document.getElementById("pf-gallery");
+  if (!gallery) return;
+  const images = getCafeImages(cafe.id);
+  const n = images.length;
+
+  if (n === 0) {
+    gallery.className = "pf-gallery-empty";
+    gallery.innerHTML = `
+      ${ico("camera")}
+      <strong>No photos yet</strong>
+      <span>Photos show here once the café adds them.</span>`;
+    return;
+  }
+
+  // 1 photo: full width. 2: side by side. 3+: featured + second + "+N" tile.
+  gallery.className = "pf-gallery " + (n === 1 ? "g1" : n === 2 ? "g2" : "g3");
+  let html = photoButtonHTML(cafe, 0, "g-cell g-main");
+  if (n >= 2) html += photoButtonHTML(cafe, 1, "g-cell");
+  if (n >= 3) {
+    const rest = n - 2;
+    html += `
+      <button class="g-cell g-more" onclick="showProfileTab('photos')"
+        aria-label="See all ${n} photos of ${esc(cafe.name)}">
+        <span class="g-more-n">+${rest}</span>
+        <span class="g-more-l">See all photos</span>
+      </button>`;
+  }
+  gallery.innerHTML = html;
+}
+
+/* ── Info card ────────────────────────────────────────────── */
+
+function renderInfoCard(cafe) {
   const setText = (id, text) => {
     const el = document.getElementById(id);
     if (el) el.textContent = text;
   };
 
-  // Cover + info card
-  const cover = document.getElementById("pf-cover-img");
-  if (cover) {
-    cover.src = getCafeImages(cafe.id)[0];
-    cover.alt = cafe.name;
+  // Logo on a white tile, or initials on a dark tile
+  const tile = document.getElementById("pf-tile");
+  if (tile) {
+    if (cafe.logo) {
+      tile.className = "tile lg tile-logo";
+      tile.innerHTML = `<img src="${esc(cafe.logo)}" alt="${esc(cafe.name)} logo" loading="lazy" />`;
+    } else {
+      tile.className = "tile lg";
+      tile.setAttribute("aria-hidden", "true");
+      tile.textContent = cafeInitials(cafe);
+    }
+    if (cafe.logo) tile.removeAttribute("aria-hidden");
   }
+
   const nameEl = document.querySelector(".profile-name");
   if (nameEl) nameEl.textContent = cafe.name;
-  setText("pf-tile", cafeInitials(cafe));
   setText("pf-address", cafe.address);
-  setText("pf-rating", `${cafe.rating} · ${cafe.reviews} reviews`);
-  setText("pf-open", "Open · Closes 9 PM");
+
+  // Rating: star + numbers, or "No reviews yet" with no star
+  const rating = document.getElementById("pf-rating");
+  if (rating) {
+    rating.innerHTML =
+      cafe.reviews > 0 && cafe.rating
+        ? `${ico("star", "sm")}${esc(cafe.rating)} · ${esc(cafe.reviews)} reviews`
+        : '<span class="muted">No reviews yet</span>';
+  }
+
+  // Open status only when the data has hours
+  const open = document.getElementById("pf-open");
+  if (open) {
+    open.hidden = !cafe.hours;
+    open.innerHTML = cafe.hours ? `${ico("clock", "sm")}${esc(cafe.hours)}` : "";
+  }
 
   const tags = document.getElementById("pf-tags");
-  if (tags)
-    tags.innerHTML = cafe.tags
+  if (tags) {
+    const list = cafe.tags || [];
+    tags.hidden = list.length === 0;
+    tags.innerHTML = list
       .map((t) => `<span class="chip">${esc(t)}</span>`)
       .join("");
+  }
 
   // Action buttons reflect saved state
   const alertBtn = document.getElementById("pf-alert");
@@ -48,17 +138,10 @@ function loadCafeProfile(cafeId) {
   }
   const saveBtn = document.getElementById("pf-save");
   if (saveBtn) setSaveButton(saveBtn, inState("savedCafes", cafe.id));
-
-  renderBoard(cafe);
-  updatePhotosTab(cafe.id);
-  renderInfo(cafe);
-
-  // Always open on "Today"
-  const firstTab = document.querySelector(".pf-tabs .ptab");
-  if (firstTab) setPTab(firstTab, "today");
 }
 
-// Today: the café's current posts, listed like a menu board
+/* ── Today: the café's updates, events and job openings ───── */
+
 function renderBoard(cafe) {
   const board = document.getElementById("pf-board");
   if (!board) return;
@@ -82,38 +165,40 @@ function renderBoard(cafe) {
           </li>`;
         })
         .join("")
-    : '<li class="board-empty">Nothing on the board yet. Turn on alerts to hear when this café posts.</li>';
+    : '<li class="board-empty">Nothing new today</li>';
 }
 
-// Photos: 2-column grid, first photo spans both columns
+/* ── Photos tab: 2 columns, first photo spans both ────────── */
+
 function updatePhotosTab(cafeId) {
   const photoTab = document.getElementById("tab-photos");
   const cafe = getCafe(cafeId);
   if (!photoTab || !cafe) return;
+  const images = getCafeImages(cafeId);
 
-  photoTab.innerHTML = `<div class="photo-grid">${getCafeImages(cafeId)
-    .map(
-      (src, i) => `
-      <button class="photo-cell" onclick="openPhotoModal('${esc(src)}')"
-        aria-label="Open photo ${i + 1} of ${esc(cafe.name)}">
-        <img src="${esc(src)}" alt="${esc(cafe.name)} photo ${i + 1}" loading="lazy" />
-      </button>`,
-    )
-    .join("")}</div>`;
+  photoTab.innerHTML = images.length
+    ? `<div class="photo-grid">${images
+        .map((_, i) => photoButtonHTML(cafe, i, "photo-cell"))
+        .join("")}</div>`
+    : '<div class="empty">No photos yet</div>';
 }
+
+/* ── Info tab: rows without data are left out ─────────────── */
 
 function renderInfo(cafe) {
   const info = document.getElementById("pf-info");
   if (!info) return;
-  const row = (icon, label, value) => `
-    <div class="info-row">
-      ${ico(icon)}
-      <div><dt>${label}</dt><dd>${esc(value)}</dd></div>
-    </div>`;
+  const row = (icon, label, value) =>
+    value
+      ? `<div class="info-row">
+          ${ico(icon)}
+          <div><dt>${label}</dt><dd>${esc(value)}</dd></div>
+        </div>`
+      : "";
   info.innerHTML =
     row("pin", "Address", cafe.address) +
-    row("clock", "Hours", cafe.hours || DEFAULT_HOURS) +
-    row("phone", "Contact", cafe.contact || "Not listed yet");
+    row("clock", "Hours", cafe.hours) +
+    row("phone", "Contact", cafe.contact);
 }
 
 function shareCafe() {
@@ -128,6 +213,7 @@ function shareCafe() {
 function openPhotoModal(src) {
   const images = getCafeImages(selectedCafeId);
   const cafe = getCafe(selectedCafeId);
+  if (!images.length || !cafe) return;
   let index = Math.max(0, images.indexOf(src));
 
   const modal = document.createElement("div");
@@ -147,7 +233,7 @@ function openPhotoModal(src) {
 
   function show() {
     img.src = images[index];
-    img.alt = `${cafe ? cafe.name : "Café"} photo ${index + 1}`;
+    img.alt = photoAlt(cafe, index);
     counter.textContent = `${index + 1} / ${images.length}`;
   }
   function step(dir) {

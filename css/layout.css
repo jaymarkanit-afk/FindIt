@@ -22,6 +22,11 @@
   max-width: var(--feed-w);
 }
 
+/* The café profile gets a slightly wider column */
+.main-col:has(#panel-profile.active) {
+  max-width: 640px;
+}
+
 /* The map is the one panel that benefits from extra width */
 .main-col:has(#panel-map.active) {
   max-width: 760px;
