@@ -68,6 +68,32 @@ function cafeHasPost(cafe, type) {
   return getAllPosts().some((p) => p.cafeId === cafe.id && p.type === type);
 }
 
+/* Trending is derived from activity, not stored: each post from the last
+   week counts 1 plus its sips. If nothing was posted in the last week, the
+   same score over all posts is used so the list is never empty. */
+const TRENDING_DAYS = 7;
+const TRENDING_MAX = 5;
+
+function trendingScores() {
+  const all = getAllPosts();
+  const cutoff = Date.now() - TRENDING_DAYS * 24 * 60 * 60 * 1000;
+  const recent = all.filter((p) => p.time >= cutoff);
+  const scores = new Map();
+  (recent.length ? recent : all).forEach((p) => {
+    scores.set(p.cafeId, (scores.get(p.cafeId) || 0) + 1 + sipCount(p));
+  });
+  return scores;
+}
+
+// Cafés ordered by trending score, highest first (top TRENDING_MAX)
+function getTrendingCafes(cafes) {
+  const scores = trendingScores();
+  return cafes
+    .filter((c) => scores.has(c.id))
+    .sort((a, b) => scores.get(b.id) - scores.get(a.id))
+    .slice(0, TRENDING_MAX);
+}
+
 function getFilteredCafes() {
   let filtered = [...cafeDatabase];
 
@@ -84,9 +110,7 @@ function getFilteredCafes() {
         .sort((a, b) => a.distance - b.distance);
       break;
     case "findItTrending":
-      filtered = filtered
-        .filter((c) => c.category.includes("trending"))
-        .sort((a, b) => b.rating - a.rating);
+      filtered = getTrendingCafes(filtered);
       break;
     case "findItTopRated":
       filtered.sort((a, b) => b.rating - a.rating);
@@ -95,10 +119,10 @@ function getFilteredCafes() {
       filtered = filtered.filter((c) => cafeHasPost(c, "new"));
       break;
     case "findItJob":
-      filtered = filtered.filter((c) => c.hiring || cafeHasPost(c, "hiring"));
+      filtered = filtered.filter((c) => cafeHasPost(c, "hiring"));
       break;
     case "findItEvents":
-      filtered = filtered.filter((c) => c.events || cafeHasPost(c, "event"));
+      filtered = filtered.filter((c) => cafeHasPost(c, "event"));
       break;
   }
 

@@ -3,6 +3,8 @@
    ═══════════════════════════════════════════════════════════════ */
 
 // Optional café fields: `logo` (image path), `hours`, `contact`.
+// Whether a café is hiring, has events or is trending is not stored either:
+// filter.js works those out from the posts.
 // `distance` (km) is not stored here: geolocation.js computes it from the
 // city centre, then from the user once they share their location.
 // `images` holds photo paths; the first one is the featured photo.
@@ -17,9 +19,6 @@ const cafeDatabase = [
     rating: 4.9,
     reviews: 312,
     tags: ["Sustainable", "Local", "Fast WiFi"],
-    category: ["trending", "toprated", "nearme"],
-    hiring: false,
-    events: true,
     img: "Images/paramount/paramount4.jpg",
     images: [
       "Images/paramount/paramount4.jpg",
@@ -39,9 +38,6 @@ const cafeDatabase = [
     rating: 4.8,
     reviews: 287,
     tags: ["Roastery", "Artisan", "Local roasts"],
-    category: ["trending", "toprated", "nearme"],
-    hiring: false,
-    events: false,
     img: "Images/craftcoffee/craftcoffe5.jpg",
     logo: "Images/craftcoffee/craftcoffe1.jpg",
     images: [
@@ -61,9 +57,6 @@ const cafeDatabase = [
     rating: 4.8,
     reviews: 156,
     tags: ["Specialty", "Minimalist", "Quiet"],
-    category: ["toprated", "nearme"],
-    hiring: false,
-    events: false,
     img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200&q=70",
     images: [],
   },
@@ -76,9 +69,6 @@ const cafeDatabase = [
     rating: 4.8,
     reviews: 198,
     tags: ["Study spot", "WiFi", "Power outlets"],
-    category: ["toprated", "nearme"],
-    hiring: false,
-    events: false,
     img: "https://images.unsplash.com/photo-1517960413843-0aee8e2b3285?w=200&q=70",
     images: [],
   },
@@ -91,9 +81,6 @@ const cafeDatabase = [
     rating: 4.9,
     reviews: 267,
     tags: ["Specialty", "Modern", "Hiring"],
-    category: ["trending", "toprated", "hiring"],
-    hiring: true,
-    events: false,
     img: "https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=200&q=70",
     images: [],
   },
@@ -106,9 +93,6 @@ const cafeDatabase = [
     rating: 4.7,
     reviews: 134,
     tags: ["Cozy", "Modern", "Events"],
-    category: ["toprated", "nearme", "events"],
-    hiring: false,
-    events: true,
     img: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=200&q=70",
     images: [],
   },
@@ -121,9 +105,6 @@ const cafeDatabase = [
     rating: 4.8,
     reviews: 143,
     tags: ["Heritage", "Arts", "Events"],
-    category: ["toprated", "events", "nearme"],
-    hiring: false,
-    events: true,
     img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200&q=70",
     images: [],
   },
@@ -136,9 +117,6 @@ const cafeDatabase = [
     rating: 4.8,
     reviews: 112,
     tags: ["Quality brews", "Hiring", "Specialty"],
-    category: ["toprated", "hiring", "nearme"],
-    hiring: true,
-    events: false,
     img: "https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=200&q=70",
     images: [],
   },
@@ -151,9 +129,6 @@ const cafeDatabase = [
     rating: 4.7,
     reviews: 89,
     tags: ["Premium", "Local vibe", "Community"],
-    category: ["toprated", "nearme"],
-    hiring: false,
-    events: true,
     img: "Images/coffeecapital/coffeecapital_main_image.jpg",
     images: [
       "Images/coffeecapital/coffeecapital_main_image.jpg",
@@ -175,9 +150,6 @@ const cafeDatabase = [
     rating: 4.6,
     reviews: 67,
     tags: ["Cozy", "Local favorite", "Casual"],
-    category: ["toprated", "nearme"],
-    hiring: false,
-    events: false,
     img: "Images/Lakbai/lakbai2.jpg",
     logo: "Images/Lakbai/lakbai1.jpg",
     images: [
@@ -197,9 +169,6 @@ const cafeDatabase = [
     rating: 4.7,
     reviews: 45,
     tags: ["Cool vibes", "New venue", "Relaxing"],
-    category: ["nearme", "trending"],
-    hiring: false,
-    events: false,
     img: "Images/koldcoffee/koldcoffee6.jpg",
     logo: "Images/koldcoffee/koldcoffee1.jpg",
     images: [
