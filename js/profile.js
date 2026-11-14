@@ -1,26 +1,19 @@
 /* ═══════════════════════════════════════════════════════════════
    PROFILE — Café profile page and photo viewer
-   Photos come from each café's `images` array (database.js).
-   The logo is only ever shown in the info-card tile, never as a cover.
+   One scroll: info card, "On the board today", Photos, Info.
+   Photos come from each café's `images` array (database.js) and appear
+   only in the Photos section. The logo is only ever the info-card tile.
    ═══════════════════════════════════════════════════════════════ */
 
+// Photos for a café, each listed once. The logo is never treated as a photo.
 function getCafeImages(cafeId) {
   const cafe = getCafe(cafeId);
-  return cafe && Array.isArray(cafe.images) ? cafe.images : [];
+  if (!cafe || !Array.isArray(cafe.images)) return [];
+  return [...new Set(cafe.images)].filter((src) => src && src !== cafe.logo);
 }
 
 function photoAlt(cafe, index) {
   return `${cafe.name} photo ${index + 1}`;
-}
-
-// A tappable photo that opens the photo viewer
-function photoButtonHTML(cafe, index, cls) {
-  const src = getCafeImages(cafe.id)[index];
-  return `
-    <button class="${cls}" data-action="open-photo" data-src="${esc(src)}"
-      aria-label="Open ${esc(photoAlt(cafe, index))}">
-      <img src="${esc(src)}" alt="${esc(photoAlt(cafe, index))}" loading="lazy" />
-    </button>`;
 }
 
 function loadCafeProfile(cafeId) {
@@ -31,52 +24,10 @@ function loadCafeProfile(cafeId) {
   }
   selectedCafeId = cafe.id;
 
-  renderGallery(cafe);
   renderInfoCard(cafe);
   renderBoard(cafe);
-  updatePhotosTab(cafe.id);
+  renderPhotos(cafe);
   renderInfo(cafe);
-
-  // Always open on "Today"
-  showProfileTab("today");
-}
-
-function showProfileTab(tab) {
-  const btn = document.querySelector(`.pf-tabs .ptab[data-tab="${tab}"]`);
-  if (btn) setPTab(btn, tab);
-}
-
-/* ── Featured gallery ─────────────────────────────────────── */
-
-function renderGallery(cafe) {
-  const gallery = document.getElementById("pf-gallery");
-  if (!gallery) return;
-  const images = getCafeImages(cafe.id);
-  const n = images.length;
-
-  if (n === 0) {
-    gallery.className = "pf-gallery-empty";
-    gallery.innerHTML = `
-      ${ico("camera")}
-      <strong>No photos yet</strong>
-      <span>Photos show here once the café adds them.</span>`;
-    return;
-  }
-
-  // 1 photo: full width. 2: side by side. 3+: featured + second + "+N" tile.
-  gallery.className = "pf-gallery " + (n === 1 ? "g1" : n === 2 ? "g2" : "g3");
-  let html = photoButtonHTML(cafe, 0, "g-cell g-main");
-  if (n >= 2) html += photoButtonHTML(cafe, 1, "g-cell");
-  if (n >= 3) {
-    const rest = n - 2;
-    html += `
-      <button class="g-cell g-more" data-action="profile-tab" data-tab="photos"
-        aria-label="See all ${n} photos of ${esc(cafe.name)}">
-        <span class="g-more-n">+${rest}</span>
-        <span class="g-more-l">See all photos</span>
-      </button>`;
-  }
-  gallery.innerHTML = html;
 }
 
 /* ── Info card ────────────────────────────────────────────── */
@@ -92,13 +43,13 @@ function renderInfoCard(cafe) {
   if (tile) {
     if (cafe.logo) {
       tile.className = "tile lg tile-logo";
+      tile.removeAttribute("aria-hidden");
       tile.innerHTML = `<img src="${esc(cafe.logo)}" alt="${esc(cafe.name)} logo" loading="lazy" />`;
     } else {
       tile.className = "tile lg";
       tile.setAttribute("aria-hidden", "true");
       tile.textContent = cafeInitials(cafe);
     }
-    if (cafe.logo) tile.removeAttribute("aria-hidden");
   }
 
   const nameEl = document.querySelector(".profile-name");
@@ -140,7 +91,7 @@ function renderInfoCard(cafe) {
   if (saveBtn) setSaveButton(saveBtn, inState("savedCafes", cafe.id));
 }
 
-/* ── Today: the café's updates, events and job openings ───── */
+/* ── On the board today: updates, events and job openings ── */
 
 function renderBoard(cafe) {
   const board = document.getElementById("pf-board");
@@ -168,25 +119,82 @@ function renderBoard(cafe) {
     : '<li class="board-empty">Nothing new today</li>';
 }
 
-/* ── Photos tab: 2 columns, first photo spans both ────────── */
+/* ── Photos: one swipeable row; "See all" turns it into a grid ── */
 
-function updatePhotosTab(cafeId) {
-  const photoTab = document.getElementById("tab-photos");
-  const cafe = getCafe(cafeId);
-  if (!photoTab || !cafe) return;
-  const images = getCafeImages(cafeId);
+// With more photos than this, the row gets a "See all" button
+const PHOTO_ROW_LIMIT = 3;
 
-  photoTab.innerHTML = images.length
-    ? `<div class="photo-grid">${images
-        .map((_, i) => photoButtonHTML(cafe, i, "photo-cell"))
-        .join("")}</div>`
-    : '<div class="empty">No photos yet</div>';
+function renderPhotos(cafe) {
+  const box = document.getElementById("pf-photos");
+  const count = document.getElementById("pf-photo-count");
+  const toggle = document.getElementById("pf-photos-toggle");
+  if (!box) return;
+  const images = getCafeImages(cafe.id);
+
+  if (count) count.textContent = images.length ? String(images.length) : "";
+
+  if (!images.length) {
+    box.className = "photo-empty";
+    box.removeAttribute("role");
+    box.removeAttribute("aria-label");
+    box.innerHTML = `
+      ${ico("camera")}
+      <strong>No photos yet</strong>
+      <span>Photos show here once the café adds them.</span>`;
+    if (toggle) toggle.hidden = true;
+    return;
+  }
+
+  // Clear the empty state left by a café with no photos
+  box.className = "photo-row";
+  box.setAttribute("role", "list");
+  box.setAttribute("aria-label", `${cafe.name} photos`);
+  box.innerHTML = images
+    .map(
+      (src, i) => `
+      <div role="listitem" class="photo-item">
+        <button class="photo-tile" data-action="open-photo" data-src="${esc(src)}"
+          aria-label="Open ${esc(photoAlt(cafe, i))}">
+          <img src="${esc(src)}" alt="${esc(photoAlt(cafe, i))}" loading="lazy" />
+        </button>
+      </div>`,
+    )
+    .join("");
+
+  if (toggle) toggle.hidden = images.length <= PHOTO_ROW_LIMIT;
+  setPhotosExpanded(false); // every café opens with the row collapsed
 }
 
-/* ── Info tab: rows without data are left out ─────────────── */
+// Collapsed: one sideways row. Expanded: the same tiles as a grid, in place.
+function setPhotosExpanded(expanded) {
+  const box = document.getElementById("pf-photos");
+  const toggle = document.getElementById("pf-photos-toggle");
+  if (!box || box.classList.contains("photo-empty")) return;
+  box.className = expanded ? "photo-grid" : "photo-row";
+  if (!expanded) box.scrollLeft = 0;
+  if (toggle) {
+    toggle.setAttribute("aria-expanded", String(expanded));
+    toggle.textContent = expanded ? "Show less" : "See all";
+  }
+}
+
+function togglePhotos() {
+  const toggle = document.getElementById("pf-photos-toggle");
+  const wasExpanded = toggle && toggle.getAttribute("aria-expanded") === "true";
+  setPhotosExpanded(!wasExpanded);
+  // Collapsing a long grid: bring the section heading back into view
+  if (wasExpanded) {
+    const head = document.getElementById("pf-photos-h");
+    if (head && head.getBoundingClientRect().top < 70)
+      head.scrollIntoView({ block: "start" });
+  }
+}
+
+/* ── Info: rows without data are left out ─────────────────── */
 
 function renderInfo(cafe) {
   const info = document.getElementById("pf-info");
+  const section = document.getElementById("pf-info-section");
   if (!info) return;
   const row = (icon, label, value) =>
     value
@@ -199,6 +207,10 @@ function renderInfo(cafe) {
     row("pin", "Address", cafe.address) +
     row("clock", "Hours", cafe.hours) +
     row("phone", "Contact", cafe.contact);
+
+  // The address is already in the info card, so a card holding only the
+  // address would just repeat it.
+  if (section) section.hidden = !cafe.hours && !cafe.contact;
 }
 
 function shareCafe() {

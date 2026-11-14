@@ -1,4 +1,4 @@
-<!-- BACK / SHARE ROW (above the gallery, never on top of a photo) -->
+<!-- BACK / SHARE ROW -->
 <div class="pf-bar">
   <button
     class="round-btn"
@@ -12,10 +12,7 @@
   </button>
 </div>
 
-<!-- FEATURED GALLERY (rendered by js/profile.js from the café's images) -->
-<div id="pf-gallery"></div>
-
-<!-- INFO CARD -->
+<!-- 1. INFO CARD: who the café is, first -->
 <section class="card pf-card">
   <div class="pf-top">
     <span id="pf-tile"></span>
@@ -56,43 +53,34 @@
   </div>
 </section>
 
-<!-- TABS -->
-<div class="seg pf-tabs" role="group" aria-label="Café sections">
-  <button
-    class="seg-btn ptab on"
-    data-tab="today"
-    aria-pressed="true"
-    data-action="profile-tab"
-  >
-    Today
-  </button>
-  <button
-    class="seg-btn ptab"
-    data-tab="photos"
-    aria-pressed="false"
-    data-action="profile-tab"
-  >
-    Photos
-  </button>
-  <button
-    class="seg-btn ptab"
-    data-tab="info"
-    aria-pressed="false"
-    data-action="profile-tab"
-  >
-    Info
-  </button>
-</div>
+<!-- 2. ON THE BOARD TODAY -->
+<section class="pf-section board" aria-labelledby="pf-board-h">
+  <h2 id="pf-board-h">On the board today</h2>
+  <ul id="pf-board"></ul>
+</section>
 
-<div class="tab-content on" id="tab-today">
-  <section class="board">
-    <h2>On the board today</h2>
-    <ul id="pf-board"></ul>
-  </section>
-</div>
+<!-- 3. PHOTOS — the only place photos appear on this page -->
+<section class="pf-section" aria-labelledby="pf-photos-h">
+  <div class="pf-sec-head">
+    <h2 class="pf-sec-title" id="pf-photos-h">
+      Photos <span class="pf-count" id="pf-photo-count"></span>
+    </h2>
+    <button
+      class="text-btn"
+      id="pf-photos-toggle"
+      aria-expanded="false"
+      aria-controls="pf-photos"
+      data-action="toggle-photos"
+      hidden
+    >
+      See all
+    </button>
+  </div>
+  <div id="pf-photos"></div>
+</section>
 
-<div class="tab-content" id="tab-photos"></div>
-
-<div class="tab-content" id="tab-info">
+<!-- 4. INFO — hidden when it would only repeat the address -->
+<section class="pf-section" id="pf-info-section" aria-labelledby="pf-info-h">
+  <h2 class="pf-sec-title" id="pf-info-h">Info</h2>
   <dl class="card info-list" id="pf-info"></dl>
-</div>
+</section>

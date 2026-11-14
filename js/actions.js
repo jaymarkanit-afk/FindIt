@@ -36,7 +36,7 @@ const ACTIONS = {
 
   // Café profile
   "open-photo": (el) => openPhotoModal(el.dataset.src),
-  "profile-tab": (el) => showProfileTab(el.dataset.tab),
+  "toggle-photos": () => togglePhotos(),
   "share-cafe": () => shareCafe(),
   directions: () => showCafeOnMap(),
   "save-cafe": (el) => saveProfile(el),

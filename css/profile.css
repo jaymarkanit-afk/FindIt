@@ -1,120 +1,17 @@
 /* ═══════════════════════════════════════════════════════════════
-   CAFÉ PROFILE
+   CAFÉ PROFILE — one scroll: info card, board, photos, info
 ═══════════════════════════════════════════════════════════════ */
 
-/* ── Back / share row, above the gallery ──────────────────── */
+/* ── Back / share row ─────────────────────────────────────── */
 .pf-bar {
   display: flex;
   justify-content: space-between;
   padding: 12px var(--gutter) 10px;
 }
 
-/* ── Featured gallery: 3 columns x 2 rows ─────────────────── */
-.pf-gallery {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 6px;
-  height: 230px;
-  margin: 0 var(--gutter);
-  border-radius: 18px; /* outer corners */
-  overflow: hidden;
-}
-
-.g-cell {
-  min-width: 0;
-  min-height: 0;
-  border-radius: 6px; /* inner corners */
-  overflow: hidden;
-  background: var(--placeholder);
-}
-
-.g-cell img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* 3+ photos: featured spans 2 columns and both rows */
-.pf-gallery.g3 .g-main {
-  grid-column: span 2;
-  grid-row: span 2;
-}
-
-/* 2 photos: side by side */
-.pf-gallery.g2 {
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr;
-}
-
-/* 1 photo: full width */
-.pf-gallery.g1 {
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
-}
-
-/* Dark "+N / See all photos" tile */
-.g-more {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  padding: 4px;
-  background: var(--ink-surface);
-  color: var(--on-ink);
-  text-align: center;
-}
-
-.g-more-n {
-  font-family: var(--font-d);
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1.1;
-}
-
-.g-more-l {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--on-ink-muted);
-}
-
-/* No photos: compact dashed box (the logo is never used as a cover) */
-.pf-gallery-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  margin: 0 var(--gutter);
-  padding: 20px 16px;
-  text-align: center;
-  border: 1.5px dashed var(--control-border);
-  border-radius: 18px;
-  color: var(--muted);
-  font-size: 13.5px;
-}
-
-.pf-gallery-empty .ico {
-  width: 24px;
-  height: 24px;
-  margin-bottom: 4px;
-}
-
-.pf-gallery-empty strong {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-@media (min-width: 700px) {
-  .pf-gallery {
-    height: 320px;
-  }
-}
-
-/* ── Info card, directly below the gallery ────────────────── */
+/* ── Info card ────────────────────────────────────────────── */
 .pf-card {
-  margin: 12px var(--gutter) 0;
+  margin: 0 var(--gutter);
   padding: 16px;
 }
 
@@ -203,21 +100,54 @@
   fill: currentColor;
 }
 
-/* ── Tabs ─────────────────────────────────────────────────── */
-.pf-tabs {
-  margin: 16px var(--gutter) 14px;
+/* ── Sections below the info card ────────────────────────── */
+.pf-section {
+  margin: 22px var(--gutter) 0;
 }
 
-.tab-content {
-  display: none;
-  padding: 0 var(--gutter);
+.pf-sec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
-.tab-content.on {
-  display: block;
+.pf-sec-title {
+  font-family: var(--font-d);
+  font-size: 18px;
+  font-weight: 700;
 }
 
-/* Today: dark "menu board" */
+.pf-sec-title + .card {
+  margin-top: 10px;
+}
+
+.pf-count {
+  margin-left: 4px;
+  font-family: var(--font-b);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* Plain text button ("See all" / "Show less") with a 44px hit area */
+.text-btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 4px;
+  margin-right: -4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.text-btn:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── On the board today: dark "menu board" ────────────────── */
 .board {
   padding: 18px 18px 8px;
   background: var(--ink-surface);
@@ -264,32 +194,93 @@
   color: var(--on-ink-muted);
 }
 
-/* Photos: 2 columns, first photo spans both */
-.photo-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.photo-cell {
-  aspect-ratio: 1 / 1;
+/* ── Photos ───────────────────────────────────────────────── */
+.photo-tile {
+  display: block;
+  width: 100%;
+  height: 100%;
   border-radius: var(--r-photo);
   overflow: hidden;
   background: var(--placeholder);
 }
 
-.photo-cell:first-child {
-  grid-column: 1 / -1;
-  aspect-ratio: 16 / 10;
-}
-
-.photo-cell img {
+.photo-tile img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Info */
+/* Collapsed: one row that scrolls sideways (touch, trackpad, or Tab
+   between tiles). It bleeds to the screen edges on phones and never
+   widens the page. */
+.photo-row {
+  display: flex;
+  gap: 8px;
+  margin: 0 calc(-1 * var(--gutter));
+  padding: 2px var(--gutter) 8px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: thin;
+}
+
+.photo-row .photo-item {
+  flex: 0 0 150px;
+  height: 180px;
+  scroll-snap-align: start;
+}
+
+/* Expanded: the same tiles as a grid, in place */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.photo-grid .photo-item {
+  aspect-ratio: 5 / 6; /* same shape as the 150 x 180 row tiles */
+}
+
+@media (min-width: 700px) {
+  .photo-row {
+    margin: 0;
+    padding: 2px 0 8px;
+    scroll-padding-inline: 0;
+  }
+
+  .photo-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* No photos: compact dashed box (the logo is never used as a photo) */
+.photo-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 20px 16px;
+  text-align: center;
+  border: 1.5px dashed var(--control-border);
+  border-radius: 18px;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.photo-empty .ico {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+}
+
+.photo-empty strong {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ── Info ─────────────────────────────────────────────────── */
 .info-list {
   padding: 4px 16px;
 }

@@ -10,16 +10,15 @@ order in `findit.html` matters:
 | 3   | `store.js`        | `localStorage` helpers and `userState` (alerts, keeps, saved cafés, sips, owner posts). Shared helpers: `getCafe`, `getAllPosts`, `esc`, `timeAgo`, `ico`, `cafeTile`, `openCafe`. |
 | 4   | `geolocation.js`  | `locateMe`, `zoomToUserLocation`, `calculateDistance`, `updateGeoInfoCard`.                                                                               |
 | 5   | `map.js`          | Leaflet map: `initializeMap`, `addCafeMarkers`, `setUserMarker`, `showCafeOnMap`, `displayNearbyCafesList`.                                               |
-| 6   | `profile.js`      | Café profile: `loadCafeProfile`, featured gallery, info card, "On the board today" panel, photo grid, info, photo viewer.                                                          |
+| 6   | `profile.js`      | Café profile: `loadCafeProfile`, one scroll: info card, "On the board today", Photos (swipe row that expands to a grid in place), Info, photo viewer.                                                          |
 | 7   | `feed.js`         | Everything rendered from posts: `postCardHTML`, `renderFeed`, `renderFreshStrip`, alerts list and badge, Saved page, sidebar. `renderPostViews()` redraws all of it. |
 | 8   | `search.js`       | `handleSearch`, `submitSearch`, `displaySearchResults`, `cafeMatches`.                                                                                    |
 | 9   | `filter.js`       | `currentFilter`, `quickFilter` (home segmented control), drawer filters, `getFilteredCafes`, `filterAndDisplayCafes`.                                     |
 | 10  | `ui.js`           | `showPanel`, `toggleTheme`, `showToast`, `toggleNotif`.                                                                                                   |
 | 11  | `interactions.js` | `bumpRxn` (sips), `toggleFollow` (Get alerts), `doSave` (Keep), `saveProfile`, `postCta`, sharing.                                                        |
-| 12  | `tabs.js`         | `setPTab` for the profile tabs.                                                                                                                           |
-| 13  | `owner.js`        | Owner sign-in gate and the "Post an update" composer: `annType`, `annPhoto`, `updateAnnPreview`, `postAnn`.                                               |
-| 14  | `actions.js`      | All event wiring. Markup uses `data-action` (no inline handlers); one delegated listener per container looks the action up in `ACTIONS`. |
-| 15  | `main.js`         | Waits for `pagesReady`, then renders everything and restores the last panel.                                                                              |
+| 12  | `owner.js`        | Owner sign-in gate and the "Post an update" composer: `annType`, `annPhoto`, `updateAnnPreview`, `postAnn`.                                               |
+| 13  | `actions.js`      | All event wiring. Markup uses `data-action` (no inline handlers); one delegated listener per container looks the action up in `ACTIONS`. |
+| 14  | `main.js`         | Waits for `pagesReady`, then renders everything and restores the last panel.                                                                              |
 
 ## Data
 
