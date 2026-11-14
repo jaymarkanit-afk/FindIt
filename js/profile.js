@@ -68,8 +68,9 @@ function renderInfoCard(cafe) {
   // Open status only when the data has hours
   const open = document.getElementById("pf-open");
   if (open) {
-    open.hidden = !cafe.hours;
-    open.innerHTML = cafe.hours ? `${ico("clock", "sm")}${esc(cafe.hours)}` : "";
+    const status = openStatus(cafe);
+    open.hidden = !status;
+    open.innerHTML = status ? `${ico("clock", "sm")}${esc(status.label)}` : "";
   }
 
   const tags = document.getElementById("pf-tags");
@@ -102,9 +103,9 @@ function renderBoard(cafe) {
     ? items
         .map((p) => {
           const type = POST_TYPES[p.type] || POST_TYPES.new;
-          const title =
-            (p.event && p.event.title) || (p.job && p.job.role) || p.title;
-          const info = postDetails(p) || p.caption;
+          const title = postHeadline(p);
+          const d = postData(p);
+          const info = postDetails(p) || d.description || "";
           return `
           <li>
             <div class="board-meta">
@@ -205,12 +206,12 @@ function renderInfo(cafe) {
       : "";
   info.innerHTML =
     row("pin", "Address", cafe.address) +
-    row("clock", "Hours", cafe.hours) +
+    row("clock", "Hours", hoursLabel(cafe)) +
     row("phone", "Contact", cafe.contact);
 
   // The address is already in the info card, so a card holding only the
   // address would just repeat it.
-  if (section) section.hidden = !cafe.hours && !cafe.contact;
+  if (section) section.hidden = !hoursLabel(cafe) && !cafe.contact;
 }
 
 function shareCafe() {

@@ -57,7 +57,7 @@ function locateMe() {
 
       // Re-render everything that shows or sorts by distance
       filterAndDisplayCafes();
-      populateNearYouCafes();
+      renderNearYou();
 
       if (map) {
         setUserMarker(); // replaces any previous "you are here" marker

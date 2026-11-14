@@ -1,106 +1,232 @@
 /* ═══════════════════════════════════════════════════════════════
-   FEED — renders everything that comes from the posts array:
-   home feed, "Fresh right now", alerts, saved page, sidebar
-   ═══════════════════════════════════════════════════════════════ */
+   BOARD — renders everything that comes from the posts array:
+   the "Today in Butuan" board and its cards, the "Near you" row,
+   alerts, the Saved page and the right rail.
 
-function sipLabel(count) {
-  return count === 1 ? "sip" : "sips";
-}
+   Each update type has its own card shape (menu board, ticket, coupon,
+   job card) and they all share one small footer.
+   ═══════════════════════════════════════════════════════════════ */
 
 function sipCount(post) {
   return (post.sips || 0) + (inState("sips", post.id) ? 1 : 0);
 }
 
-function alertButtonHTML(cafe) {
-  const on = inState("alerts", cafe.id);
-  return `
-    <button class="alert-btn${on ? " on" : ""}" data-cafe="${cafe.id}"
-      aria-pressed="${on}" data-action="toggle-alerts">
-      ${ico("bell", "sm")}<span class="alert-label">${on ? "Alerts on" : "Get alerts"}</span>
-    </button>`;
+function commentCount(post) {
+  return getComments(post.id).length;
 }
 
-// One feed card. The Owner preview reuses it (made non-interactive in CSS).
-function postCardHTML(post) {
-  const cafe = getCafe(post.cafeId);
-  if (!cafe) return "";
-  const type = POST_TYPES[post.type] || POST_TYPES.new;
-  const details = postDetails(post);
-  const street = cafe.address.split(",")[0];
-  const photo = post.photo || cafe.img;
+/* ── Shared footer: café on the left, sip / comment / keep on the right ── */
 
-  // Inset row with a dark button — events and jobs only
-  let inset = "";
-  if (post.type === "event" || post.type === "hiring") {
-    const done = inState("cta", post.id);
-    const isEvent = post.type === "event";
-    const insetTitle = isEvent
-      ? (post.event && post.event.title) || post.title
-      : (post.job && post.job.role) || post.title;
-    const label = isEvent
-      ? done
-        ? "Reminder set"
-        : "Remind me"
-      : done
-        ? "Interest sent"
-        : "Apply";
-    inset = `
-      <div class="post-inset">
-        <div>
-          <div class="inset-title">${esc(insetTitle)}</div>
-          ${details ? `<div class="inset-info">${esc(details)}</div>` : ""}
-        </div>
-        <button class="btn btn-dark${done ? " done" : ""}" aria-pressed="${done}"
-          data-action="post-cta">${label}</button>
-      </div>`;
-  }
-
+function cardFooterHTML(post, cafe) {
+  const status = openStatus(cafe);
+  const meta = [status && status.label.split(" · ")[0], cafeStreet(cafe), cafe.distance + " km"]
+    .filter(Boolean)
+    .join(" · ");
   const sipped = inState("sips", post.id);
   const kept = inState("keeps", post.id);
-  const count = sipCount(post);
+  const threadId = `thread-${post.id}`;
 
   return `
-    <article class="post" data-post="${post.id}">
-      <header class="post-head">
-        <button class="post-cafe" data-action="open-cafe" data-cafe="${cafe.id}"
-          aria-label="Open ${esc(cafe.name)}">
-          ${cafeTile(cafe)}
-          <span class="post-cafe-text">
-            <span class="post-name">${esc(cafe.name)}</span>
-            <span class="post-street">${esc(street)}</span>
-          </span>
+    <footer class="card-foot">
+      <button class="card-cafe" data-action="open-cafe" data-cafe="${cafe.id}">
+        ${cafeLogoTile(cafe, "sm")}
+        <span class="card-cafe-text">
+          <span class="card-cafe-name">${esc(cafe.name)}</span>
+          <span class="card-cafe-meta">${status && status.open ? '<span class="open-dot" aria-hidden="true"></span>' : ""}${esc(meta)}</span>
+        </span>
+      </button>
+      <div class="card-acts">
+        <button class="mini-pill sip${sipped ? " on" : ""}" data-action="sip" aria-pressed="${sipped}">
+          ${ico("cup", "sm fillable")}<span class="sr-only">Sip,</span>
+          <span class="rxn-n">${sipCount(post)}</span><span class="sr-only"> sips</span>
         </button>
-        ${alertButtonHTML(cafe)}
-      </header>
-      <div class="post-photo">
-        <img src="${esc(photo)}" alt="${esc(type.label + " at " + cafe.name)}" loading="lazy" />
-        <span class="tag-chip ${type.cls}">${type.label}<span class="dot">·</span>${agoHTML(post.time)}</span>
+        <button class="mini-pill comment-pill" data-action="toggle-thread"
+          aria-expanded="false" aria-controls="${threadId}">
+          ${ico("comment", "sm")}<span class="sr-only">Comments,</span>
+          <span class="cmt-n">${commentCount(post)}</span>
+        </button>
+        <button class="mini-round keep${kept ? " on" : ""}" data-action="keep"
+          aria-pressed="${kept}" aria-label="Keep">
+          ${ico("bookmark", "sm fillable")}
+        </button>
       </div>
-      <p class="post-caption">${esc(post.caption)}${
-        post.type === "promo" && details
-          ? `<span class="muted">${esc(details)}</span>`
-          : ""
-      }</p>
-      ${inset}
-      <footer class="post-actions">
-        <button class="pill sip${sipped ? " on" : ""}" aria-pressed="${sipped}" data-action="sip">
-          ${ico("cup", "sm")}<span><span class="rxn-n">${count}</span> <span class="rxn-l">${sipLabel(count)}</span></span>
-        </button>
-        <button class="pill keep${kept ? " on" : ""}" aria-pressed="${kept}" data-action="keep">
-          ${ico("bookmark", "sm fillable")}<span class="keep-label">${kept ? "Kept" : "Keep"}</span>
-        </button>
-        <button class="round-btn" aria-label="Share this update" data-action="share-post">
-          ${ico("share")}
-        </button>
-      </footer>
+    </footer>
+    <div class="thread" id="${threadId}" hidden>
+      <ul class="thread-list" aria-label="Comments"></ul>
+      <form class="thread-form" data-post="${post.id}">
+        <label class="sr-only" for="${threadId}-input">Comment on ${esc(postHeadline(post))}</label>
+        <input class="fi" id="${threadId}-input" name="text" type="text" autocomplete="off"
+          maxlength="${COMMENT_MAX}" placeholder="Ask the café or say something" />
+        <button class="btn btn-dark" type="submit">Send</button>
+      </form>
+    </div>`;
+}
+
+// Small uppercase label, e.g. "NEW ON THE MENU · 2 hr ago"
+function cardTagHTML(text, cls, post) {
+  return `<p class="card-tag ${cls}">${text}<span class="card-time"> · ${agoHTML(post.time)}</span></p>`;
+}
+
+/* ── Card shapes ──────────────────────────────────────────── */
+
+// NEW ITEM — menu-board card: photo one third, content on the right
+function newCardHTML(post, cafe) {
+  const d = postData(post);
+  const photo = post.photo || "";
+  return `
+    <div class="card-main menu-card${photo ? "" : " no-photo"}">
+      ${photo ? `<div class="menu-photo"><img src="${esc(photo)}" alt="${esc(d.item || "New item")} at ${esc(cafe.name)}" loading="lazy" /></div>` : ""}
+      <div class="menu-body">
+        ${cardTagHTML("New on the menu", "tag-text-new", post)}
+        <h3 class="menu-item">${esc(d.item || "New on the menu")}</h3>
+        ${d.description ? `<p class="card-desc">${esc(d.description)}</p>` : ""}
+        ${d.price || d.availability ? `
+        <div class="menu-meta">
+          ${d.price ? `<span class="menu-price">${esc(d.price)}</span>` : ""}
+          ${d.availability ? `<span class="avail-chip">${esc(d.availability)}</span>` : ""}
+        </div>` : ""}
+      </div>
+    </div>`;
+}
+
+// EVENT — ticket: dark day stub, dashed tear line, details
+function eventCardHTML(post) {
+  const d = postData(post);
+  const going = inState("cta", post.id);
+  return `
+    <div class="card-main ticket">
+      <div class="ticket-stub">
+        ${d.day ? `<span class="stub-day">${esc(d.day)}</span>` : ""}
+        ${d.time ? `<span class="stub-time">${esc(d.time)}</span>` : ""}
+      </div>
+      <div class="ticket-body">
+        ${cardTagHTML("Event", "tag-text-event", post)}
+        <h3 class="card-title">${esc(d.title || "Event")}</h3>
+        ${d.description ? `<p class="card-desc">${esc(d.description)}</p>` : ""}
+        <div class="card-row">
+          ${d.price ? `<span class="card-price">${esc(d.price)}</span>` : ""}
+          <button class="btn btn-dark toggle-btn${going ? " done" : ""}" data-action="post-cta"
+            aria-pressed="${going}">${going ? `${ico("check", "sm")}Going` : "I am going"}</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+// PROMO — coupon with a dashed border
+function promoCardHTML(post) {
+  const d = postData(post);
+  const kept = inState("keeps", post.id);
+  const until = d.validUntil ? formatShortDate(d.validUntil) : "";
+  return `
+    <div class="card-main coupon">
+      ${cardTagHTML("Promo", "tag-text-promo", post)}
+      <h3 class="card-title">${esc(d.title || "Promo")}</h3>
+      ${d.offer ? `<p class="coupon-offer">${esc(d.offer)}</p>` : ""}
+      ${until ? `<p class="coupon-valid">Valid until ${esc(until)}</p>` : ""}
+      <button class="btn coupon-keep${kept ? " done" : ""}" data-action="keep"
+        aria-pressed="${kept}">${kept ? `${ico("check", "sm")}Promo kept` : "Keep this promo"}</button>
+    </div>`;
+}
+
+// HIRING — compact job card, no photo
+function hiringCardHTML(post) {
+  const d = postData(post);
+  const applied = inState("cta", post.id);
+  const line = [d.schedule, d.perks].filter(Boolean).join(" · ");
+  return `
+    <div class="card-main job">
+      <span class="job-icon" aria-hidden="true">${ico("briefcase")}</span>
+      <div class="job-body">
+        ${cardTagHTML("Hiring", "tag-text-hiring", post)}
+        <h3 class="job-role">${esc(d.role || "Open role")}</h3>
+        ${line ? `<p class="job-line">${esc(line)}</p>` : ""}
+        ${d.description ? `<p class="job-line">${esc(d.description)}</p>` : ""}
+      </div>
+      <button class="btn btn-dark toggle-btn${applied ? " done" : ""}" data-action="post-cta"
+        aria-pressed="${applied}">${applied ? `${ico("check", "sm")}Applied` : "Apply"}</button>
+    </div>`;
+}
+
+const CARD_RENDERERS = {
+  new: newCardHTML,
+  event: eventCardHTML,
+  promo: promoCardHTML,
+  hiring: hiringCardHTML,
+};
+
+// One board card. The Owner preview reuses it (made inert there).
+function postCardHTML(post) {
+  const cafe = getCafe(post.cafeId);
+  const render = CARD_RENDERERS[post.type];
+  if (!cafe || !render) return "";
+  return `
+    <article class="post post-${post.type}" data-post="${esc(post.id)}"
+      aria-label="${esc(POST_TYPES[post.type].label + ": " + postHeadline(post) + ", " + cafe.name)}">
+      ${render(post, cafe)}
+      ${cardFooterHTML(post, cafe)}
     </article>`;
 }
 
-/* ── Home feed ────────────────────────────────────────────── */
+/* ── Comment thread inside a card ─────────────────────────── */
 
-// Feed filter → post type. Other filters only narrow by café.
+// Comments are user text, so they are built with textContent, never innerHTML.
+function renderThread(card) {
+  const list = card.querySelector(".thread-list");
+  if (!list) return;
+  const comments = getComments(card.dataset.post);
+  list.replaceChildren();
+  if (!comments.length) {
+    const li = document.createElement("li");
+    li.className = "thread-empty";
+    li.textContent = "No comments yet. Ask the café something.";
+    list.append(li);
+    return;
+  }
+  comments.forEach((c) => {
+    const li = document.createElement("li");
+    const name = document.createElement("strong");
+    name.textContent = c.authorName;
+    const text = document.createElement("span");
+    text.textContent = " " + c.text;
+    li.append(name, text);
+    list.append(li);
+  });
+}
+
+function toggleThread(pill) {
+  const card = pill.closest("[data-post]");
+  const thread = card && card.querySelector(".thread");
+  if (!thread) return;
+  const open = thread.hidden;
+  thread.hidden = !open;
+  pill.setAttribute("aria-expanded", String(open));
+  if (open) {
+    renderThread(card);
+    card.querySelector(".thread-form input").focus();
+  }
+}
+
+function sendComment(form) {
+  const input = form.querySelector("input");
+  const comment = addComment(form.dataset.post, input.value);
+  if (!comment) {
+    input.focus();
+    return;
+  }
+  input.value = "";
+  // .post, not [data-post]: the form carries data-post itself
+  const card = form.closest(".post");
+  renderThread(card);
+  card.querySelector(".cmt-n").textContent = commentCount(getPost(form.dataset.post));
+  input.focus();
+}
+
+/* ── The board ────────────────────────────────────────────── */
+
+// Board filter → post type. Other filters only narrow by café.
 const FILTER_POST_TYPE = {
   findItNew: "new",
+  findItPromo: "promo",
   findItEvents: "event",
   findItJob: "hiring",
 };
@@ -114,37 +240,64 @@ function getFilteredPosts() {
 }
 
 function renderFeed() {
-  const feed = document.getElementById("feed");
-  if (!feed) return;
+  const board = document.getElementById("feed");
+  if (!board) return;
   const list = getFilteredPosts();
-  feed.innerHTML = list.length
+  board.innerHTML = list.length
     ? list.map((p) => postCardHTML(p)).join("")
-    : '<div class="empty">No updates match this filter yet.</div>';
+    : '<div class="empty">Nothing on the board for this filter yet.</div>';
 }
 
-/* ── "Fresh right now" strip: latest post per café ────────── */
+/* ── Heading: "SATURDAY, 14 NOVEMBER" ─────────────────────── */
 
-function renderFreshStrip() {
-  const strip = document.getElementById("fresh-strip");
-  if (!strip) return;
-  const seen = new Set();
-  const latest = getAllPosts().filter((p) => {
-    if (seen.has(p.cafeId) || !getCafe(p.cafeId)) return false;
-    seen.add(p.cafeId);
-    return true;
-  });
-  strip.innerHTML = latest
-    .slice(0, 8)
-    .map((p) => {
-      const cafe = getCafe(p.cafeId);
-      return `
-      <button class="fresh-card" data-action="open-cafe" data-cafe="${cafe.id}">
-        <span class="fresh-top">${cafeTile(cafe, "sm")}<span class="fresh-time">${agoHTML(p.time)}</span></span>
-        <span class="fresh-what">${esc(p.title)}</span>
-        <span class="fresh-name">${esc(cafe.name)}</span>
-      </button>`;
-    })
-    .join("");
+function renderTodayHeading(now = new Date()) {
+  const el = document.getElementById("today-date");
+  if (!el) return;
+  const weekday = now.toLocaleDateString("en-GB", { weekday: "long" });
+  const dayMonth = now.toLocaleDateString("en-GB", { day: "numeric", month: "long" });
+  el.textContent = `${weekday}, ${dayMonth}`.toUpperCase();
+  el.setAttribute("datetime", now.toISOString().slice(0, 10));
+}
+
+/* ── "Open now near you" / "Near you" row ─────────────────── */
+
+const NEAR_MAX = 8;
+
+function renderNearYou() {
+  const row = document.getElementById("near-row");
+  const title = document.getElementById("near-title");
+  if (!row) return;
+
+  // Only filter by open status when the data actually has hours
+  const anyHours = cafeDatabase.some((c) => openStatus(c));
+  const cafes = [...cafeDatabase]
+    .filter((c) => !anyHours || (openStatus(c) || {}).open)
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, NEAR_MAX);
+
+  if (title) {
+    title.innerHTML = anyHours
+      ? '<span class="open-dot" aria-hidden="true"></span>Open now near you'
+      : "Near you";
+  }
+
+  row.innerHTML = cafes.length
+    ? cafes
+        .map(
+          (cafe) => `
+      <div role="listitem" class="near-item">
+        <button class="near-tile" data-action="open-cafe" data-cafe="${cafe.id}">
+          <span class="near-top">
+            ${cafeLogoTile(cafe)}
+            <span class="dist-chip">${cafe.distance} km</span>
+          </span>
+          <span class="near-name">${esc(cafe.name)}</span>
+          <span class="near-street">${esc(cafeStreet(cafe))}</span>
+        </button>
+      </div>`,
+        )
+        .join("")
+    : '<div class="empty">No cafés are open right now.</div>';
 }
 
 /* ── Alerts: posts from cafés the user gets alerts for ────── */
@@ -183,10 +336,10 @@ function renderNotifications() {
       const unread = !inState("seen", p.id);
       return `
       <button class="notif-row${unread ? " unread" : ""}" data-action="open-cafe" data-cafe="${cafe.id}">
-        ${cafeTile(cafe, "sm")}
+        ${cafeLogoTile(cafe, "sm")}
         <span class="notif-body">
           <span class="notif-n">${esc(cafe.name)}</span>
-          <span class="notif-m">${esc(p.title)}</span>
+          <span class="notif-m">${esc(postHeadline(p))}</span>
           <span class="notif-t">${type.label} · ${agoHTML(p.time)}${unread ? " · New" : ""}</span>
         </span>
       </button>`;
@@ -234,52 +387,67 @@ function renderSaved() {
           const type = POST_TYPES[p.type] || POST_TYPES.new;
           return `
           <button class="rec-row" data-action="open-cafe" data-cafe="${cafe.id}">
-            <img class="rec-thumb" src="${esc(p.photo || cafe.img)}" alt="" loading="lazy" />
+            ${cafeLogoTile(cafe)}
             <span class="rec-info">
-              <span class="rec-name">${esc(p.title)}</span>
+              <span class="rec-name">${esc(postHeadline(p))}</span>
               <span class="rec-sub">${esc(cafe.name)} · ${agoHTML(p.time)}</span>
             </span>
             <span class="tag-chip ${type.cls}">${type.label}</span>
           </button>`;
         })
         .join("")
-    : '<div class="empty">Nothing kept yet. Tap "Keep" on an update in the feed.</div>';
+    : '<div class="empty">Nothing kept yet. Tap Keep on anything on the board.</div>';
 }
 
-/* ── Desktop sidebar: events and jobs ─────────────────────── */
+/* ── Right rail: "This week" mini tickets and "Now hiring" ─ */
 
 function renderSidebar() {
-  const fill = (elId, type, emptyText) => {
-    const el = document.getElementById(elId);
-    if (!el) return;
-    const items = getAllPosts()
-      .filter((p) => p.type === type)
-      .slice(0, 4);
-    el.innerHTML = items.length
+  const events = document.getElementById("side-events");
+  if (events) {
+    const items = getAllPosts().filter((p) => p.type === "event").slice(0, 4);
+    events.innerHTML = items.length
       ? items
           .map((p) => {
+            const d = postData(p);
             const cafe = getCafe(p.cafeId);
-            const heading =
-              type === "event"
-                ? (p.event && p.event.title) || p.title
-                : (p.job && p.job.role) || p.title;
-            const sub = [cafe.name, postDetails(p)].filter(Boolean).join(" · ");
             return `
-            <button class="side-item" data-action="open-cafe" data-cafe="${cafe.id}">
-              <span class="side-item-title">${esc(heading)}</span>
-              <span class="side-item-sub">${esc(sub)}</span>
+            <button class="mini-ticket" data-action="open-cafe" data-cafe="${cafe.id}">
+              <span class="mini-stub">
+                <span class="stub-day">${esc(d.day || "—")}</span>
+                ${d.time ? `<span class="stub-time">${esc(d.time)}</span>` : ""}
+              </span>
+              <span class="mini-body">
+                <span class="mini-title">${esc(d.title || "Event")}</span>
+                <span class="mini-sub">${esc([cafe.name, d.price].filter(Boolean).join(" · "))}</span>
+              </span>
             </button>`;
           })
           .join("")
-      : `<div class="empty">${emptyText}</div>`;
-  };
-  fill("side-events", "event", "No events posted yet.");
-  fill("side-jobs", "hiring", "No openings posted yet.");
+      : '<div class="empty">No events on the board this week.</div>';
+  }
+
+  const jobs = document.getElementById("side-jobs");
+  if (jobs) {
+    const items = getAllPosts().filter((p) => p.type === "hiring").slice(0, 4);
+    jobs.innerHTML = items.length
+      ? items
+          .map((p) => {
+            const d = postData(p);
+            const cafe = getCafe(p.cafeId);
+            return `
+            <button class="rail-job" data-action="open-cafe" data-cafe="${cafe.id}">
+              <span class="mini-title">${esc(d.role || "Open role")}</span>
+              <span class="mini-sub">${esc([cafe.name, d.schedule].filter(Boolean).join(" · "))}</span>
+            </button>`;
+          })
+          .join("")
+      : '<div class="empty">No openings right now.</div>';
+  }
 }
 
 // Re-render everything that depends on posts (after publish, on startup)
 function renderPostViews() {
-  renderFreshStrip();
+  renderNearYou();
   renderFeed();
   renderSidebar();
   renderSaved();

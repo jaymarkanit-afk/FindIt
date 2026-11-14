@@ -27,11 +27,11 @@ const ACTIONS = {
   "pick-filter": (el) => pickFilter(el),
   "apply-filter": () => applyFilter(),
 
-  // Post cards (the post id comes from the enclosing [data-post])
+  // Board cards (the post id comes from the enclosing [data-post])
   "toggle-alerts": (el) => toggleFollow(el),
   sip: (el) => bumpRxn(el),
   keep: (el, e) => doSave(el, e),
-  "share-post": (el) => sharePost(el.closest("[data-post]").dataset.post),
+  "toggle-thread": (el) => toggleThread(el),
   "post-cta": (el) => postCta(el, el.closest("[data-post]").dataset.post),
 
   // Café profile
@@ -45,7 +45,8 @@ const ACTIONS = {
   locate: () => locateMe(),
   "zoom-to-me": () => zoomToUserLocation(),
 
-  // Owner
+  // Owner (the account button in the top bar opens the café sign-in)
+  account: () => showPanel("owner"),
   "owner-login": () => ownerLogin(),
   "owner-logout": () => ownerLogout(),
   "ann-type": (el) => annType(el),
@@ -104,5 +105,13 @@ function onSearchKeydown(e) {
   });
   pages.addEventListener("change", (e) => {
     if (e.target.id === "ann-photo") annPhoto(e.target);
+  });
+
+  // Comment threads inside board cards
+  pages.addEventListener("submit", (e) => {
+    const form = e.target.closest(".thread-form");
+    if (!form) return;
+    e.preventDefault();
+    sendComment(form);
   });
 })();

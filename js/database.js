@@ -2,7 +2,10 @@
    DATABASE — cafés and their posts
    ═══════════════════════════════════════════════════════════════ */
 
-// Optional café fields: `logo` (image path), `hours`, `contact`.
+// Optional café fields: `logo` (image path), `contact`, and
+// `hours: { open: "07:00", close: "21:00" }` (same every day; a close
+// earlier than open means past midnight). With no `hours`, the app shows
+// no open/closed status at all rather than guessing.
 // Whether a café is hiring, has events or is trending is not stored either:
 // filter.js works those out from the posts.
 // `distance` (km) is not stored here: geolocation.js computes it from the
@@ -184,14 +187,17 @@ const cafeDatabase = [
 ];
 
 /* ════════════════════════════════════════════════════════════
-   POSTS — one entry per café update.
-   type:    "new" | "promo" | "event" | "hiring"
-   time:    fixed timestamp (ms) — when the update was posted.
-   sips:    starting reaction count (the user's own sip is stored
-            separately in localStorage — see store.js)
-   event:   { title, when, price }      (type "event")
-   job:     { role, schedule }          (type "hiring")
-   promo:   { until }                   (type "promo")
+   POSTS — one entry per café update. Only cafés post.
+
+   Every post:  id, cafeId, type, time (ms), sips (starting count; the
+                user's own sip is stored separately, see store.js)
+   Then one object named after its type:
+     new:    { item, description, price, availability }   + photo
+     event:  { title, day, time, price, description }      day "FRI", time "7 PM"
+     promo:  { title, offer, validUntil }                  validUntil "YYYY-MM-DD"
+     hiring: { role, schedule, perks }
+   Unknown values stay empty and the card hides that line. Never invent
+   prices, offers or dates.
    ════════════════════════════════════════════════════════════ */
 
 const posts = [
@@ -199,117 +205,111 @@ const posts = [
     id: "p1",
     cafeId: 1,
     type: "promo",
-    title: "Sustainability Week: all drinks 20% off",
-    caption:
-      "We're celebrating local farming and sustainable sourcing this week. All drinks are 20% off, dine in only. Come support local!",
-    photo: "Images/paramount/paramount5.jpg",
     time: Date.parse("2026-11-14T17:55+08:00"),
     sips: 138,
-    promo: { until: "This week only" },
+    promo: {
+      title: "Sustainability Week",
+      offer: "All drinks 20% off this week, dine in only.",
+      validUntil: "",
+    },
   },
   {
     id: "p2",
     cafeId: 2,
     type: "new",
-    title: "New batch: Agusan Highlands single origin",
-    caption:
-      "Fresh off the roaster — our latest small batch from the Agusan del Norte highlands. Fruity, clean and smooth. Available at Alviola Village, Baan Km 3.",
-    photo: "Images/craftcoffee/craftcoffe3.jpg",
     time: Date.parse("2026-11-14T17:37+08:00"),
     sips: 109,
+    photo: "Images/craftcoffee/craftcoffe3.jpg",
+    new: {
+      item: "Agusan Highlands single origin",
+      description:
+        "Fresh off the roaster: a small batch from the Agusan del Norte highlands. Fruity, clean and smooth.",
+      price: "",
+      availability: "",
+    },
   },
   {
     id: "p3",
     cafeId: 7,
     type: "event",
-    title: "Heritage Night",
-    caption:
-      "Explore Butuan's history through antiques, local artworks and curated coffee. Limited seats, so come early.",
-    photo:
-      "https://images.unsplash.com/photo-1459257831348-f0cdd359235f?w=900&q=75",
     time: Date.parse("2026-11-14T16:57+08:00"),
     sips: 82,
-    event: { title: "Heritage Night", when: "Friday, 7 PM", price: "Free" },
+    event: {
+      title: "Heritage Night",
+      day: "FRI",
+      time: "7 PM",
+      price: "Free",
+      description:
+        "Butuan's history through antiques, local artworks and curated coffee. Limited seats, so come early.",
+    },
   },
   {
     id: "p4",
     cafeId: 8,
     type: "hiring",
-    title: "Hiring: brewer and front-of-house",
-    caption:
-      "Second Shot is growing! We're looking for passionate coffee people. Great team, flexible hours and staff perks.",
-    photo:
-      "https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=900&q=75",
     time: Date.parse("2026-11-14T14:57+08:00"),
     sips: 38,
-    job: {
+    hiring: {
       role: "Brewer & front-of-house staff",
       schedule: "Full-time & part-time",
+      perks: "Flexible hours, staff perks",
     },
   },
   {
     id: "p5",
     cafeId: 1,
     type: "event",
-    title: "Latte Art Workshop",
-    caption:
-      "Learn milk steaming and rosette patterns with our baristas. Bring a friend!",
-    photo: "Images/paramount/paramount6.jpg",
     time: Date.parse("2026-11-14T12:57+08:00"),
     sips: 97,
     event: {
       title: "Latte Art Workshop",
-      when: "Saturday, 10 AM",
+      day: "SAT",
+      time: "10 AM",
       price: "₱350",
+      description:
+        "Learn milk steaming and rosette patterns with our baristas.",
     },
   },
   {
     id: "p6",
     cafeId: 5,
     type: "hiring",
-    title: "Hiring: part-time barista",
-    caption: "Join the Fulcrum team at SM City Butuan.",
-    photo:
-      "https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=900&q=75",
     time: Date.parse("2026-11-14T09:57+08:00"),
     sips: 29,
-    job: { role: "Barista", schedule: "Part-time · SM City Butuan" },
+    hiring: { role: "Barista", schedule: "Part-time · SM City Butuan", perks: "" },
   },
   {
     id: "p7",
     cafeId: 2,
     type: "hiring",
-    title: "Hiring: head roaster",
-    caption: "Lead our roasting at Baan Km 3.",
-    photo: "Images/craftcoffee/craftcoffe5.jpg",
     time: Date.parse("2026-11-13T19:57+08:00"),
     sips: 51,
-    job: { role: "Head Roaster", schedule: "Full-time · Baan Km 3" },
+    hiring: { role: "Head Roaster", schedule: "Full-time · Baan Km 3", perks: "" },
   },
   {
     id: "p8",
     cafeId: 1,
     type: "event",
-    title: "Acoustic Sunday Sessions",
-    caption: "Chill live music every Sunday at Paramount. All welcome.",
-    photo: "Images/paramount/paramount4.jpg",
     time: Date.parse("2026-11-13T15:57+08:00"),
     sips: 63,
     event: {
       title: "Acoustic Sunday Sessions",
-      when: "Sunday, 2 PM",
+      day: "SUN",
+      time: "2 PM",
       price: "Free",
+      description: "Chill live music every Sunday at Paramount. All welcome.",
     },
   },
   {
     id: "p9",
     cafeId: 1,
     type: "hiring",
-    title: "Hiring: weekend barista and cashier",
-    caption: "Part-time positions with a friendly team. Apply at J.C. Aquino Ave.",
-    photo: "Images/paramount/paramount4.jpg",
     time: Date.parse("2026-11-13T11:57+08:00"),
     sips: 17,
-    job: { role: "Weekend Barista & Cashier", schedule: "Part-time" },
+    hiring: {
+      role: "Weekend Barista & Cashier",
+      schedule: "Part-time",
+      perks: "",
+    },
   },
 ];

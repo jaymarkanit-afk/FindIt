@@ -161,6 +161,19 @@
           <path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4" />
           <path d="m10 8-4 4 4 4M6 12h10" />
         </symbol>
+        <symbol id="i-tag" viewBox="0 0 24 24">
+          <path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z" />
+          <circle cx="8" cy="8" r="1.5" />
+        </symbol>
+        <symbol id="i-user" viewBox="0 0 24 24">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 21a8 8 0 0 1 16 0" />
+        </symbol>
+        <symbol id="i-comment" viewBox="0 0 24 24">
+          <path
+            d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4V6a1 1 0 0 1 1-1z"
+          />
+        </symbol>
         <symbol id="i-bear" viewBox="0 0 24 24">
           <circle cx="6.5" cy="6.5" r="2.5" />
           <circle cx="17.5" cy="6.5" r="2.5" />
@@ -234,6 +247,14 @@
           </button>
           <button
             class="drawer-card"
+            data-filter="findItPromo"
+            data-action="pick-filter"
+          >
+            <svg class="ico" aria-hidden="true"><use href="#i-tag" /></svg>
+            Promos
+          </button>
+          <button
+            class="drawer-card"
             data-filter="findItEvents"
             data-action="pick-filter"
           >
@@ -266,13 +287,14 @@
         href="#"
         data-action="show-panel"
         data-panel="home"
-        aria-label="FindIt home"
+        aria-label="FindIt, today"
         >Find<span>It</span></a
       >
-      <span class="loc-pill">
-        <svg class="ico sm" aria-hidden="true"><use href="#i-pin" /></svg>
-        Butuan City
-      </span>
+      <nav class="top-links" aria-label="Main">
+        <a class="top-link on" href="#" data-action="show-panel" data-panel="home" aria-current="page">Today</a>
+        <a class="top-link" href="#map" data-action="show-panel" data-panel="map">Map</a>
+        <a class="top-link" href="#saved" data-action="show-panel" data-panel="saved">Saved</a>
+      </nav>
       <div class="topbar-search">
         <label class="search-field">
           <svg class="ico sm" aria-hidden="true"><use href="#i-search" /></svg>
@@ -299,6 +321,13 @@
           <svg class="ico" aria-hidden="true">
             <use id="theme-ico" href="#i-moon" />
           </svg>
+        </button>
+        <button
+          class="icon-btn"
+          data-action="account"
+          aria-label="Account: café owner sign-in"
+        >
+          <svg class="ico" aria-hidden="true"><use href="#i-user" /></svg>
         </button>
       </div>
     </header>
@@ -337,22 +366,16 @@
           <div class="panel" id="panel-owner"></div>
         </main>
 
-        <!-- SIDEBAR (desktop) — rendered from the database -->
-        <aside class="side-col" aria-label="More around Butuan">
-          <div class="side-sec">
-            <div class="side-title">
-              Closest cafés <span class="dist-from"></span>
-            </div>
-            <div class="rec-stack" id="near-you-list"></div>
-          </div>
-          <div class="side-sec">
-            <div class="side-title">Events this week</div>
-            <div class="rec-stack" id="side-events"></div>
-          </div>
-          <div class="side-sec">
-            <div class="side-title">Now hiring</div>
-            <div class="rec-stack" id="side-jobs"></div>
-          </div>
+        <!-- RIGHT RAIL (desktop) — rendered from the posts -->
+        <aside class="side-col" aria-label="This week and now hiring">
+          <section class="side-sec" aria-labelledby="side-week-h">
+            <h2 class="side-title" id="side-week-h">This week</h2>
+            <div class="rail-list" id="side-events"></div>
+          </section>
+          <section class="side-sec" aria-labelledby="side-jobs-h">
+            <h2 class="side-title" id="side-jobs-h">Now hiring</h2>
+            <div class="rail-list" id="side-jobs"></div>
+          </section>
         </aside>
       </div>
     </div>
@@ -360,17 +383,17 @@
     <!-- Dark confirmation bar shown after an owner publishes -->
     <div class="publish-bar" id="publish-bar" role="status" aria-live="polite">
       <svg class="ico" aria-hidden="true"><use href="#i-check" /></svg>
-      <span id="publish-bar-text">Posted to the feed</span>
+      <span id="publish-bar-text">On the board</span>
       <button class="btn" data-action="view-published">View</button>
     </div>
 
     <!-- ══════════ BOTTOM NAV ══════════ -->
-    <nav class="bottom-nav" aria-label="Primary">
+    <nav class="bottom-nav" aria-label="Main">
       <button class="nav-it on" id="nav-home" data-action="show-panel" data-panel="home">
         <span class="nav-ico"
           ><svg class="ico" aria-hidden="true"><use href="#i-home" /></svg
         ></span>
-        <span class="nav-lbl">Home</span>
+        <span class="nav-lbl">Today</span>
       </button>
       <button class="nav-it" id="nav-map" data-action="show-panel" data-panel="map">
         <span class="nav-ico"

@@ -32,6 +32,13 @@
   --tag-hiring: #0f6b4f;
   --tag-promo: #7c3aed;
 
+  /* Tag colours used as TEXT on cards (same as above in light mode) */
+  --tag-new-text: #c2410c;
+  --tag-event-text: #1d4ed8;
+  --tag-hiring-text: #0f6b4f;
+  --tag-promo-text: #7c3aed;
+  --open-green: #15803d;
+
   /* Radii */
   --r-card: 22px;
   --r-photo: 16px;
@@ -51,7 +58,7 @@
   /* Layout */
   --nav-h: 60px;
   --bottom-h: 72px;
-  --sidebar-w: 320px;
+  --sidebar-w: 280px;
   --feed-w: 600px;
   --gutter: 16px;
 }
@@ -72,6 +79,12 @@
   --on-accent: #1f1209;
   --accent-pale: #3a1e10;
 
+  --tag-new-text: #fb923c;
+  --tag-event-text: #93b4ff;
+  --tag-hiring-text: #5fd1a5;
+  --tag-promo-text: #c4b5fd;
+  --open-green: #4ade80;
+
   --ink-surface: #2e2119;
   --on-ink: #ffffff;
   --on-ink-muted: #d9cfc6;
@@ -79,4 +92,11 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 18px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* Wide screens: the top bar has the links, so there is no bottom bar */
+@media (min-width: 900px) {
+  :root {
+    --bottom-h: 0px;
+  }
 }

@@ -143,3 +143,37 @@
 .search-field input::placeholder {
   color: var(--muted);
 }
+
+/* Today / Map / Saved — wide screens only (phones use the bottom bar) */
+.top-links {
+  display: none;
+  gap: 2px;
+  margin-left: 12px;
+}
+
+.top-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.top-link:hover {
+  color: var(--ink);
+}
+
+.top-link.on {
+  color: var(--ink);
+  background: var(--track);
+}
+
+@media (min-width: 900px) {
+  .top-links {
+    display: flex;
+  }
+}

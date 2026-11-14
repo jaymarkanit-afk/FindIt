@@ -120,38 +120,56 @@ function formatTime(timeStr) {
   return `${hour}${m ? ":" + String(m).padStart(2, "0") : ""} ${h < 12 ? "AM" : "PM"}`;
 }
 
+// The first sentence becomes the headline; the rest is the description.
+function splitCaption(text) {
+  const head = shortTitle(text);
+  const rest = text.slice(text.indexOf(head.replace(/…$/, "")) + head.replace(/…$/, "").length)
+    .replace(/^[.!?\s]+/, "")
+    .trim();
+  return { head, rest };
+}
+
 function buildAnnPost() {
   const type = currentAnnType();
   const caption = fieldValue("ann-text");
-  const cafe = getCafe(OWNER_CAFE_ID);
+  const { head, rest } = splitCaption(caption);
   const post = {
     id: "o" + Date.now(),
     cafeId: OWNER_CAFE_ID,
     type,
-    title: shortTitle(caption),
-    caption,
-    photo: annPhotoData || cafe.img,
     time: Date.now(),
     sips: 0,
+    caption, // what the owner typed, kept as written
   };
 
+  if (type === "new") {
+    post.photo = annPhotoData || "";
+    post.new = { item: head, description: rest, price: "", availability: "" };
+  }
   if (type === "promo") {
-    const until = formatDay(fieldValue("ann-until"));
-    if (until) post.promo = { until: "Valid until " + until };
+    post.promo = { title: head, offer: rest, validUntil: fieldValue("ann-until") };
   }
   if (type === "event") {
+    const date = fieldValue("ann-date");
+    const day = date
+      ? new Date(date + "T00:00").toLocaleDateString("en-US", { weekday: "short" }).toUpperCase()
+      : "";
     post.event = {
-      title: post.title || "Event",
-      when: [formatDay(fieldValue("ann-date"), true), formatTime(fieldValue("ann-time"))]
-        .filter(Boolean)
-        .join(", "),
+      title: head,
+      date,
+      day,
+      time: formatTime(fieldValue("ann-time")),
       price: fieldValue("ann-price"),
+      description: rest,
     };
   }
   if (type === "hiring") {
-    const role = fieldValue("ann-role");
-    post.job = { role: role || "Open role", schedule: fieldValue("ann-schedule") };
-    if (role) post.title = "Hiring: " + role;
+    post.hiring = {
+      role: fieldValue("ann-role"),
+      schedule: fieldValue("ann-schedule"),
+      perks: "",
+      description: caption,
+    };
   }
   return post;
 }
@@ -165,8 +183,14 @@ function updateAnnPreview() {
 
   const post = buildAnnPost();
   post.id = "preview";
-  if (!post.caption) post.caption = "Your message will appear here.";
+  if (!post.caption) {
+    const d = post[post.type];
+    if ("item" in d) d.item = "Your new item";
+    else if ("title" in d) d.title = "Your headline";
+    if (post.type === "hiring" && !d.role) d.role = "The role you're hiring for";
+  }
   preview.innerHTML = postCardHTML(post);
+  preview.inert = true; // a picture of the card, not something to click
 }
 
 /* ── Publish ──────────────────────────────────────────────── */
@@ -191,13 +215,13 @@ function postAnn() {
 
   userState.ownerPosts.unshift(post);
   if (!saveStore("ownerPosts", userState.ownerPosts)) {
-    // Storage full — keep the post but fall back to the café's own photo
-    post.photo = getCafe(OWNER_CAFE_ID).img;
+    // Storage full: keep the post but drop the uploaded photo
+    post.photo = "";
     if (!saveStore("ownerPosts", userState.ownerPosts))
       showToast("Posted, but it could not be saved for next time");
   }
 
-  // "Alert followers now" off → the post skips the Alerts list badge
+  // "Send alerts now" off → the post skips the Alerts list badge
   const alertNow = document.getElementById("ann-alert").checked;
   if (!alertNow) {
     userState.seen.push(post.id);
@@ -213,10 +237,12 @@ function postAnn() {
   );
   setAnnPhoto(null);
 
-  // New post goes to the top of the home feed (and everywhere else)
+  // New post goes to the top of the board (and everywhere else)
   renderPostViews();
   showPublishBar(
-    alertNow ? "Posted. Followers have been alerted." : "Posted to the feed.",
+    alertNow
+      ? "On the board. People with alerts on were notified."
+      : "On the board.",
   );
 }
 

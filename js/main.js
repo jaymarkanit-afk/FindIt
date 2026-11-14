@@ -7,13 +7,13 @@ pagesReady.then(startApp);
 
 function startApp() {
   applyThemeIcon();
+  renderTodayHeading();
   setGreeting();
 
   // Render everything that comes from the data
   syncFilterTabs();
   filterAndDisplayCafes();
   renderPostViews();
-  populateNearYouCafes();
   updateGeoInfoCard();
   updateDistanceLabels();
 
@@ -51,22 +51,4 @@ function setGreeting() {
       "Night owl? Check today's updates for cozy spots and late events.";
   }
   mascotMsg.textContent = msg;
-}
-
-/* ════════════════════════════════════════════════════════════
-   CLOSEST CAFÉS (desktop sidebar, #near-you-list)
-   ════════════════════════════════════════════════════════════ */
-
-function populateNearYouCafes() {
-  const list = document.getElementById("near-you-list");
-  if (!list) return;
-
-  // Copy before sorting so the shared database order is left alone
-  const nearCafes = [...cafeDatabase]
-    .sort((a, b) => a.distance - b.distance)
-    .slice(0, 5);
-
-  list.innerHTML = nearCafes
-    .map((cafe) => cafeRowHTML(cafe, cafe.distance + " km"))
-    .join("");
 }

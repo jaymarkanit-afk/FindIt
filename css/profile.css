@@ -15,20 +15,6 @@
   padding: 16px;
 }
 
-/* Logo tile: contained on white, never cropped */
-.tile.tile-logo {
-  background: #fff;
-  border: 1px solid var(--card-border);
-  padding: 5px;
-  overflow: hidden;
-}
-
-.tile-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
 .pf-top {
   display: flex;
   align-items: center;
@@ -129,22 +115,6 @@
   font-size: 14px;
   font-weight: 600;
   color: var(--muted);
-}
-
-/* Plain text button ("See all" / "Show less") with a 44px hit area */
-.text-btn {
-  min-height: 44px;
-  min-width: 44px;
-  padding: 0 4px;
-  margin-right: -4px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--accent);
-}
-
-.text-btn:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
 
 /* ── On the board today: dark "menu board" ────────────────── */

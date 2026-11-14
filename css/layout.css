@@ -22,6 +22,11 @@
   max-width: var(--feed-w);
 }
 
+/* The board is the widest reading column */
+.main-col:has(#panel-home.active) {
+  max-width: 760px;
+}
+
 /* The café profile gets a slightly wider column */
 .main-col:has(#panel-profile.active) {
   max-width: 640px;

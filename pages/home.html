@@ -1,4 +1,16 @@
-<!-- SEARCH (phone width only — wider screens use the top-bar search) -->
+<!-- 1. HEADING -->
+<header class="today-head">
+  <div>
+    <time class="today-date" id="today-date"></time>
+    <h1 class="today-title">Today in Butuan</h1>
+  </div>
+  <span class="loc-pill">
+    <i class="ico sm" data-icon="pin"></i>
+    Butuan City
+  </span>
+</header>
+
+<!-- Search (phone width only — wider screens use the top-bar search) -->
 <div class="home-search">
   <label class="search-field">
     <i class="ico sm" data-icon="search"></i>
@@ -12,7 +24,7 @@
   </label>
 </div>
 
-<!-- BREVI BAR -->
+<!-- 2. BREVI BAR -->
 <div class="mascot-bar">
   <div class="mascot-ava">
     <i class="ico" data-icon="bear"></i>
@@ -25,57 +37,47 @@
   </div>
 </div>
 
-<!-- FRESH RIGHT NOW -->
-<div class="sec">
-  <div class="sec-head">
-    <h2 class="sec-title">Fresh right now</h2>
-  </div>
-</div>
-<div class="fresh-strip" id="fresh-strip"></div>
-
-<!-- SEGMENTED FILTER -->
-<div class="feed-filter">
-  <div class="seg" id="feed-filter" role="group" aria-label="Filter updates">
-    <button
-      class="seg-btn active"
-      data-filter="all"
-      aria-pressed="true"
-      data-action="feed-filter"
+<!-- 3. NEAR YOU -->
+<section class="board-sec" aria-labelledby="near-title">
+  <div class="sec-row">
+    <h2 class="sec-title">
+      <span id="near-title">Near you</span>
+      <span class="dist-from"></span>
+    </h2>
+    <a class="text-btn" href="#map" data-action="show-panel" data-panel="map"
+      >See on the map</a
     >
+  </div>
+  <div class="near-row" id="near-row" role="list" aria-label="Cafés near you"></div>
+</section>
+
+<!-- 4. ON THE BOARD TODAY -->
+<section class="board-sec" aria-labelledby="board-title">
+  <h2 class="sec-title" id="board-title">On the board today</h2>
+  <div class="seg board-filter" id="feed-filter" role="group" aria-label="Show on the board">
+    <button class="seg-btn active" data-filter="all" aria-pressed="true" data-action="feed-filter">
       All
     </button>
-    <button
-      class="seg-btn"
-      data-filter="findItNew"
-      aria-pressed="false"
-      data-action="feed-filter"
-    >
+    <button class="seg-btn" data-filter="findItNew" aria-pressed="false" data-action="feed-filter">
       New
     </button>
-    <button
-      class="seg-btn"
-      data-filter="findItEvents"
-      aria-pressed="false"
-      data-action="feed-filter"
-    >
+    <button class="seg-btn" data-filter="findItPromo" aria-pressed="false" data-action="feed-filter">
+      Promos
+    </button>
+    <button class="seg-btn" data-filter="findItEvents" aria-pressed="false" data-action="feed-filter">
       Events
     </button>
-    <button
-      class="seg-btn"
-      data-filter="findItJob"
-      aria-pressed="false"
-      data-action="feed-filter"
-    >
+    <button class="seg-btn" data-filter="findItJob" aria-pressed="false" data-action="feed-filter">
       Hiring
     </button>
   </div>
-</div>
 
-<!-- SEARCH RESULTS (only while a search is active) -->
-<div id="search-results" hidden>
-  <span class="sec-label" id="smart-title">Cafés</span>
-  <div class="rec-stack" id="smart-recs"></div>
-</div>
+  <!-- Café matches while a search is active -->
+  <div id="search-results" hidden>
+    <span class="sec-label" id="smart-title">Cafés</span>
+    <div class="rec-stack" id="smart-recs"></div>
+  </div>
 
-<!-- FEED -->
-<div class="feed" id="feed" aria-label="Café updates"></div>
+  <!-- 5. THE CARDS (newest first) -->
+  <div class="board-list" id="feed"></div>
+</section>

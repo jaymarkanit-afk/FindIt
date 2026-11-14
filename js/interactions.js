@@ -14,7 +14,6 @@ function bumpRxn(el) {
   el.classList.toggle("on", on);
   el.setAttribute("aria-pressed", on);
   el.querySelector(".rxn-n").textContent = count;
-  el.querySelector(".rxn-l").textContent = sipLabel(count);
 }
 
 // Make every "Get alerts" button for a café show the same state
@@ -42,16 +41,20 @@ function toggleFollow(btn) {
   showToast(on ? `Alerts on for ${cafe.name}` : `Alerts off for ${cafe.name}`);
 }
 
-// "Keep" pill on a post. Takes the button; the post is its [data-post] card.
+// Keep a post. A card can have two Keep controls (the round footer button
+// and, on promos, "Keep this promo"); both always show the same state.
 function doSave(btn, e) {
   if (e) e.stopPropagation();
   const card = btn && btn.closest("[data-post]");
   if (!card) return;
 
   const kept = toggleInState("keeps", card.dataset.post);
-  btn.classList.toggle("on", kept);
-  btn.setAttribute("aria-pressed", kept);
-  btn.querySelector(".keep-label").textContent = kept ? "Kept" : "Keep";
+  card.querySelectorAll('[data-action="keep"]').forEach((b) => {
+    b.classList.toggle(b.classList.contains("coupon-keep") ? "done" : "on", kept);
+    b.setAttribute("aria-pressed", kept);
+    if (b.classList.contains("coupon-keep"))
+      b.innerHTML = kept ? `${ico("check", "sm")}Promo kept` : "Keep this promo";
+  });
   renderSaved();
   showToast(kept ? "Kept. Find it under Saved." : "Removed from Saved");
 }
@@ -73,29 +76,24 @@ function saveProfile(btn) {
   showToast(saved ? "Café saved" : "Removed from Saved");
 }
 
-// "Remind me" (events) and "Apply" (jobs) — demo only, stored locally
+// "I am going" (events) and "Apply" (jobs). Recorded on this device only;
+// nothing is sent to the café yet.
 function postCta(btn, postId) {
   const post = getPost(postId);
   if (!post) return;
-  const cafe = getCafe(post.cafeId);
   const done = toggleInState("cta", postId);
   const isEvent = post.type === "event";
 
   btn.classList.toggle("done", done);
   btn.setAttribute("aria-pressed", done);
-  btn.textContent = isEvent
-    ? done
-      ? "Reminder set"
-      : "Remind me"
-    : done
-      ? "Interest sent"
+  btn.innerHTML = done
+    ? `${ico("check", "sm")}${isEvent ? "Going" : "Applied"}`
+    : isEvent
+      ? "I am going"
       : "Apply";
 
-  if (isEvent) showToast(done ? "Reminder set" : "Reminder removed");
-  else
-    showToast(
-      done ? `${cafe.name} will see you're interested` : "Interest withdrawn",
-    );
+  if (isEvent) showToast(done ? "Marked as going" : "No longer going");
+  else showToast(done ? "Marked as applied" : "Application removed");
 }
 
 // Share via the system share sheet, or copy to the clipboard
@@ -110,11 +108,4 @@ function shareText(title, text) {
   } else {
     showToast("Sharing is not supported on this browser");
   }
-}
-
-function sharePost(postId) {
-  const post = getPost(postId);
-  if (!post) return;
-  const cafe = getCafe(post.cafeId);
-  shareText(cafe.name, `${cafe.name}: ${post.title} — on FindIt`);
 }

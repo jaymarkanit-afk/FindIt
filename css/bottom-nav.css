@@ -53,3 +53,9 @@
   background: var(--ink);
   color: var(--surface);
 }
+
+@media (min-width: 900px) {
+  .bottom-nav {
+    display: none;
+  }
+}
