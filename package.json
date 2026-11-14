@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "FindIt - Butuan City Café Discovery Platform",
   "main": "findit.html",
-  "type": "module",
   "keywords": [
     "cafe",
     "discovery",

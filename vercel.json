@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "public": true,
   "buildCommand": "echo 'Static site - no build required'",
   "outputDirectory": ".",
   "framework": null,
@@ -11,20 +10,28 @@
       "source": "/(.*)",
       "headers": [
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600"
-        },
-        {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
         }
       ]
-    }
-  ],
-  "rewrites": [
+    },
     {
-      "source": "/:path*",
-      "destination": "/:path*"
+      "source": "/((?!Images/).*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/Images/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800"
+        }
+      ]
     }
   ]
 }
