@@ -158,7 +158,7 @@ function renderBoard(cafe) {
           <li>
             <div class="board-meta">
               <span class="tag-chip ${type.cls}">${type.label}</span>
-              <span>${timeAgo(p.time)}</span>
+              <span>${agoHTML(p.time)}</span>
             </div>
             <div class="board-title">${esc(title)}</div>
             <div class="board-info">${esc(info)}</div>

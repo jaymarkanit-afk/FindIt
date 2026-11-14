@@ -75,7 +75,7 @@ function postCardHTML(post, opts) {
       </header>
       <div class="post-photo">
         <img src="${esc(photo)}" alt="${esc(type.label + " at " + cafe.name)}" loading="lazy" />
-        <span class="tag-chip ${type.cls}">${type.label}<span class="dot">·</span>${timeAgo(post.time)}</span>
+        <span class="tag-chip ${type.cls}">${type.label}<span class="dot">·</span>${agoHTML(post.time)}</span>
       </div>
       <p class="post-caption">${esc(post.caption)}${
         post.type === "promo" && details
@@ -141,7 +141,7 @@ function renderFreshStrip() {
       const cafe = getCafe(p.cafeId);
       return `
       <button class="fresh-card" onclick="openCafe(${cafe.id})">
-        <span class="fresh-top">${cafeTile(cafe, "sm")}<span class="fresh-time">${timeAgo(p.time)}</span></span>
+        <span class="fresh-top">${cafeTile(cafe, "sm")}<span class="fresh-time">${agoHTML(p.time)}</span></span>
         <span class="fresh-what">${esc(p.title)}</span>
         <span class="fresh-name">${esc(cafe.name)}</span>
       </button>`;
@@ -189,7 +189,7 @@ function renderNotifications() {
         <span class="notif-body">
           <span class="notif-n">${esc(cafe.name)}</span>
           <span class="notif-m">${esc(p.title)}</span>
-          <span class="notif-t">${type.label} · ${timeAgo(p.time)}${unread ? " · New" : ""}</span>
+          <span class="notif-t">${type.label} · ${agoHTML(p.time)}${unread ? " · New" : ""}</span>
         </span>
       </button>`;
     })
@@ -239,7 +239,7 @@ function renderSaved() {
             <img class="rec-thumb" src="${esc(p.photo || cafe.img)}" alt="" loading="lazy" />
             <span class="rec-info">
               <span class="rec-name">${esc(p.title)}</span>
-              <span class="rec-sub">${esc(cafe.name)} · ${timeAgo(p.time)}</span>
+              <span class="rec-sub">${esc(cafe.name)} · ${agoHTML(p.time)}</span>
             </span>
             <span class="tag-chip ${type.cls}">${type.label}</span>
           </button>`;

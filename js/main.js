@@ -17,6 +17,9 @@ function startApp() {
   updateGeoInfoCard();
   updateDistanceLabels();
 
+  // Keep "x min ago" labels current while the page stays open
+  setInterval(refreshTimeLabels, 60 * 1000);
+
   // Restore the last page and café
   let lastPanel = "home";
   try {

@@ -217,17 +217,13 @@ const cafeDatabase = [
 /* ════════════════════════════════════════════════════════════
    POSTS — one entry per café update.
    type:    "new" | "promo" | "event" | "hiring"
-   time:    timestamp (ms). Seed posts are relative to page load.
+   time:    fixed timestamp (ms) — when the update was posted.
    sips:    starting reaction count (the user's own sip is stored
             separately in localStorage — see store.js)
    event:   { title, when, price }      (type "event")
    job:     { role, schedule }          (type "hiring")
    promo:   { until }                   (type "promo")
    ════════════════════════════════════════════════════════════ */
-
-function minsAgo(minutes) {
-  return Date.now() - minutes * 60 * 1000;
-}
 
 const posts = [
   {
@@ -238,7 +234,7 @@ const posts = [
     caption:
       "We're celebrating local farming and sustainable sourcing this week. All drinks are 20% off, dine in only. Come support local!",
     photo: "Images/paramount/paramount5.jpg",
-    time: minsAgo(2),
+    time: Date.parse("2026-11-14T17:55+08:00"),
     sips: 138,
     promo: { until: "This week only" },
   },
@@ -250,7 +246,7 @@ const posts = [
     caption:
       "Fresh off the roaster — our latest small batch from the Agusan del Norte highlands. Fruity, clean and smooth. Available at Alviola Village, Baan Km 3.",
     photo: "Images/craftcoffee/craftcoffe3.jpg",
-    time: minsAgo(20),
+    time: Date.parse("2026-11-14T17:37+08:00"),
     sips: 109,
   },
   {
@@ -262,7 +258,7 @@ const posts = [
       "Explore Butuan's history through antiques, local artworks and curated coffee. Limited seats, so come early.",
     photo:
       "https://images.unsplash.com/photo-1459257831348-f0cdd359235f?w=900&q=75",
-    time: minsAgo(60),
+    time: Date.parse("2026-11-14T16:57+08:00"),
     sips: 82,
     event: { title: "Heritage Night", when: "Friday, 7 PM", price: "Free" },
   },
@@ -275,7 +271,7 @@ const posts = [
       "Second Shot is growing! We're looking for passionate coffee people. Great team, flexible hours and staff perks.",
     photo:
       "https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=900&q=75",
-    time: minsAgo(180),
+    time: Date.parse("2026-11-14T14:57+08:00"),
     sips: 38,
     job: {
       role: "Brewer & front-of-house staff",
@@ -290,7 +286,7 @@ const posts = [
     caption:
       "Learn milk steaming and rosette patterns with our baristas. Bring a friend!",
     photo: "Images/paramount/paramount6.jpg",
-    time: minsAgo(300),
+    time: Date.parse("2026-11-14T12:57+08:00"),
     sips: 97,
     event: {
       title: "Latte Art Workshop",
@@ -306,7 +302,7 @@ const posts = [
     caption: "Join the Fulcrum team at SM City Butuan.",
     photo:
       "https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=900&q=75",
-    time: minsAgo(480),
+    time: Date.parse("2026-11-14T09:57+08:00"),
     sips: 29,
     job: { role: "Barista", schedule: "Part-time · SM City Butuan" },
   },
@@ -317,7 +313,7 @@ const posts = [
     title: "Hiring: head roaster",
     caption: "Lead our roasting at Baan Km 3.",
     photo: "Images/craftcoffee/craftcoffe5.jpg",
-    time: minsAgo(60 * 22),
+    time: Date.parse("2026-11-13T19:57+08:00"),
     sips: 51,
     job: { role: "Head Roaster", schedule: "Full-time · Baan Km 3" },
   },
@@ -328,7 +324,7 @@ const posts = [
     title: "Acoustic Sunday Sessions",
     caption: "Chill live music every Sunday at Paramount. All welcome.",
     photo: "Images/paramount/paramount4.jpg",
-    time: minsAgo(60 * 26),
+    time: Date.parse("2026-11-13T15:57+08:00"),
     sips: 63,
     event: {
       title: "Acoustic Sunday Sessions",
@@ -343,7 +339,7 @@ const posts = [
     title: "Hiring: weekend barista and cashier",
     caption: "Part-time positions with a friendly team. Apply at J.C. Aquino Ave.",
     photo: "Images/paramount/paramount4.jpg",
-    time: minsAgo(60 * 30),
+    time: Date.parse("2026-11-13T11:57+08:00"),
     sips: 17,
     job: { role: "Weekend Barista & Cashier", schedule: "Part-time" },
   },

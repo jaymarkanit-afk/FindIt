@@ -98,7 +98,25 @@ function timeAgo(ts) {
   const hrs = Math.round(mins / 60);
   if (hrs < 24) return hrs + " hr ago";
   const days = Math.round(hrs / 24);
-  return days + (days === 1 ? " day ago" : " days ago");
+  if (days < 7) return days + (days === 1 ? " day ago" : " days ago");
+  // Older than a week: show the date instead ("Nov 14")
+  return new Date(ts).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}
+
+// A relative-time label that refreshTimeLabels() keeps up to date
+function agoHTML(ts) {
+  return `<time class="ago" data-time="${ts}" datetime="${new Date(ts).toISOString()}">${timeAgo(ts)}</time>`;
+}
+
+// Re-compute every "x min ago" label on the page (called once a minute)
+function refreshTimeLabels() {
+  document.querySelectorAll("time.ago[data-time]").forEach((el) => {
+    const label = timeAgo(Number(el.dataset.time));
+    if (el.textContent !== label) el.textContent = label;
+  });
 }
 
 // Inline stroke icon from the sprite in findit.html
