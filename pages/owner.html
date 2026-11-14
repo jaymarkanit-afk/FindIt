@@ -1,282 +1,191 @@
+<!-- SIGN-IN GATE -->
 <div id="owner-gate">
-  <div class="hero" style="padding-bottom: 18px">
-    <div class="hero-gradient"></div>
-    <div class="hero-grain"></div>
-    <div class="hero-inner">
-      <div class="hero-badge">🏪 Business Portal</div>
-      <h1 class="hero-h1">Owner <em>Dashboard</em></h1>
-      <p class="hero-sub">
-        Restricted access. Manage inventory, post announcements & track
-        performance.
-      </p>
-    </div>
+  <div class="page-head">
+    <h1>Owner</h1>
+    <p>Sign in to post updates for your café.</p>
   </div>
-  <div style="padding: 16px 22px 0; max-width: 420px">
-    <div class="form-card">
-      <div style="text-align: center; margin-bottom: 18px">
-        <div style="font-size: 36px; margin-bottom: 8px">🏪</div>
-        <div
-          style="
-            font-family: var(--font-d);
-            font-size: 19px;
-            font-weight: 700;
-            color: var(--ink);
-          "
-        >
-          Sign in as Owner
-        </div>
-        <div style="font-size: 12px; color: var(--ink3); margin-top: 3px">
-          Verified café owners only
-        </div>
-      </div>
-      <div class="fg">
-        <label>Business Email</label
-        ><input
-          class="fi"
-          type="email"
-          id="ow-email"
-          placeholder="owner@yourcafe.com"
-        />
-      </div>
-      <div class="fg">
-        <label>Password</label
-        ><input
-          class="fi"
-          type="password"
-          id="ow-pass"
-          placeholder="••••••••"
-        />
-      </div>
-      <button class="btn-prim" onclick="ownerLogin()">
-        Sign in to Dashboard →
-      </button>
-      <div class="fg-note">Demo: any email + password works</div>
+  <div class="card form-card">
+    <div class="fg">
+      <label for="ow-email">Business email</label>
+      <input
+        class="fi"
+        type="email"
+        id="ow-email"
+        placeholder="owner@yourcafe.com"
+        autocomplete="email"
+      />
     </div>
+    <div class="fg">
+      <label for="ow-pass">Password</label>
+      <input
+        class="fi"
+        type="password"
+        id="ow-pass"
+        placeholder="Password"
+        autocomplete="current-password"
+      />
+    </div>
+    <button class="btn btn-accent btn-block" onclick="ownerLogin()">
+      Sign in
+    </button>
+    <div class="fg-note">Demo: any email and password works</div>
   </div>
-  <div style="height: 32px"></div>
 </div>
+
+<!-- COMPOSER -->
 <div id="owner-dash" style="display: none">
-  <div class="dash-hero">
-    <div class="dash-label">OWNER DASHBOARD · BUTUAN CITY</div>
-    <div class="dash-title">Paramount Coffee ☕</div>
-    <div class="dash-sub">
-      J.C. Aquino Ave, Butuan City · Manage your café presence
-    </div>
-  </div>
-  <div class="dash-stats">
-    <div class="ds">
-      <div class="ds-n">248</div>
-      <div class="ds-l">Views</div>
-    </div>
-    <div class="ds">
-      <div class="ds-n">34</div>
-      <div class="ds-l">Saves</div>
-    </div>
-    <div class="ds">
-      <div class="ds-n">4.9</div>
-      <div class="ds-l">Rating</div>
-    </div>
-  </div>
-  <div class="inv-sec mt20">
-    <div class="inv-head">
-      <div>
-        <div class="sec-eyebrow">Location</div>
-        <div class="sec-title" style="font-size: 16px">
-          Your Café <em>on Map</em>
-        </div>
-      </div>
-    </div>
-    <div
-      style="
-        border-radius: var(--r2);
-        overflow: hidden;
-        height: 120px;
-        border: 1px solid var(--line);
-        position: relative;
-        background: linear-gradient(135deg, #d4e8d0, #c8dcc4);
-      "
-    >
-      <svg
-        style="
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          opacity: 0.5;
-        "
-        viewBox="0 0 400 120"
-      >
-        <g stroke="#9ab090" stroke-width="1.5" fill="none">
-          <line x1="0" y1="50" x2="400" y2="50" />
-          <line x1="0" y1="85" x2="400" y2="85" />
-          <line x1="100" y1="0" x2="100" y2="120" />
-          <line x1="220" y1="0" x2="220" y2="120" />
-          <line x1="330" y1="0" x2="330" y2="120" />
-        </g>
-        <text
-          x="200"
-          y="44"
-          font-size="8"
-          fill="#6a8a6a"
-          text-anchor="middle"
-          font-family="sans-serif"
-        >
-          J.C. Aquino Ave
-        </text>
-      </svg>
-      <div
-        style="
-          position: absolute;
-          left: 52%;
-          top: 50%;
-          transform: translate(-50%, -50%);
-          font-size: 24px;
-          filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
-        "
-      >
-        📍
-      </div>
-      <div
-        style="
-          position: absolute;
-          bottom: 7px;
-          left: 8px;
-          background: rgba(255, 255, 255, 0.88);
-          border-radius: 6px;
-          padding: 2px 9px;
-          font-size: 10px;
-          font-weight: 700;
-          color: #2e6b4a;
-        "
-      >
-        📍 Verified · Butuan City
-      </div>
-    </div>
-  </div>
-  <div class="inv-sec mt20">
-    <div class="inv-head">
-      <div>
-        <div class="sec-eyebrow">Live Inventory</div>
-        <div class="sec-title" style="font-size: 16px">
-          Menu <em>Availability</em>
-        </div>
-      </div>
-      <button
-        class="filter-trigger"
-        style="padding: 6px 12px; font-size: 11px"
-        onclick="showToast('Inventory synced ✓')"
-      >
-        ↻ Sync
-      </button>
-    </div>
-    <div class="inv-list">
-      <div class="inv-row">
-        <div class="inv-img">
-          <img
-            src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=100&q=70"
-            alt=""
-          />
-        </div>
-        <div class="inv-info">
-          <div class="inv-name">Paramount House Blend</div>
-          <div class="inv-cat">Brewed Coffee</div>
-        </div>
-        <div class="inv-btns">
-          <div class="ivb ivb-in active" onclick="setInv(this, 'in')">✓ In</div>
-          <div class="ivb ivb-low" onclick="setInv(this, 'low')">Low</div>
-          <div class="ivb ivb-out" onclick="setInv(this, 'out')">Out</div>
-        </div>
-      </div>
-      <div class="inv-row">
-        <div class="inv-img">
-          <img
-            src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=100&q=70"
-            alt=""
-          />
-        </div>
-        <div class="inv-info">
-          <div class="inv-name">Sikwate Brown Sugar Latte</div>
-          <div class="inv-cat">Espresso Drinks</div>
-        </div>
-        <div class="inv-btns">
-          <div class="ivb ivb-in" onclick="setInv(this, 'in')">In</div>
-          <div class="ivb ivb-low active" onclick="setInv(this, 'low')">
-            ⚠ Low
-          </div>
-          <div class="ivb ivb-out" onclick="setInv(this, 'out')">Out</div>
-        </div>
-      </div>
-      <div class="inv-row">
-        <div class="inv-img">
-          <img
-            src="https://images.unsplash.com/photo-1611174743420-3d7df880ce32?w=100&q=70"
-            alt=""
-          />
-        </div>
-        <div class="inv-info">
-          <div class="inv-name">Butuan Cold Brew</div>
-          <div class="inv-cat">Cold Drinks</div>
-        </div>
-        <div class="inv-btns">
-          <div class="ivb ivb-in" onclick="setInv(this, 'in')">In</div>
-          <div class="ivb ivb-low" onclick="setInv(this, 'low')">Low</div>
-          <div class="ivb ivb-out active" onclick="setInv(this, 'out')">
-            ✕ Out
-          </div>
-        </div>
-      </div>
-      <div class="inv-row">
-        <div class="inv-img">
-          <img
-            src="https://images.unsplash.com/photo-1517959105821-eaf2591984d2?w=100&q=70"
-            alt=""
-          />
-        </div>
-        <div class="inv-info">
-          <div class="inv-name">Local Pastry Sampler</div>
-          <div class="inv-cat">Food</div>
-        </div>
-        <div class="inv-btns">
-          <div class="ivb ivb-in active" onclick="setInv(this, 'in')">✓ In</div>
-          <div class="ivb ivb-low" onclick="setInv(this, 'low')">Low</div>
-          <div class="ivb ivb-out" onclick="setInv(this, 'out')">Out</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="announce-sec mt20">
-    <div
-      style="
-        font-family: var(--font-d);
-        font-size: 16px;
-        font-weight: 700;
-        color: var(--ink);
-        margin-bottom: 10px;
-      "
-    >
-      📣 Post Announcement
-    </div>
-    <textarea
-      class="ann-textarea"
-      id="ann-text"
-      placeholder="Share a promo, new menu item, event, or hiring update…"
-    ></textarea>
-    <div class="ann-types">
-      <div class="ann-type on" onclick="annType(this)">🏷️ Promo</div>
-      <div class="ann-type" onclick="annType(this)">🆕 New Menu</div>
-      <div class="ann-type" onclick="annType(this)">🎉 Event</div>
-      <div class="ann-type" onclick="annType(this)">💼 findItJob</div>
-    </div>
-    <button class="btn-post" onclick="postAnn()">📤 Post to FindIt Feed</button>
-  </div>
-  <div class="announce-sec mt16">
+  <header class="compose-head">
     <button
-      class="btn-prim"
-      style="background: var(--rose); max-width: 180px"
-      onclick="ownerLogout()"
+      class="round-btn"
+      onclick="showPanel('home')"
+      aria-label="Close and go back to home"
     >
-      Sign Out
+      <svg class="ico" aria-hidden="true"><use href="#i-close" /></svg>
+    </button>
+    <h1>Post an update</h1>
+    <button class="btn btn-accent" onclick="postAnn()">Publish</button>
+  </header>
+  <p class="compose-as">Posting as <strong id="ow-cafe-name"></strong></p>
+
+  <div class="card compose-card">
+    <div class="fg">
+      <span class="field-label" id="ann-type-label">Post type</span>
+      <div class="seg" role="group" aria-labelledby="ann-type-label">
+        <button
+          class="seg-btn ann-type on"
+          data-type="new"
+          onclick="annType(this)"
+        >
+          New item
+        </button>
+        <button class="seg-btn ann-type" data-type="promo" onclick="annType(this)">
+          Promo
+        </button>
+        <button class="seg-btn ann-type" data-type="event" onclick="annType(this)">
+          Event
+        </button>
+        <button
+          class="seg-btn ann-type"
+          data-type="hiring"
+          onclick="annType(this)"
+        >
+          Hiring
+        </button>
+      </div>
+    </div>
+
+    <label class="photo-drop" id="ann-photo-drop">
+      <svg class="ico" aria-hidden="true"><use href="#i-camera" /></svg>
+      <span id="ann-photo-label">Add a photo</span>
+      <input
+        type="file"
+        id="ann-photo"
+        accept="image/*"
+        aria-label="Add a photo"
+        onchange="annPhoto(this)"
+      />
+    </label>
+
+    <div class="fg">
+      <label for="ann-text">Tell your customers</label>
+      <textarea
+        class="fi"
+        id="ann-text"
+        maxlength="280"
+        placeholder="What's new today?"
+        oninput="updateAnnPreview()"
+      ></textarea>
+    </div>
+
+    <!-- Extra fields per post type -->
+    <div class="extra-fields" id="extra-promo" hidden>
+      <div class="fg wide">
+        <label for="ann-until">Valid until</label>
+        <input
+          class="fi"
+          type="date"
+          id="ann-until"
+          oninput="updateAnnPreview()"
+        />
+      </div>
+    </div>
+
+    <div class="extra-fields" id="extra-event" hidden>
+      <div class="fg">
+        <label for="ann-date">Date</label>
+        <input
+          class="fi"
+          type="date"
+          id="ann-date"
+          oninput="updateAnnPreview()"
+        />
+      </div>
+      <div class="fg">
+        <label for="ann-time">Time</label>
+        <input
+          class="fi"
+          type="time"
+          id="ann-time"
+          oninput="updateAnnPreview()"
+        />
+      </div>
+      <div class="fg wide">
+        <label for="ann-price">Price</label>
+        <input
+          class="fi"
+          type="text"
+          id="ann-price"
+          placeholder="Free, or ₱350"
+          maxlength="30"
+          oninput="updateAnnPreview()"
+        />
+      </div>
+    </div>
+
+    <div class="extra-fields" id="extra-hiring" hidden>
+      <div class="fg wide">
+        <label for="ann-role">Role</label>
+        <input
+          class="fi"
+          type="text"
+          id="ann-role"
+          placeholder="Barista"
+          maxlength="50"
+          oninput="updateAnnPreview()"
+        />
+      </div>
+      <div class="fg wide">
+        <label for="ann-schedule">Schedule</label>
+        <input
+          class="fi"
+          type="text"
+          id="ann-schedule"
+          placeholder="Part-time · Weekends"
+          maxlength="50"
+          oninput="updateAnnPreview()"
+        />
+      </div>
+    </div>
+  </div>
+
+  <label class="card toggle-row">
+    <svg class="ico" aria-hidden="true"><use href="#i-bell" /></svg>
+    <span class="toggle-text">
+      Alert followers now
+      <small>People with alerts on for your café get notified</small>
+    </span>
+    <input type="checkbox" class="switch" id="ann-alert" checked />
+  </label>
+
+  <div class="preview-wrap">
+    <span class="sec-label">Preview</span>
+    <div id="ann-preview"></div>
+  </div>
+
+  <div class="owner-foot">
+    <button class="btn btn-ghost" onclick="ownerLogout()">
+      <svg class="ico sm" aria-hidden="true"><use href="#i-logout" /></svg>
+      Sign out
     </button>
   </div>
-  <div style="height: 32px"></div>
 </div>
