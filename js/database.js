@@ -2,7 +2,8 @@
    DATABASE — cafés and their posts
    ═══════════════════════════════════════════════════════════════ */
 
-const DEFAULT_HOURS = "Open daily · Closes 9 PM";
+// Optional café fields: `logo` (image path), `hours`, `contact`.
+// `images` holds photo paths; the first one is the featured photo.
 
 const cafeDatabase = [
   {
@@ -42,13 +43,13 @@ const cafeDatabase = [
     hiring: false,
     events: false,
     img: "Images/craftcoffee/craftcoffe5.jpg",
+    logo: "Images/craftcoffee/craftcoffe1.jpg",
     images: [
       "Images/craftcoffee/craftcoffe5.jpg",
       "Images/craftcoffee/craftcoffe2.jpg",
       "Images/craftcoffee/craftcoffe3.jpg",
       "Images/craftcoffee/craftcoffe4.jpg",
       "Images/craftcoffee/craftcoffe6.jpg",
-      "Images/craftcoffee/craftcoffe1.jpg",
     ],
   },
   {
@@ -65,9 +66,7 @@ const cafeDatabase = [
     hiring: false,
     events: false,
     img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200&q=70",
-    images: [
-      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=900&q=75",
-    ],
+    images: [],
   },
   {
     id: 4,
@@ -83,9 +82,7 @@ const cafeDatabase = [
     hiring: false,
     events: false,
     img: "https://images.unsplash.com/photo-1517960413843-0aee8e2b3285?w=200&q=70",
-    images: [
-      "https://images.unsplash.com/photo-1517960413843-0aee8e2b3285?w=900&q=75",
-    ],
+    images: [],
   },
   {
     id: 5,
@@ -101,9 +98,7 @@ const cafeDatabase = [
     hiring: true,
     events: false,
     img: "https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=200&q=70",
-    images: [
-      "https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=900&q=75",
-    ],
+    images: [],
   },
   {
     id: 6,
@@ -119,9 +114,7 @@ const cafeDatabase = [
     hiring: false,
     events: true,
     img: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=200&q=70",
-    images: [
-      "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=900&q=75",
-    ],
+    images: [],
   },
   {
     id: 7,
@@ -137,9 +130,7 @@ const cafeDatabase = [
     hiring: false,
     events: true,
     img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200&q=70",
-    images: [
-      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=900&q=75",
-    ],
+    images: [],
   },
   {
     id: 8,
@@ -155,9 +146,7 @@ const cafeDatabase = [
     hiring: true,
     events: false,
     img: "https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=200&q=70",
-    images: [
-      "https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=900&q=75",
-    ],
+    images: [],
   },
   {
     id: 9,
@@ -197,15 +186,14 @@ const cafeDatabase = [
     category: ["toprated", "nearme"],
     hiring: false,
     events: false,
-    img: "Images/Lakbai/lakbai1.jpg",
+    img: "Images/Lakbai/lakbai2.jpg",
+    logo: "Images/Lakbai/lakbai1.jpg",
     images: [
-      "Images/Lakbai/lakbai1.jpg",
       "Images/Lakbai/lakbai2.jpg",
       "Images/Lakbai/Lakbai3.jpg",
       "Images/Lakbai/lakbai4.jpg",
       "Images/Lakbai/lakbai5.jpg",
       "Images/Lakbai/Lakbai6.jpg",
-      "Images/Lakbai/lakbai7.jpg",
     ],
   },
   {
@@ -222,6 +210,7 @@ const cafeDatabase = [
     hiring: false,
     events: false,
     img: "Images/koldcoffee/koldcoffee6.jpg",
+    logo: "Images/koldcoffee/koldcoffee1.jpg",
     images: [
       "Images/koldcoffee/koldcoffee6.jpg",
       "Images/koldcoffee/koldcoffee4.jpg",
@@ -230,7 +219,6 @@ const cafeDatabase = [
       "Images/koldcoffee/koldcoffee5.jpg",
       "Images/koldcoffee/koldcoffee7.jpg",
       "Images/koldcoffee/koldcoffee8.jpg",
-      "Images/koldcoffee/koldcoffee1.jpg",
     ],
   },
 ];
