@@ -1,237 +1,87 @@
-<div class="profile-hero">
-  <div class="profile-img-strip" id="carousel-strip">
-    <img
-      class="profile-slide"
-      src="Images/paramount/paramount1.jpg"
-      alt="Paramount Coffee"
-    />
-    <img
-      class="profile-slide"
-      src="Images/paramount/paramount2.jpg"
-      alt="Paramount Coffee"
-    />
-    <img
-      class="profile-slide"
-      src="Images/paramount/paramount3.jpg"
-      alt="Paramount Coffee"
-    />
-    <img
-      class="profile-slide"
-      src="Images/paramount/paramount4.jpg"
-      alt="Paramount Coffee"
-    />
-    <img
-      class="profile-slide"
-      src="Images/paramount/paramount5.jpg"
-      alt="Paramount Coffee"
-    />
-    <img
-      class="profile-slide"
-      src="Images/paramount/paramount6.jpg"
-      alt="Paramount Coffee"
-    />
-  </div>
-  <div class="profile-overlay-grad"></div>
-  <button class="profile-back-btn" onclick="showPanel('home')">←</button>
-  <div class="profile-info-overlay">
-    <div class="profile-name">Paramount Coffee</div>
-    <div class="profile-stats">
-      <span class="ps">⭐ 4.9 (312 reviews)</span>
-      <span class="ps">📍 J.C. Aquino Ave, Butuan City</span>
-      <span class="ps">🕐 Open · Closes 9 PM</span>
-    </div>
-  </div>
+<!-- COVER -->
+<div class="pf-cover">
+  <img id="pf-cover-img" src="" alt="" />
+  <button
+    class="round-btn pf-back"
+    onclick="showPanel('home')"
+    aria-label="Back to home"
+  >
+    <svg class="ico" aria-hidden="true"><use href="#i-back" /></svg>
+  </button>
+  <button
+    class="round-btn pf-share"
+    onclick="shareCafe()"
+    aria-label="Share this café"
+  >
+    <svg class="ico" aria-hidden="true"><use href="#i-share" /></svg>
+  </button>
 </div>
-<div class="profile-body">
-  <div class="profile-action-row">
-    <div class="profile-action primary" onclick="saveProfile(this)">
-      ❤️ Save
+
+<!-- INFO CARD -->
+<section class="card pf-card">
+  <div class="pf-top">
+    <span class="tile lg" id="pf-tile" aria-hidden="true"></span>
+    <div>
+      <h1 class="profile-name"></h1>
+      <p class="pf-address" id="pf-address"></p>
     </div>
-    <div class="profile-action" onclick="followProfile(this)">🔔 Follow</div>
-    <div
-      class="profile-action"
-      onclick="
-        showPanel('map');
-        setTimeout(() => {
-          const cafe = cafeDatabase.find((c) => c.id === selectedCafeId);
-          if (cafe && map) {
-            map.setView([cafe.lat, cafe.lng], 17);
-            showToast('📍 Zoomed to ' + cafe.name);
-          }
-        }, 300);
-      "
+  </div>
+  <div class="pf-facts">
+    <span>
+      <svg class="ico sm" aria-hidden="true"><use href="#i-star" /></svg>
+      <span id="pf-rating"></span>
+    </span>
+    <span>
+      <svg class="ico sm" aria-hidden="true"><use href="#i-clock" /></svg>
+      <span id="pf-open"></span>
+    </span>
+  </div>
+  <div class="pf-tags" id="pf-tags"></div>
+  <div class="pf-actions">
+    <button
+      class="alert-btn"
+      id="pf-alert"
+      data-cafe=""
+      aria-pressed="false"
+      onclick="toggleFollow(this)"
     >
-      🗺️ Map
-    </div>
+      <svg class="ico sm" aria-hidden="true"><use href="#i-bell" /></svg>
+      <span class="alert-label">Get alerts</span>
+    </button>
+    <button class="btn btn-ghost" onclick="showCafeOnMap()">
+      <svg class="ico sm" aria-hidden="true"><use href="#i-route" /></svg>
+      Directions
+    </button>
+    <button
+      class="icon-btn"
+      id="pf-save"
+      aria-label="Save this café"
+      aria-pressed="false"
+      onclick="saveProfile(this)"
+    >
+      <svg class="ico" aria-hidden="true"><use href="#i-bookmark" /></svg>
+    </button>
   </div>
-  <div class="ptabs">
-    <div class="ptab on" onclick="setPTab(this, 'photos')">Photos</div>
-    <div class="ptab" onclick="setPTab(this, 'menu')">Menu</div>
-    <div class="ptab" onclick="setPTab(this, 'updates')">Updates</div>
-    <div class="ptab" onclick="setPTab(this, 'events')">Events</div>
-  </div>
-  <div class="tab-content on" id="tab-photos">
-    <!-- Content will be dynamically loaded based on cafe ID -->
-  </div>
-  <div class="tab-content" id="tab-menu">
-    <div class="menu-grid">
-      <div
-        style="
-          font-family: var(--font-d);
-          font-size: 18px;
-          font-weight: 700;
-          color: var(--ink);
-          margin-bottom: 10px;
-        "
-      >
-        Menu <em style="color: var(--accent)">Highlights</em>
-      </div>
-      <div class="menu-item">
-        <div class="mi-img">
-          <img
-            src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200&q=70"
-            alt=""
-          />
-        </div>
-        <div>
-          <div class="mi-name">
-            Paramount House Blend <span class="avail av-in">● In Stock</span>
-          </div>
-          <div class="mi-desc">
-            Locally sourced Mindanao beans, smooth & balanced
-          </div>
-          <div
-            class="mi-price"
-            style="font-weight: 600; color: var(--accent); margin-top: 6px"
-          >
-            ₱175
-          </div>
-        </div>
-      </div>
-      <div class="menu-item">
-        <div class="mi-img">
-          <img
-            src="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=200&q=70"
-            alt=""
-          />
-        </div>
-        <div>
-          <div class="mi-name">
-            Sikwate Brown Sugar Latte
-            <span class="avail av-low">⚠ Low Stock</span>
-          </div>
-          <div class="mi-desc">
-            Local cacao sikwate base, brown sugar, oat milk
-          </div>
-          <div
-            class="mi-price"
-            style="font-weight: 600; color: var(--accent); margin-top: 6px"
-          >
-            ₱165
-          </div>
-        </div>
-      </div>
-      <div class="menu-item">
-        <div class="mi-img">
-          <img
-            src="https://images.unsplash.com/photo-1611174743420-3d7df880ce32?w=200&q=70"
-            alt=""
-          />
-        </div>
-        <div>
-          <div class="mi-name">
-            Butuan Cold Brew <span class="avail av-out">✕ Out of Stock</span>
-          </div>
-          <div class="mi-desc">
-            24-hr cold brew from Agusan highland beans, smooth finish
-          </div>
-          <div
-            class="mi-price"
-            style="font-weight: 600; color: var(--accent); margin-top: 6px"
-          >
-            ₱195
-          </div>
-        </div>
-      </div>
-      <div class="menu-item">
-        <div class="mi-img">
-          <img src="Images/Lakbai/lakbai5.jpg" alt="" />
-        </div>
-        <div>
-          <div class="mi-name">
-            Local Pastry Sampler <span class="avail av-in">● In Stock</span>
-          </div>
-          <div class="mi-desc">
-            Rotating selection of fresh-baked Butuan pastries daily
-          </div>
-          <div
-            class="mi-price"
-            style="font-weight: 600; color: var(--accent); margin-top: 6px"
-          >
-            ₱220
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="tab-content" id="tab-updates">
-    <div class="feed">
-      <div class="f-card">
-        <div class="f-img-wrap" style="height: 150px">
-          <img
-            class="f-img"
-            src="https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?w=800&q=75"
-            alt=""
-          /><span class="f-badge b-promo">🏷️ Promo</span>
-        </div>
-        <div class="f-body">
-          <div class="f-title">Sustainability Week — All Drinks 20% Off!</div>
-          <div class="f-desc">
-            Celebrate local farming. Dine in only. This week only!
-          </div>
-        </div>
-      </div>
-      <div class="f-card">
-        <div class="f-img-wrap" style="height: 150px">
-          <img
-            class="f-img"
-            src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=800&q=75"
-            alt=""
-          /><span class="f-badge b-hiring">💼 findItJob</span>
-        </div>
-        <div class="f-body">
-          <div class="f-title">Now Hiring: Weekend Barista &amp; Cashier</div>
-          <div class="f-desc">
-            Part-time positions. Friendly team. Apply at J.C. Aquino Ave.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="tab-content" id="tab-events">
-    <div class="event-list">
-      <div class="event-item">
-        <div class="event-date">FRI, DEC 6 · 7:00 PM</div>
-        <div class="event-name">Community Brew Night</div>
-        <div class="event-desc">
-          Meet local farmers & roasters at Paramount. Free entry, limited seats.
-        </div>
-      </div>
-      <div class="event-item">
-        <div class="event-date">SAT, DEC 7 · 10:00 AM</div>
-        <div class="event-name">Latte Art Workshop</div>
-        <div class="event-desc">
-          Learn milk steaming & rosette patterns with local baristas. ₱350/head.
-        </div>
-      </div>
-      <div class="event-item">
-        <div class="event-date">SUN, DEC 8 · 2:00 PM</div>
-        <div class="event-name">Acoustic Sunday Sessions</div>
-        <div class="event-desc">
-          Chill live music every Sunday at Paramount. Free entry — all welcome.
-        </div>
-      </div>
-    </div>
-  </div>
+</section>
+
+<!-- TABS -->
+<div class="seg pf-tabs" role="group" aria-label="Café sections">
+  <button class="seg-btn ptab on" onclick="setPTab(this, 'today')">
+    Today
+  </button>
+  <button class="seg-btn ptab" onclick="setPTab(this, 'photos')">Photos</button>
+  <button class="seg-btn ptab" onclick="setPTab(this, 'info')">Info</button>
 </div>
-<div style="height: 32px"></div>
+
+<div class="tab-content on" id="tab-today">
+  <section class="board">
+    <h2>On the board today</h2>
+    <ul id="pf-board"></ul>
+  </section>
+</div>
+
+<div class="tab-content" id="tab-photos"></div>
+
+<div class="tab-content" id="tab-info">
+  <dl class="card info-list" id="pf-info"></dl>
+</div>

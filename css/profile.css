@@ -1,274 +1,304 @@
 /* ═══════════════════════════════════════════════════════════════
-   CAFÉ PROFILE PANEL
+   CAFÉ PROFILE
 ═══════════════════════════════════════════════════════════════ */
 
-.profile-hero {
+/* ── Cover with round white buttons ───────────────────────── */
+.pf-cover {
   position: relative;
-  height: 260px;
+  height: 250px;
+  background: var(--placeholder);
   overflow: hidden;
 }
 
-.profile-img-strip {
-  display: block;
-  height: 100%;
+@media (min-width: 640px) {
+  .pf-cover {
+    margin-top: 16px;
+    border-radius: var(--r-card);
+  }
 }
 
-.profile-slide {
-  flex-shrink: 0;
+.pf-cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.profile-overlay-grad {
+.pf-cover .round-btn {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(10, 5, 2, 0.85) 0%,
-    rgba(10, 5, 2, 0.1) 60%,
-    transparent 100%
-  );
+  top: 14px;
+  background: #fff;
+  border-color: #fff;
+  color: #23170f;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
 }
 
-.profile-back-btn {
-  position: absolute;
-  top: calc(var(--nav-h) + 12px);
-  left: 16px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: none;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  color: #fff;
-  font-size: 17px;
+.pf-back {
+  left: 14px;
+}
+
+.pf-share {
+  right: 14px;
+}
+
+/* ── Info card overlapping the cover ──────────────────────── */
+.pf-card {
+  position: relative;
+  margin: -56px var(--gutter) 0;
+  padding: 16px;
+}
+
+.pf-top {
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
+  gap: 12px;
 }
 
-.profile-back-btn:hover {
-  background: rgba(255, 255, 255, 0.28);
-}
-
-.profile-info-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 18px 20px;
+.pf-top > div {
+  min-width: 0;
 }
 
 .profile-name {
   font-family: var(--font-d);
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.5px;
-  margin-bottom: 6px;
+  line-height: 1.2;
 }
 
-.profile-stats {
+.pf-address {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.pf-facts {
   display: flex;
-  align-items: center;
-  gap: 14px;
   flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 14px;
+  font-size: 13.5px;
+  font-weight: 500;
 }
 
-.ps {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.72);
-  display: flex;
+.pf-facts span {
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 
-.profile-body {
-  padding: 18px 22px;
+.pf-facts .ico {
+  color: var(--muted);
 }
 
-.profile-action-row {
+.pf-tags {
   display: flex;
-  gap: 9px;
-  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
 }
 
-.profile-action {
-  flex: 1;
-  padding: 10px;
-  border-radius: var(--r2);
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  border: 1.5px solid var(--line);
-  background: var(--surface2);
-  color: var(--ink2);
-  text-align: center;
-  transition: all 0.2s;
-}
-
-.profile-action:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.profile-action.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-
-.profile-action.primary:hover {
-  background: var(--accent2);
-}
-
-.profile-action.saved-state {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-
-.ptabs {
+.pf-actions {
   display: flex;
-  gap: 3px;
-  background: var(--bg2);
-  border-radius: var(--r);
-  padding: 4px;
-  margin-bottom: 18px;
+  gap: 8px;
+  margin-top: 16px;
 }
 
-.ptab {
+.pf-actions .alert-btn {
   flex: 1;
-  padding: 8px;
-  text-align: center;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--ink2);
-  cursor: pointer;
-  transition: all 0.2s;
+  border-radius: var(--r-btn);
+  font-size: 14px;
 }
 
-.ptab.on {
-  background: var(--surface);
-  color: var(--ink);
-  box-shadow: var(--shadow-sm);
+.pf-actions .icon-btn.saved-state {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+
+.pf-actions .icon-btn.saved-state .ico {
+  fill: currentColor;
+}
+
+/* ── Tabs ─────────────────────────────────────────────────── */
+.pf-tabs {
+  margin: 16px var(--gutter) 14px;
 }
 
 .tab-content {
   display: none;
+  padding: 0 var(--gutter);
 }
 
 .tab-content.on {
   display: block;
 }
 
-.menu-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+/* Today: dark "menu board" */
+.board {
+  padding: 18px 18px 8px;
+  background: var(--ink-surface);
+  color: var(--on-ink);
+  border-radius: var(--r-card);
 }
 
-.menu-item {
+.board h2 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.board ul {
+  list-style: none;
+}
+
+.board li {
+  padding: 13px 0;
+  border-top: 1px solid var(--ink-line);
+}
+
+.board-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: var(--surface2);
-  border-radius: var(--r);
-  padding: 10px 12px;
-  border: 1px solid var(--line);
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--on-ink-muted);
 }
 
-.mi-img {
-  width: 50px;
-  height: 50px;
-  border-radius: 9px;
+.board-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.board-info {
+  font-size: 13.5px;
+  color: var(--on-ink-muted);
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+}
+
+.board-empty {
+  color: var(--on-ink-muted);
+}
+
+/* Photos: 2 columns, first photo spans both */
+.photo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.photo-cell {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--r-photo);
   overflow: hidden;
-  flex-shrink: 0;
+  background: var(--placeholder);
 }
 
-.mi-img img {
+.photo-cell:first-child {
+  grid-column: 1 / -1;
+  aspect-ratio: 16 / 10;
+}
+
+.photo-cell img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.mi-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 2px;
+/* Info */
+.info-list {
+  padding: 4px 16px;
 }
 
-.mi-desc {
-  font-size: 12px;
-  color: var(--ink3);
-  line-height: 1.4;
-}
-
-.avail {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 2px 7px;
-  border-radius: 99px;
-  font-size: 10px;
-  font-weight: 700;
-  margin-left: 5px;
-}
-
-.av-in {
-  background: var(--green-pale);
-  color: var(--green);
-}
-
-.av-low {
-  background: var(--gold-pale);
-  color: var(--gold);
-}
-
-.av-out {
-  background: var(--rose-pale);
-  color: var(--rose);
-  text-decoration: line-through;
-}
-
-.event-list {
+.info-row {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid var(--card-border);
 }
 
-.event-item {
-  background: var(--surface2);
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-  padding: 13px 15px;
-  border-left: 3px solid var(--accent);
+.info-row:first-child {
+  border-top: none;
 }
 
-.event-date {
-  font-size: 10px;
-  color: var(--accent);
+.info-row .ico {
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.info-row dt {
+  font-size: 12px;
   font-weight: 700;
-  font-family: var(--font-m);
   letter-spacing: 0.06em;
-  margin-bottom: 4px;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-.event-name {
+.info-row dd {
   font-size: 15px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 3px;
 }
 
-.event-desc {
+/* ── Photo viewer ─────────────────────────────────────────── */
+.photo-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  touch-action: none;
+}
+
+.photo-modal img {
+  max-width: 92vw;
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: 10px;
+  user-select: none;
+}
+
+.pm-btn {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pm-btn:hover {
+  background: rgba(255, 255, 255, 0.36);
+}
+
+.pm-prev {
+  left: 16px;
+}
+
+.pm-next {
+  right: 16px;
+}
+
+.pm-next .ico {
+  transform: rotate(180deg);
+}
+
+.pm-close {
+  top: 16px;
+  right: 16px;
+}
+
+.pm-counter {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 14px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
   font-size: 13px;
-  color: var(--ink2);
-  line-height: 1.45;
 }
