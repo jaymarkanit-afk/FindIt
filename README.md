@@ -49,7 +49,8 @@ python -m http.server 8000
 npx http-server -p 8000
 ```
 
-Then open <http://localhost:8000/findit.html>.
+Then open <http://localhost:8000/findit.html>. VS Code's Live Server also
+works; open `findit.html` (the files in `pages/` are fragments, not pages).
 
 To see the phone layout, open the browser dev tools, switch on device
 emulation and pick a 390px-wide device.

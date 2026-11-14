@@ -54,5 +54,11 @@ To reset the demo, clear site data for the page in the browser's dev tools.
 ## Icons
 
 Icons are inline stroke SVG symbols defined once at the top of `findit.html`.
-In HTML use `<svg class="ico"><use href="#i-bell" /></svg>`; in JS use
-`ico("bell")`.
+
+- In `findit.html` use `<svg class="ico"><use href="#i-bell" /></svg>`.
+- In `pages/*.html` use the placeholder `<i class="ico" data-icon="bell"></i>`
+  (add `sm` to the class for the small size). `page-loader.js` expands it.
+  Never write a literal `</svg>` in a page fragment: VS Code's Live Server
+  injects its reload script before every `</svg>` in a file without a
+  `</body>`, miscounts the length, and the browser gets a truncated page.
+- In JS use `ico("bell")`.
