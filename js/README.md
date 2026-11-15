@@ -16,7 +16,7 @@ order in `findit.html` matters:
 | 9   | `filter.js`       | `currentFilter`, `quickFilter` (home segmented control), drawer filters, `getFilteredCafes`, `filterAndDisplayCafes`.                                     |
 | 10  | `ui.js`           | `showPanel`, `toggleTheme`, `showToast`, `toggleNotif`.                                                                                                   |
 | 11  | `interactions.js` | `bumpRxn` (sips), `toggleFollow` (Get alerts), `doSave` (Keep), `saveProfile`, `postCta`, sharing.                                                        |
-| 12  | `owner.js`        | Owner sign-in gate and the "Post an update" composer: `annType`, `annPhoto`, `updateAnnPreview`, `postAnn`.                                               |
+| 12  | `owner.js`        | Owner tab: sign-in gate, the dashboard (profile card with background photo, featured photos, posts by Live / Drafts / Ended with edit, pin, end, delete, "Comments to answer") and the composer it opens (publish, save draft, edit). |
 | 13  | `place.js`        | The location picker on the top-bar pill: menu (bottom sheet on phones), keyboard handling, "Use my location", and `refreshForPlace()`, which redraws everything place-specific. |
 | 14  | `actions.js`      | All event wiring. Markup uses `data-action` (no inline handlers); one delegated listener per container looks the action up in `ACTIONS`. |
 | 15  | `main.js`         | Waits for `pagesReady`, then renders everything and restores the last panel.                                                                              |
@@ -35,7 +35,10 @@ that line.
   time: 1731571200000,     // ms timestamp
   sips: 82,                // starting count; the user's own sip is stored separately
   caption: "…",            // the café's own words; may be "" only for "photos"
-  editedAt: 1731574800000, // optional, set when the owner edits the caption
+  editedAt: 1731574800000, // optional, set when the post is edited
+  status: "live",          // "live" | "draft" | "ended" (past events/promos end on their own)
+  pinned: false,           // one pinned post per café, shown first on its page
+  endedAt: null,           // when the owner ended it
   photos: [{ src, alt }],  // alt optional: defaults to "<Café name> photo N"
   new:    { item, price, availability },
   event:  { title, day, time, price },   // day "FRI", time "7 PM"
@@ -55,6 +58,25 @@ Comments use the shape a backend will use later:
 `{ id, postId, authorName, text, createdAt }` (`createdAt` is an ISO string).
 They are always rendered with `textContent`. With no accounts yet, local
 comments are signed "Guest".
+
+## Café photos
+
+Each café has `backgroundPhoto` (one path or null; the café page banner)
+and `featuredPhotos` (ordered, at most 6; the Photos row on the café page).
+Neither is ever the logo, and the banner is never repeated in the row.
+Photos inside posts stay in their posts.
+
+## Owner edits (until there is a backend)
+
+Saved in localStorage in the shapes a backend will use:
+`cafeEdits[cafeId] = { backgroundPhoto, featuredPhotos }` and
+`postEdits[postId] = changed fields` for seed posts (`{ deleted: true }`
+removes one); the owner's own posts live in `ownerPosts`. Use
+`updatePost`, `removePost`, `setPinned` and `saveCafeEdit` (store.js); each
+returns false and changes nothing when storage is full. `getAllPosts()` is
+what customers see (live only); `getAnyPosts()` includes drafts and ended.
+Uploads are resized in the browser: 1600px wide for the background, 1200px
+for featured and post photos, JPEG ~80%.
 
 ## Places
 

@@ -9,6 +9,58 @@
   padding: 12px var(--gutter) 10px;
 }
 
+/* ── Background photo banner (only when set) ──────────────── */
+.pf-banner {
+  margin: 0 var(--gutter);
+  height: 150px;
+  border-radius: var(--r-card) var(--r-card) 0 0;
+  overflow: hidden;
+  background: var(--placeholder);
+}
+
+.pf-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 700px) {
+  .pf-banner {
+    height: 220px;
+  }
+}
+
+/* The info card joins the banner; the logo tile overlaps its bottom edge */
+.pf-card.with-banner {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: none;
+}
+
+.pf-card.with-banner .pf-top {
+  align-items: flex-end;
+}
+
+.pf-card.with-banner #pf-tile {
+  align-self: flex-start; /* lets the negative margin lift it over the banner */
+  margin-top: -52px;
+  border: 3px solid #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+/* "Pinned" on the board */
+.pin-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 12px;
+  background: var(--on-ink);
+  color: var(--ink-surface);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
 /* ── Info card ────────────────────────────────────────────── */
 .pf-card {
   margin: 0 var(--gutter);

@@ -157,5 +157,8 @@ function showPanel(name) {
   }
   if (name === "profile") loadCafeProfile(selectedCafeId || 1);
   if (name === "saved") renderSaved();
-  if (name === "owner") updateAnnPreview();
+  if (name === "owner") {
+    if (ownerSession && document.getElementById("owner-compose").hidden) renderDashboard();
+    else updateAnnPreview();
+  }
 }

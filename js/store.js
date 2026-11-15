@@ -35,11 +35,29 @@ const userState = {
   // Comments on posts. Same shape a backend will use later:
   // { id, postId, authorName, text, createdAt (ISO string) }
   comments: loadStore("comments", []),
+  // Owner edits saved until a backend exists, in the backend's shapes:
+  // cafeEdits[cafeId] = { backgroundPhoto, featuredPhotos }
+  // postEdits[postId] = changed post fields ({ deleted: true } removes it)
+  cafeEdits: loadStore("cafeEdits", {}),
+  postEdits: loadStore("postEdits", {}),
 };
+
+// True while the café owner is signed in (this session only)
+let ownerSession = false;
 
 // There are no customer accounts yet, so local comments are signed "Guest".
 const LOCAL_AUTHOR_NAME = "Guest";
 const COMMENT_MAX = 280;
+
+// Comments are signed "Guest", except the owner replying on their own café's posts
+function commentAuthorFor(postId) {
+  const post = getPost(postId);
+  if (ownerSession && post && typeof OWNER_CAFE_ID !== "undefined" && post.cafeId === OWNER_CAFE_ID) {
+    const cafe = getCafe(post.cafeId);
+    if (cafe) return cafe.name;
+  }
+  return LOCAL_AUTHOR_NAME;
+}
 
 function getComments(postId) {
   return userState.comments
@@ -54,7 +72,7 @@ function addComment(postId, text) {
   const comment = {
     id: "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
     postId,
-    authorName: LOCAL_AUTHOR_NAME,
+    authorName: commentAuthorFor(postId),
     text: clean,
     createdAt: new Date().toISOString(),
   };
@@ -110,12 +128,112 @@ function setSelectedPlace(name) {
 }
 
 // Owner posts + seed posts, newest first
+// Every post the café has, with saved owner edits applied (drafts and
+// ended ones included), newest first. For the owner dashboard.
+function getAnyPosts() {
+  const edited = posts
+    .map((p) => (userState.postEdits[p.id] ? { ...p, ...userState.postEdits[p.id] } : p))
+    .filter((p) => !p.deleted);
+  return [...userState.ownerPosts, ...edited].sort((a, b) => b.time - a.time);
+}
+
+// "live" | "draft" | "ended". Events and promos end once their date passes.
+function postStatus(post, today = localISODate()) {
+  if (post.status === "draft") return "draft";
+  if (post.status === "ended") return "ended";
+  const until =
+    (post.type === "event" && post.event && post.event.date) ||
+    (post.type === "promo" && post.promo && post.promo.validUntil) ||
+    "";
+  if (until && until < today) return "ended";
+  return "live";
+}
+
+function localISODate(d = new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+// What customers see: live posts only
 function getAllPosts() {
-  return [...userState.ownerPosts, ...posts].sort((a, b) => b.time - a.time);
+  return getAnyPosts().filter((p) => postStatus(p) === "live");
 }
 
 function getPost(id) {
-  return getAllPosts().find((p) => p.id === id);
+  return getAnyPosts().find((p) => p.id === id);
+}
+
+// Change a post (owner posts in place, seed posts through postEdits).
+// Returns false, changing nothing, when storage is full.
+function updatePost(id, changes) {
+  const own = userState.ownerPosts.find((p) => p.id === id);
+  if (own) {
+    const before = { ...own };
+    Object.assign(own, changes);
+    if (saveStore("ownerPosts", userState.ownerPosts)) return true;
+    Object.keys(own).forEach((k) => delete own[k]);
+    Object.assign(own, before);
+    return false;
+  }
+  const prev = userState.postEdits[id];
+  userState.postEdits[id] = { ...(prev || {}), ...changes };
+  if (saveStore("postEdits", userState.postEdits)) return true;
+  if (prev) userState.postEdits[id] = prev;
+  else delete userState.postEdits[id];
+  return false;
+}
+
+function removePost(id) {
+  if (userState.ownerPosts.some((p) => p.id === id)) {
+    userState.ownerPosts = userState.ownerPosts.filter((p) => p.id !== id);
+    saveStore("ownerPosts", userState.ownerPosts);
+  } else {
+    userState.postEdits[id] = { deleted: true };
+    saveStore("postEdits", userState.postEdits);
+  }
+  // Forget everything tied to it
+  ["keeps", "sips", "cta", "seen"].forEach((key) => {
+    userState[key] = userState[key].filter((x) => x !== id);
+    saveStore(key, userState[key]);
+  });
+  userState.comments = userState.comments.filter((c) => c.postId !== id);
+  saveStore("comments", userState.comments);
+}
+
+// One pinned post per café
+function setPinned(id, on) {
+  const post = getPost(id);
+  if (!post) return false;
+  getAnyPosts()
+    .filter((p) => p.cafeId === post.cafeId && p.pinned && p.id !== id)
+    .forEach((p) => updatePost(p.id, { pinned: false }));
+  return updatePost(id, { pinned: on });
+}
+
+/* ── Café edits (background and featured photos) ─────────── */
+
+const FEATURED_MAX = 6;
+
+function applyCafeEdits() {
+  Object.entries(userState.cafeEdits).forEach(([id, edit]) => {
+    const cafe = getCafe(id);
+    if (cafe) Object.assign(cafe, edit);
+  });
+}
+
+// Save { backgroundPhoto } and/or { featuredPhotos } for a café.
+// Returns false and keeps the current photos when storage is full.
+function saveCafeEdit(cafeId, changes) {
+  const cafe = getCafe(cafeId);
+  if (!cafe) return false;
+  const prevEdit = userState.cafeEdits[cafeId];
+  const prevCafe = { backgroundPhoto: cafe.backgroundPhoto, featuredPhotos: cafe.featuredPhotos };
+  userState.cafeEdits[cafeId] = { ...(prevEdit || {}), ...changes };
+  Object.assign(cafe, changes);
+  if (saveStore("cafeEdits", userState.cafeEdits)) return true;
+  if (prevEdit) userState.cafeEdits[cafeId] = prevEdit;
+  else delete userState.cafeEdits[cafeId];
+  Object.assign(cafe, prevCafe);
+  return false;
 }
 
 const POST_TYPES = {
@@ -190,6 +308,9 @@ function normalizePost(p) {
   const d = post.type === "photos" ? null : post[post.type];
   if (post.type !== "photos" && (!d || typeof d !== "object")) return null;
   if (typeof post.caption !== "string") post.caption = (d && d.description) || "";
+  if (!["live", "draft", "ended"].includes(post.status)) post.status = "live";
+  if (typeof post.pinned !== "boolean") post.pinned = false;
+  if (post.endedAt === undefined) post.endedAt = null;
   if (d) delete d.description;
   return post;
 }
@@ -333,3 +454,6 @@ function openCafe(cafeId) {
 // Owner posts saved by older versions are converted once, on load.
 // Kept at the end of the file: it needs POST_TYPES and the helpers above.
 userState.ownerPosts = userState.ownerPosts.map(normalizePost).filter(Boolean);
+
+// The owner's saved background and featured photos replace the seed ones
+applyCafeEdits();

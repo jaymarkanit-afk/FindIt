@@ -5,15 +5,33 @@
    only in the Photos section. The logo is only ever the info-card tile.
    ═══════════════════════════════════════════════════════════════ */
 
-// Photos for a café, each listed once. The logo is never treated as a photo.
+// The café's featured photos, in the owner's order, each listed once.
+// Never the logo, never the background photo; photos from posts stay in
+// their posts and are not repeated here.
 function getCafeImages(cafeId) {
   const cafe = getCafe(cafeId);
-  if (!cafe || !Array.isArray(cafe.images)) return [];
-  return [...new Set(cafe.images)].filter((src) => src && src !== cafe.logo);
+  if (!cafe || !Array.isArray(cafe.featuredPhotos)) return [];
+  return [...new Set(cafe.featuredPhotos)]
+    .filter((src) => src && src !== cafe.logo && src !== cafe.backgroundPhoto)
+    .slice(0, FEATURED_MAX);
 }
 
 function photoAlt(cafe, index) {
-  return `${cafe.name} photo ${index + 1}`;
+  return `${cafe.name} featured photo ${index + 1}`;
+}
+
+// Background photo banner, with the logo tile overlapping its bottom edge
+function renderBanner(cafe) {
+  const banner = document.getElementById("pf-banner");
+  const card = document.getElementById("pf-card");
+  if (!banner) return;
+  const src = cafe.backgroundPhoto && cafe.backgroundPhoto !== cafe.logo ? cafe.backgroundPhoto : "";
+  banner.hidden = !src;
+  if (card) card.classList.toggle("with-banner", !!src);
+  // The <img> exists only while there is a photo to show
+  banner.innerHTML = src
+    ? `<img id="pf-banner-img" src="${esc(src)}" alt="${esc(cafe.name)} background photo" />`
+    : "";
 }
 
 function loadCafeProfile(cafeId) {
@@ -24,6 +42,7 @@ function loadCafeProfile(cafeId) {
   }
   selectedCafeId = cafe.id;
 
+  renderBanner(cafe);
   renderInfoCard(cafe);
   renderBoard(cafe);
   renderPhotos(cafe);
@@ -97,7 +116,10 @@ function renderInfoCard(cafe) {
 function renderBoard(cafe) {
   const board = document.getElementById("pf-board");
   if (!board) return;
-  const items = getAllPosts().filter((p) => p.cafeId === cafe.id);
+  // Live posts only; the pinned one first
+  const items = getAllPosts()
+    .filter((p) => p.cafeId === cafe.id)
+    .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
 
   board.innerHTML = items.length
     ? items
@@ -108,6 +130,7 @@ function renderBoard(cafe) {
           return `
           <li>
             <div class="board-meta">
+              ${p.pinned ? '<span class="pin-chip">Pinned</span>' : ""}
               <span class="tag-chip ${type.cls}">${type.label}</span>
               <span>${agoHTML(p.time)}</span>
             </div>

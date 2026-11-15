@@ -64,12 +64,27 @@ const ACTIONS = {
   "photo-earlier": (el) => movePhoto(el, -1),
   "photo-later": (el) => movePhoto(el, 1),
   "photo-remove": (el) => removePhoto(el),
-  "edit-caption": (el) => editCaption(el),
-  "save-caption": (el) => saveCaption(el),
-  "cancel-caption": (el) => cancelCaption(el),
-  "delete-post": (el) => deletePost(el),
-  "confirm-delete": (el) => confirmDelete(el),
-  "cancel-delete": (el) => cancelDelete(el),
+  "save-draft": () => saveDraft(),
+  "compose-new": () => openComposer(null),
+  "compose-cancel": () => cancelComposer(),
+
+  // Owner dashboard
+  "change-bg": () => document.getElementById("bg-file").click(),
+  "remove-bg": () => removeBackground(),
+  "edit-page": () => editPage(),
+  "view-as-customer": () => viewAsCustomer(),
+  "feat-add": () => document.getElementById("feat-file").click(),
+  "feat-left": (el) => moveFeatured(Number(el.dataset.index), Number(el.dataset.index) - 1, "feat-left"),
+  "feat-right": (el) => moveFeatured(Number(el.dataset.index), Number(el.dataset.index) + 1, "feat-right"),
+  "feat-remove": (el) => removeFeatured(Number(el.dataset.index)),
+  "posts-tab": (el) => setPostsTab(el.dataset.tab),
+  "post-edit": (el) => editOwnPost(el),
+  "post-pin": (el) => pinPost(el),
+  "post-end": (el) => endPost(el),
+  "post-delete": (el) => askDeletePost(el),
+  "post-confirm-delete": (el) => confirmDeletePost(el),
+  "post-cancel-delete": (el) => cancelDeletePost(el),
+  "reply-comment": (el) => replyToComment(el),
   publish: () => postAnn(),
   "view-published": () => viewPublished(),
 };
@@ -125,6 +140,14 @@ function onSearchKeydown(e) {
   });
   pages.addEventListener("change", (e) => {
     if (e.target.id === "ann-photo") annPhoto(e.target);
+    if (e.target.id === "bg-file") onBackgroundFile(e.target);
+    if (e.target.id === "feat-file") onFeaturedFiles(e.target);
+  });
+
+  // Owner dashboard: drag to reorder featured photos; arrow keys on tabs
+  bindFeaturedDrag(pages);
+  pages.addEventListener("keydown", (e) => {
+    if (e.target.closest && e.target.closest(".posts-tabs")) onTabsKey(e);
   });
 
   // Comment threads inside board cards

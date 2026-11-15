@@ -32,6 +32,16 @@
   max-width: 640px;
 }
 
+/* The owner dashboard has its own right rail ("Comments to answer"),
+   so the global rail steps aside and the column gets the full width */
+.main-col:has(#panel-owner.active) {
+  max-width: 1100px;
+}
+
+.layout-cols:has(#panel-owner.active) .side-col {
+  display: none;
+}
+
 /* The map is the one panel that benefits from extra width */
 .main-col:has(#panel-map.active) {
   max-width: 760px;

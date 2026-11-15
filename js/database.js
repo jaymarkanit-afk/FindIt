@@ -12,7 +12,9 @@
 // filter.js works those out from the posts.
 // `distance` (km) is not stored here: geolocation.js computes it from the
 // city centre, then from the user once they share their location.
-// `images` holds photo paths; the first one is the featured photo.
+// `featuredPhotos`: up to 6 photo paths, in the owner's order (the first
+// shows first). `backgroundPhoto`: one path or null — the café page banner.
+// Neither is ever the logo, and the banner is never also a featured photo.
 
 /* ════════════════════════════════════════════════════════════
    PLACES — one entry per city or town. The location picker, the map
@@ -42,7 +44,8 @@ const cafeDatabase = [
     reviews: 312,
     tags: ["Sustainable", "Local", "Fast WiFi"],
     img: "Images/paramount/paramount4.jpg",
-    images: [
+    backgroundPhoto: null,
+    featuredPhotos: [
       "Images/paramount/paramount4.jpg",
       "Images/paramount/paramount5.jpg",
       "Images/paramount/paramount6.jpg",
@@ -63,7 +66,8 @@ const cafeDatabase = [
     tags: ["Roastery", "Artisan", "Local roasts"],
     img: "Images/craftcoffee/craftcoffe5.jpg",
     logo: "Images/craftcoffee/craftcoffe1.jpg",
-    images: [
+    backgroundPhoto: null,
+    featuredPhotos: [
       "Images/craftcoffee/craftcoffe5.jpg",
       "Images/craftcoffee/craftcoffe2.jpg",
       "Images/craftcoffee/craftcoffe3.jpg",
@@ -82,7 +86,8 @@ const cafeDatabase = [
     reviews: 156,
     tags: ["Specialty", "Minimalist", "Quiet"],
     img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200&q=70",
-    images: [],
+    backgroundPhoto: null,
+    featuredPhotos: [],
   },
   {
     id: 4,
@@ -95,7 +100,8 @@ const cafeDatabase = [
     reviews: 198,
     tags: ["Study spot", "WiFi", "Power outlets"],
     img: "https://images.unsplash.com/photo-1517960413843-0aee8e2b3285?w=200&q=70",
-    images: [],
+    backgroundPhoto: null,
+    featuredPhotos: [],
   },
   {
     id: 5,
@@ -108,7 +114,8 @@ const cafeDatabase = [
     reviews: 267,
     tags: ["Specialty", "Modern", "Hiring"],
     img: "https://images.unsplash.com/photo-1559305616-3f99cd43e353?w=200&q=70",
-    images: [],
+    backgroundPhoto: null,
+    featuredPhotos: [],
   },
   {
     id: 6,
@@ -121,7 +128,8 @@ const cafeDatabase = [
     reviews: 134,
     tags: ["Cozy", "Modern", "Events"],
     img: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=200&q=70",
-    images: [],
+    backgroundPhoto: null,
+    featuredPhotos: [],
   },
   {
     id: 7,
@@ -134,7 +142,8 @@ const cafeDatabase = [
     reviews: 143,
     tags: ["Heritage", "Arts", "Events"],
     img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200&q=70",
-    images: [],
+    backgroundPhoto: null,
+    featuredPhotos: [],
   },
   {
     id: 8,
@@ -147,7 +156,8 @@ const cafeDatabase = [
     reviews: 112,
     tags: ["Quality brews", "Hiring", "Specialty"],
     img: "https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=200&q=70",
-    images: [],
+    backgroundPhoto: null,
+    featuredPhotos: [],
   },
   {
     id: 9,
@@ -160,14 +170,15 @@ const cafeDatabase = [
     reviews: 89,
     tags: ["Premium", "Local vibe", "Community"],
     img: "Images/coffeecapital/coffeecapital_main_image.jpg",
-    images: [
+    // Featured photos are capped at 6; dropped from the old list: Images/coffeecapital/coffeecapital6.jpg
+    backgroundPhoto: null,
+    featuredPhotos: [
       "Images/coffeecapital/coffeecapital_main_image.jpg",
       "Images/coffeecapital/coffecapital1.jpg",
       "Images/coffeecapital/coffeecapital2.jpg",
       "Images/coffeecapital/coffeecapital3.jpg",
       "Images/coffeecapital/coffeecapital4.jpg",
       "Images/coffeecapital/coffeecapital5.jpg",
-      "Images/coffeecapital/coffeecapital6.jpg",
     ],
   },
   {
@@ -183,7 +194,8 @@ const cafeDatabase = [
     tags: ["Cozy", "Local favorite", "Casual"],
     img: "Images/Lakbai/lakbai2.jpg",
     logo: "Images/Lakbai/lakbai1.jpg",
-    images: [
+    backgroundPhoto: null,
+    featuredPhotos: [
       "Images/Lakbai/lakbai2.jpg",
       "Images/Lakbai/Lakbai3.jpg",
       "Images/Lakbai/lakbai4.jpg",
@@ -205,14 +217,15 @@ const cafeDatabase = [
     tags: ["Cool vibes", "New venue", "Relaxing"],
     img: "Images/koldcoffee/koldcoffee6.jpg",
     logo: "Images/koldcoffee/koldcoffee1.jpg",
-    images: [
+    // Featured photos are capped at 6; dropped from the old list: Images/koldcoffee/koldcoffee8.jpg
+    backgroundPhoto: null,
+    featuredPhotos: [
       "Images/koldcoffee/koldcoffee6.jpg",
       "Images/koldcoffee/koldcoffee4.jpg",
       "Images/koldcoffee/koldcoffee2.jpg",
       "Images/koldcoffee/koldcoffee3.jpg",
       "Images/koldcoffee/koldcoffee5.jpg",
       "Images/koldcoffee/koldcoffee7.jpg",
-      "Images/koldcoffee/koldcoffee8.jpg",
     ],
   },
 ];
@@ -225,7 +238,11 @@ const cafeDatabase = [
      sip is stored separately, see store.js),
      caption   the café's own words ("" allowed only for "photos")
      photos    [{ src, alt? }] — alt defaults to "<Café> photo N"
-     editedAt  (optional) ms timestamp of the last caption edit
+     editedAt  (optional) ms timestamp of the last edit
+     status    "live" | "draft" | "ended"  (events and promos also count as
+               ended once their date has passed)
+     pinned    true for the café's one pinned post (shown first on its page)
+     endedAt   ms timestamp when the owner ended it, else null
    Then, except for "photos", one object named after the type:
      new:    { item, price, availability }
      event:  { title, day, time, price }       day "FRI", time "7 PM"
@@ -240,6 +257,9 @@ const posts = [
     id: "p1",
     cafeId: 1,
     type: "promo",
+    status: "live",
+    pinned: false,
+    endedAt: null,
     time: Date.parse("2026-11-14T17:55+08:00"),
     sips: 138,
     caption:
@@ -255,6 +275,9 @@ const posts = [
     id: "p2",
     cafeId: 2,
     type: "new",
+    status: "live",
+    pinned: false,
+    endedAt: null,
     time: Date.parse("2026-11-14T17:37+08:00"),
     sips: 109,
     caption:
@@ -266,6 +289,9 @@ const posts = [
     id: "p10",
     cafeId: 1,
     type: "photos",
+    status: "live",
+    pinned: false,
+    endedAt: null,
     time: Date.parse("2026-11-14T16:20+08:00"),
     sips: 0,
     caption: "",
@@ -279,6 +305,9 @@ const posts = [
     id: "p3",
     cafeId: 7,
     type: "event",
+    status: "live",
+    pinned: false,
+    endedAt: null,
     time: Date.parse("2026-11-14T16:57+08:00"),
     sips: 82,
     caption:
@@ -290,6 +319,9 @@ const posts = [
     id: "p11",
     cafeId: 2,
     type: "photos",
+    status: "live",
+    pinned: false,
+    endedAt: null,
     time: Date.parse("2026-11-14T13:40+08:00"),
     sips: 0,
     caption: "",
@@ -302,6 +334,9 @@ const posts = [
     id: "p4",
     cafeId: 8,
     type: "hiring",
+    status: "live",
+    pinned: false,
+    endedAt: null,
     time: Date.parse("2026-11-14T14:57+08:00"),
     sips: 38,
     caption:
@@ -317,6 +352,9 @@ const posts = [
     id: "p5",
     cafeId: 1,
     type: "event",
+    status: "live",
+    pinned: false,
+    endedAt: null,
     time: Date.parse("2026-11-14T12:57+08:00"),
     sips: 97,
     caption: "Learn milk steaming and rosette patterns with our baristas.",
@@ -327,6 +365,9 @@ const posts = [
     id: "p6",
     cafeId: 5,
     type: "hiring",
+    status: "live",
+    pinned: false,
+    endedAt: null,
     time: Date.parse("2026-11-14T09:57+08:00"),
     sips: 29,
     caption: "Join the Fulcrum team at SM City Butuan.",
@@ -337,6 +378,9 @@ const posts = [
     id: "p12",
     cafeId: 11,
     type: "photos",
+    status: "live",
+    pinned: false,
+    endedAt: null,
     time: Date.parse("2026-11-13T21:10+08:00"),
     sips: 0,
     caption: "",
@@ -352,6 +396,9 @@ const posts = [
     id: "p7",
     cafeId: 2,
     type: "hiring",
+    status: "live",
+    pinned: false,
+    endedAt: null,
     time: Date.parse("2026-11-13T19:57+08:00"),
     sips: 51,
     caption: "Lead our roasting at Baan Km 3.",
@@ -362,6 +409,9 @@ const posts = [
     id: "p8",
     cafeId: 1,
     type: "event",
+    status: "live",
+    pinned: false,
+    endedAt: null,
     time: Date.parse("2026-11-13T15:57+08:00"),
     sips: 63,
     caption: "Chill live music every Sunday at Paramount. All welcome.",
@@ -372,6 +422,9 @@ const posts = [
     id: "p9",
     cafeId: 1,
     type: "hiring",
+    status: "live",
+    pinned: false,
+    endedAt: null,
     time: Date.parse("2026-11-13T11:57+08:00"),
     sips: 17,
     caption: "Part-time positions with a friendly team. Apply at J.C. Aquino Ave.",

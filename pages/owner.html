@@ -32,18 +32,111 @@
   </div>
 </div>
 
-<!-- COMPOSER -->
+<!-- SIGNED IN -->
 <div id="owner-dash" style="display: none">
+
+<!-- ══════════ DASHBOARD (first screen) ══════════ -->
+<div id="owner-home">
+  <div class="dash-grid">
+    <div class="dash-main">
+      <!-- A. Profile card -->
+      <section class="card dash-profile" aria-labelledby="dash-name">
+        <div class="dash-banner" id="dash-banner">
+          <img id="dash-banner-img" alt="" hidden />
+          <div class="dash-banner-acts">
+            <button class="btn btn-banner" id="bg-change" data-action="change-bg">
+              <i class="ico sm" data-icon="camera"></i>
+              <span id="bg-change-label">Change background</span>
+            </button>
+            <button class="btn btn-banner" id="bg-remove" data-action="remove-bg" hidden>Remove</button>
+          </div>
+          <input type="file" id="bg-file" accept="image/*" hidden />
+        </div>
+        <div class="dash-id">
+          <span id="dash-tile"></span>
+          <div class="dash-id-text">
+            <h1 class="dash-name" id="dash-name"></h1>
+            <p class="dash-kind" id="dash-kind" hidden></p>
+            <p class="dash-address" id="dash-address"></p>
+            <p class="dash-approved">
+              <i class="ico sm" data-icon="check"></i> Approved · visible to customers
+            </p>
+          </div>
+        </div>
+        <!-- Only numbers that are tracked. "People getting alerts" is left
+             out until a backend counts every customer's alerts. -->
+        <dl class="dash-stats" id="dash-stats"></dl>
+        <div class="dash-acts">
+          <button class="btn btn-accent" id="compose-new" data-action="compose-new">
+            <i class="ico sm" data-icon="spark"></i> Post an update
+          </button>
+          <button class="btn btn-ghost" data-action="edit-page">Edit page</button>
+          <button class="btn btn-ghost" data-action="view-as-customer">View as customer</button>
+        </div>
+        <p class="form-error" id="bg-error" role="alert" hidden></p>
+      </section>
+
+      <!-- B. Featured photos -->
+      <section class="card dash-featured" aria-labelledby="feat-h">
+        <div class="dash-sec-head">
+          <h2 class="dash-sec-title" id="feat-h">Featured photos</h2>
+          <span class="dash-sec-note" id="feat-count"></span>
+        </div>
+        <ul class="feat-row" id="feat-row" aria-labelledby="feat-h"></ul>
+        <input type="file" id="feat-file" accept="image/*" multiple hidden />
+        <p class="form-error" id="feat-error" role="alert" hidden></p>
+      </section>
+
+      <!-- C. Your posts -->
+      <section class="dash-posts" aria-labelledby="posts-h">
+        <h2 class="dash-sec-title" id="posts-h" tabindex="-1">Your posts</h2>
+        <div class="seg posts-tabs" role="tablist" aria-labelledby="posts-h">
+          <button class="seg-btn on" role="tab" id="tab-live" aria-selected="true" aria-controls="posts-panel"
+            data-action="posts-tab" data-tab="live">Live <span class="tab-n" id="n-live"></span></button>
+          <button class="seg-btn" role="tab" id="tab-draft" aria-selected="false" aria-controls="posts-panel"
+            data-action="posts-tab" data-tab="draft" tabindex="-1">Drafts <span class="tab-n" id="n-draft"></span></button>
+          <button class="seg-btn" role="tab" id="tab-ended" aria-selected="false" aria-controls="posts-panel"
+            data-action="posts-tab" data-tab="ended" tabindex="-1">Ended <span class="tab-n" id="n-ended"></span></button>
+        </div>
+        <div class="dash-post-list" role="tabpanel" id="posts-panel" aria-labelledby="tab-live" tabindex="0"></div>
+      </section>
+    </div>
+
+    <!-- D. Right rail (below the posts on phones) -->
+    <aside class="dash-rail" aria-labelledby="answer-h">
+      <!-- Later: a "This week" card (views, sips, keeps totals) goes here once
+           those numbers are tracked by a backend. -->
+      <!-- Later: "What people are looking for" (search terms that led to this
+           café) goes here once searches are recorded. -->
+      <section class="card rail-card">
+        <h2 class="dash-sec-title" id="answer-h">Comments to answer</h2>
+        <ul class="answer-list" id="answer-list"></ul>
+      </section>
+      <div class="owner-foot">
+        <button class="btn btn-ghost" data-action="owner-logout">
+          <i class="ico sm" data-icon="logout"></i>
+          Sign out
+        </button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ══════════ COMPOSER (opens from "Post an update" and Edit) ══════════ -->
+<div id="owner-compose" hidden>
   <header class="compose-head">
     <button
       class="round-btn"
-      data-action="show-panel" data-panel="home"
-      aria-label="Close and go back to Today"
+      data-action="compose-cancel"
+      aria-label="Cancel and go back to your dashboard"
     >
       <i class="ico" data-icon="close"></i>
     </button>
-    <h1>Post an update</h1>
-    <button class="btn btn-accent" data-action="publish">Publish</button>
+    <h1 id="compose-title" tabindex="-1">Post an update</h1>
+    <span class="compose-btns">
+      <button class="btn btn-ghost" data-action="save-draft">Save draft</button>
+      <button class="btn btn-accent" data-action="publish">Publish</button>
+    </span>
   </header>
   <p class="form-error compose-error" id="ann-error" role="alert" hidden></p>
   <p class="compose-as">Posting as <strong id="ow-cafe-name"></strong></p>
@@ -190,15 +283,7 @@
     <div id="ann-preview"></div>
   </div>
 
-  <section class="my-posts" aria-labelledby="my-posts-h">
-    <h2 class="sec-title" id="my-posts-h" tabindex="-1">Your posts</h2>
-    <div id="my-posts"></div>
-  </section>
+</div>
+<!-- end composer -->
 
-  <div class="owner-foot">
-    <button class="btn btn-ghost" data-action="owner-logout">
-      <i class="ico sm" data-icon="logout"></i>
-      Sign out
-    </button>
-  </div>
 </div>
