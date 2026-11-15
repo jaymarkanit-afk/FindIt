@@ -144,15 +144,123 @@
   color: var(--muted);
 }
 
-/* The location pill sits in the top bar from 700px up; on phones it is in
-   the home heading instead, so there is only ever one. */
+/* The location pill opens the place picker (js/place.js) */
 .top-loc {
-  display: none;
-  flex-shrink: 0;
+  height: 44px;
+  flex-shrink: 1;
+  min-width: 0;
+  padding: 0 10px 0 10px;
+  cursor: pointer;
 }
 
-@media (min-width: 700px) {
-  .top-loc {
-    display: inline-flex;
+.top-loc #place-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-loc .caret {
+  width: 14px;
+  height: 14px;
+  transform: rotate(-90deg);
+  color: var(--muted);
+}
+
+.top-loc[aria-expanded="true"] {
+  border-color: var(--ink);
+}
+
+/* Phones: the bottom bar's Owner tab does what the account button does */
+@media (max-width: 699px) {
+  .account-btn {
+    display: none;
   }
+}
+
+/* ── Place picker: a menu under the pill, a bottom sheet on phones ── */
+.place-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 440;
+  background: rgba(20, 12, 6, 0.45);
+}
+
+.place-pop {
+  position: fixed;
+  z-index: 450;
+  width: 370px;
+  max-width: calc(100vw - 16px);
+  padding: 8px;
+  background: var(--surface);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-lg);
+}
+
+.place-pop.sheet {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  max-width: none;
+  padding: 10px 12px calc(14px + env(safe-area-inset-bottom));
+  border-radius: 22px 22px 0 0;
+}
+
+.place-pop-title {
+  padding: 6px 10px 8px;
+  font-family: var(--font-d);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.place-opt {
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  text-align: left;
+  border-radius: 12px;
+}
+
+.place-opt:hover,
+.place-opt:focus-visible {
+  background: var(--track);
+}
+
+.place-opt:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.place-opt-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.place-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.place-meta {
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap; /* "Agusan del Norte · 8 cafés" stays on one line */
+}
+
+.place-check {
+  width: 20px;
+  color: var(--accent);
+}
+
+.place-opt .ico {
+  color: var(--accent);
+}
+
+.place-sep {
+  height: 1px;
+  margin: 6px 10px;
+  background: var(--card-border);
 }

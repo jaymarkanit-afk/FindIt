@@ -367,9 +367,17 @@ function renderFeed() {
   const board = document.getElementById("feed");
   if (!board) return;
   const list = getFilteredPosts();
+  const place = getSelectedPlace();
+  const placeIds = new Set(cafesInPlace(place).map((c) => c.id));
+  const anyInPlace = getAllPosts().some((p) => placeIds.has(p.cafeId));
   board.innerHTML = list.length
     ? list.map((p) => postCardHTML(p)).join("")
-    : '<div class="empty">Nothing on the board for this filter yet.</div>';
+    : anyInPlace
+      ? '<div class="empty">Nothing on the board for this filter yet.</div>'
+      : `<div class="empty board-empty">
+          <p>Nothing on the board in ${esc(place.name)} today</p>
+          <button class="btn btn-dark" data-action="show-panel" data-panel="map">See ${esc(place.name)} cafés on the map</button>
+        </div>`;
   hydrateCaptions(board);
 }
 
@@ -382,6 +390,8 @@ function renderTodayHeading(now = new Date()) {
   const dayMonth = now.toLocaleDateString("en-GB", { day: "numeric", month: "long" });
   el.textContent = `${weekday}, ${dayMonth}`.toUpperCase();
   el.setAttribute("datetime", now.toISOString().slice(0, 10));
+  const title = document.getElementById("today-title");
+  if (title) title.textContent = `Today in ${getSelectedPlace().name}`;
 }
 
 /* ── "Open now near you" / "Near you" row ─────────────────── */
@@ -394,8 +404,9 @@ function renderNearYou() {
   if (!row) return;
 
   // Only filter by open status when the data actually has hours
-  const anyHours = cafeDatabase.some((c) => openStatus(c));
-  const cafes = [...cafeDatabase]
+  const inPlace = cafesInPlace();
+  const anyHours = inPlace.some((c) => openStatus(c));
+  const cafes = inPlace
     .filter((c) => !anyHours || (openStatus(c) || {}).open)
     .sort((a, b) => a.distance - b.distance)
     .slice(0, NEAR_MAX);
@@ -465,7 +476,7 @@ function renderNotifications() {
         <span class="notif-body">
           <span class="notif-n">${esc(cafe.name)}</span>
           <span class="notif-m">${esc(postHeadline(p))}</span>
-          <span class="notif-t">${type.label} · ${agoHTML(p.time)}${unread ? " · New" : ""}</span>
+          <span class="notif-t">${type.label} · ${esc(cafe.city)} · ${agoHTML(p.time)}${unread ? " · New" : ""}</span>
         </span>
       </button>`;
     })
@@ -482,13 +493,14 @@ function markAlertsSeen() {
 
 /* ── Saved page ───────────────────────────────────────────── */
 
-function cafeRowHTML(cafe, chip) {
+// withPlace: show the café's place (for lists that are not place-filtered)
+function cafeRowHTML(cafe, chip, withPlace = false) {
   return `
     <button class="rec-row" data-action="open-cafe" data-cafe="${cafe.id}">
       <img class="rec-thumb" src="${esc(cafe.img)}" alt="" loading="lazy" />
       <span class="rec-info">
         <span class="rec-name">${esc(cafe.name)}</span>
-        <span class="rec-sub">${esc(cafe.address)}</span>
+        <span class="rec-sub">${esc(withPlace ? `${cafeStreet(cafe)} · ${cafe.city}` : cafe.address)}</span>
       </span>
       ${chip ? `<span class="rec-chip">${esc(chip)}</span>` : ""}
     </button>`;
@@ -501,7 +513,7 @@ function renderSaved() {
 
   const cafes = userState.savedCafes.map(getCafe).filter(Boolean);
   cafesEl.innerHTML = cafes.length
-    ? cafes.map((c) => cafeRowHTML(c, c.rating + " rating")).join("")
+    ? cafes.map((c) => cafeRowHTML(c, c.rating + " rating", true)).join("")
     : '<div class="empty">No saved cafés yet. Tap the bookmark on a café\'s page.</div>';
 
   const kept = getAllPosts().filter((p) => inState("keeps", p.id));
@@ -515,7 +527,7 @@ function renderSaved() {
             ${cafeLogoTile(cafe)}
             <span class="rec-info">
               <span class="rec-name">${esc(postHeadline(p))}</span>
-              <span class="rec-sub">${esc(cafe.name)} · ${agoHTML(p.time)}</span>
+              <span class="rec-sub">${esc(cafe.name)} · ${esc(cafe.city)} · ${agoHTML(p.time)}</span>
             </span>
             <span class="tag-chip ${type.cls}">${type.label}</span>
           </button>`;
@@ -524,50 +536,45 @@ function renderSaved() {
     : '<div class="empty">Nothing kept yet. Tap Keep on anything on the board.</div>';
 }
 
-/* ── Right rail: "This week" mini tickets and "Now hiring" ─ */
+/* ── Right rail: "This week" mini tickets and "Now hiring" ─
+   Only the selected place; an empty section is hidden, not shown empty. */
 
 function renderSidebar() {
-  const events = document.getElementById("side-events");
-  if (events) {
-    const items = getAllPosts().filter((p) => p.type === "event").slice(0, 4);
-    events.innerHTML = items.length
-      ? items
-          .map((p) => {
-            const d = postData(p);
-            const cafe = getCafe(p.cafeId);
-            return `
-            <button class="mini-ticket" data-action="open-cafe" data-cafe="${cafe.id}">
-              <span class="mini-stub">
-                <span class="stub-day">${esc(d.day || "—")}</span>
-                ${d.time ? `<span class="stub-time">${esc(d.time)}</span>` : ""}
-              </span>
-              <span class="mini-body">
-                <span class="mini-title">${esc(d.title || "Event")}</span>
-                <span class="mini-sub">${esc([cafe.name, d.price].filter(Boolean).join(" · "))}</span>
-              </span>
-            </button>`;
-          })
-          .join("")
-      : '<div class="empty">No events on the board this week.</div>';
-  }
+  const ids = new Set(cafesInPlace().map((c) => c.id));
+  const inPlace = getAllPosts().filter((p) => ids.has(p.cafeId));
+  const fill = (listId, items, render) => {
+    const list = document.getElementById(listId);
+    if (!list) return;
+    const section = list.closest(".side-sec");
+    if (section) section.hidden = items.length === 0;
+    list.innerHTML = items.map(render).join("");
+  };
 
-  const jobs = document.getElementById("side-jobs");
-  if (jobs) {
-    const items = getAllPosts().filter((p) => p.type === "hiring").slice(0, 4);
-    jobs.innerHTML = items.length
-      ? items
-          .map((p) => {
-            const d = postData(p);
-            const cafe = getCafe(p.cafeId);
-            return `
-            <button class="rail-job" data-action="open-cafe" data-cafe="${cafe.id}">
-              <span class="mini-title">${esc(d.role || "Open role")}</span>
-              <span class="mini-sub">${esc([cafe.name, d.schedule].filter(Boolean).join(" · "))}</span>
-            </button>`;
-          })
-          .join("")
-      : '<div class="empty">No openings right now.</div>';
-  }
+  fill("side-events", inPlace.filter((p) => p.type === "event").slice(0, 4), (p) => {
+    const d = postData(p);
+    const cafe = getCafe(p.cafeId);
+    return `
+      <button class="mini-ticket" data-action="open-cafe" data-cafe="${cafe.id}">
+        <span class="mini-stub">
+          <span class="stub-day">${esc(d.day || "—")}</span>
+          ${d.time ? `<span class="stub-time">${esc(d.time)}</span>` : ""}
+        </span>
+        <span class="mini-body">
+          <span class="mini-title">${esc(d.title || "Event")}</span>
+          <span class="mini-sub">${esc([cafe.name, d.price].filter(Boolean).join(" · "))}</span>
+        </span>
+      </button>`;
+  });
+
+  fill("side-jobs", inPlace.filter((p) => p.type === "hiring").slice(0, 4), (p) => {
+    const d = postData(p);
+    const cafe = getCafe(p.cafeId);
+    return `
+      <button class="rail-job" data-action="open-cafe" data-cafe="${cafe.id}">
+        <span class="mini-title">${esc(d.role || "Open role")}</span>
+        <span class="mini-sub">${esc([cafe.name, d.schedule].filter(Boolean).join(" · "))}</span>
+      </button>`;
+  });
 }
 
 // Re-render everything that depends on posts (after publish, on startup)

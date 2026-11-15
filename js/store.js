@@ -83,6 +83,32 @@ function getCafe(id) {
   return cafeDatabase.find((c) => c.id === Number(id));
 }
 
+/* ── Selected place: the one source of truth ──────────────────
+   Everything place-specific (home board, Near you, rail, map, search,
+   distances, Brevi) reads getSelectedPlace(). setSelectedPlace() saves
+   the choice and re-renders all of it. Saved items and alerts are never
+   filtered by place.                                                 */
+
+function placeByName(name) {
+  return places.find((p) => p.name === name) || null;
+}
+
+function getSelectedPlace() {
+  return placeByName(loadStore("place", DEFAULT_PLACE)) || placeByName(DEFAULT_PLACE) || places[0];
+}
+
+// The one helper for "cafés in this place"; use it instead of filtering by city
+function cafesInPlace(place = getSelectedPlace()) {
+  return cafeDatabase.filter((c) => c.city === place.name);
+}
+
+function setSelectedPlace(name) {
+  const place = placeByName(name);
+  if (!place) return;
+  saveStore("place", place.name);
+  if (typeof refreshForPlace === "function") refreshForPlace(); // place.js
+}
+
 // Owner posts + seed posts, newest first
 function getAllPosts() {
   return [...userState.ownerPosts, ...posts].sort((a, b) => b.time - a.time);

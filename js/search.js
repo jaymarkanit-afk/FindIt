@@ -54,7 +54,10 @@ function submitSearch(query) {
     return;
   }
 
-  const results = cafeDatabase.filter((cafe) => cafeMatches(cafe, searchQuery));
+  // Prefer a match in the selected place, then anywhere
+  const all = cafeDatabase.filter((cafe) => cafeMatches(cafe, searchQuery));
+  const here = getSelectedPlace().name;
+  const results = [...all.filter((c) => c.city === here), ...all.filter((c) => c.city !== here)];
 
   if (results.length > 0) {
     openCafe(results[0].id);
@@ -77,8 +80,31 @@ function displaySearchResults(results) {
     smartTitle.textContent = `${results.length} café${results.length !== 1 ? "s" : ""} matching "${currentSearchQuery}" · km ${distanceFrom()}`;
   }
 
-  smartRecs.innerHTML =
-    results.length > 0
-      ? results.map((cafe) => cafeRowHTML(cafe, cafe.distance + " km")).join("")
-      : '<div class="empty">No cafés found. Try another search.</div>';
+  if (results.length) {
+    smartRecs.innerHTML = results
+      .map((cafe) => cafeRowHTML(cafe, cafe.distance + " km"))
+      .join("");
+    return;
+  }
+
+  // Nothing here: look in the other places and offer to switch
+  const here = getSelectedPlace().name;
+  const elsewhere = cafeDatabase.filter(
+    (c) => c.city !== here && cafeMatches(c, currentSearchQuery),
+  );
+  if (!elsewhere.length) {
+    smartRecs.innerHTML = `<div class="empty">No cafés found in ${esc(here)}. Try another search.</div>`;
+    return;
+  }
+  const byPlace = [...new Set(elsewhere.map((c) => c.city))];
+  smartRecs.innerHTML = byPlace
+    .map(
+      (name) => `
+      <div class="found-elsewhere">
+        <p class="found-label">Found in ${esc(name)}</p>
+        ${elsewhere.filter((c) => c.city === name).map((c) => cafeRowHTML(c, c.city)).join("")}
+        <button class="btn btn-dark" data-action="switch-place" data-place="${esc(name)}">Switch to ${esc(name)}</button>
+      </div>`,
+    )
+    .join("");
 }

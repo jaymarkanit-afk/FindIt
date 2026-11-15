@@ -21,8 +21,9 @@ function initializeMap() {
   }
 
   try {
-    // Initialize map centered on Butuan City
-    map = L.map("butuan-map").setView([8.9686, 125.5287], 14);
+    // Centre on the selected place
+    const place = getSelectedPlace();
+    map = L.map("butuan-map").setView([place.lat, place.lng], 14);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
@@ -41,7 +42,7 @@ function initializeMap() {
     });
 
     setUserMarker();
-    addCafeMarkers(getFilteredCafes());
+    addCafeMarkers(getFilteredCafes({ anyPlace: true }));
     updateGeoInfoCard();
 
     // Ask for the user's actual position once
@@ -79,30 +80,36 @@ function addCafeMarkers(cafes) {
   markers.forEach((marker) => map.removeLayer(marker));
   markers = [];
 
+  const here = getSelectedPlace().name;
   cafes.forEach((cafe) => {
+    // Cafés in other places stay on the map, dimmed, so people can find them
+    const elsewhere = cafe.city !== here;
     const cafeIcon = L.divIcon({
-      html: `<div class="map-pin">${ico("cup")}</div>`,
+      html: `<div class="map-pin${elsewhere ? " dim" : ""}">${ico("cup")}</div>`,
       iconSize: [36, 36],
       iconAnchor: [18, 18],
       popupAnchor: [0, -16],
       className: "cafe-marker",
     });
 
+    const label = elsewhere ? `${cafe.name} (${cafe.city})` : cafe.name;
     const marker = L.marker([cafe.lat, cafe.lng], {
       icon: cafeIcon,
-      title: cafe.name,
-      alt: cafe.name,
+      title: label,
+      alt: label,
+      zIndexOffset: elsewhere ? -100 : 0,
     })
       .bindPopup(
         `<div class="map-pop">
           <div class="map-pop-name">${esc(cafe.name)}</div>
-          <div class="map-pop-meta">${cafe.rating} rating · ${cafe.distance} km ${distanceFrom()}<br>${esc(cafe.address)}</div>
+          <div class="map-pop-meta">${cafe.rating} rating · ${cafe.distance} km ${distanceFrom()}<br>${esc(cafe.address)}${elsewhere ? `<br>In ${esc(cafe.city)}` : ""}</div>
           <button class="btn" data-cafe="${cafe.id}">View café</button>
         </div>`,
       )
       .addTo(map);
 
     marker.cafeId = cafe.id; // lets search open the right popup
+    marker.elsewhere = elsewhere;
     markers.push(marker);
   });
 }
@@ -132,11 +139,17 @@ function displayNearbyCafesList() {
   const list = document.getElementById("nearby-cafes-list");
   if (!list) return;
 
-  const nearbyCafes = cafeDatabase
-    .filter((c) => c.distance < 5)
-    .sort((a, b) => a.distance - b.distance);
+  const place = getSelectedPlace();
+  const nearbyCafes = cafesInPlace(place).sort((a, b) => a.distance - b.distance);
 
   list.innerHTML = nearbyCafes.length
     ? nearbyCafes.map((c) => cafeRowHTML(c, c.distance + " km")).join("")
-    : `<div class="empty">No cafés within 5 km ${userLocation ? "of you" : "of the city centre"}.</div>`;
+    : `<div class="empty">No cafés listed in ${esc(place.name)} yet.</div>`;
+}
+
+// Move the map to the selected place (called when the place changes)
+function centreMapOnPlace() {
+  if (!map) return;
+  const place = getSelectedPlace();
+  map.setView([place.lat, place.lng], 14);
 }

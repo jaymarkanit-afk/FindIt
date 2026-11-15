@@ -114,6 +114,12 @@
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
 }
 
+/* Cafés in other places: still on the map, but dimmed */
+.map-pin.dim {
+  opacity: 0.45;
+  transform: scale(0.85);
+}
+
 .map-pin .ico {
   width: 18px;
   height: 18px;

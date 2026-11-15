@@ -31,15 +31,34 @@
   letter-spacing: -0.02em;
 }
 
-.today-head .loc-pill {
-  flex-shrink: 0;
-  margin-bottom: 4px;
+/* Board empty in this place */
+.board-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
-@media (min-width: 700px) {
-  .today-head .loc-pill {
-    display: none;
-  }
+.board-empty p {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* Search: "Found in <other place>" */
+.found-elsewhere {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.found-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.found-elsewhere .btn {
+  align-self: flex-start;
 }
 
 /* Phone-width search (the top bar has search from 700px up) */

@@ -17,8 +17,9 @@ order in `findit.html` matters:
 | 10  | `ui.js`           | `showPanel`, `toggleTheme`, `showToast`, `toggleNotif`.                                                                                                   |
 | 11  | `interactions.js` | `bumpRxn` (sips), `toggleFollow` (Get alerts), `doSave` (Keep), `saveProfile`, `postCta`, sharing.                                                        |
 | 12  | `owner.js`        | Owner sign-in gate and the "Post an update" composer: `annType`, `annPhoto`, `updateAnnPreview`, `postAnn`.                                               |
-| 13  | `actions.js`      | All event wiring. Markup uses `data-action` (no inline handlers); one delegated listener per container looks the action up in `ACTIONS`. |
-| 14  | `main.js`         | Waits for `pagesReady`, then renders everything and restores the last panel.                                                                              |
+| 13  | `place.js`        | The location picker on the top-bar pill: menu (bottom sheet on phones), keyboard handling, "Use my location", and `refreshForPlace()`, which redraws everything place-specific. |
+| 14  | `actions.js`      | All event wiring. Markup uses `data-action` (no inline handlers); one delegated listener per container looks the action up in `ACTIONS`. |
+| 15  | `main.js`         | Waits for `pagesReady`, then renders everything and restores the last panel.                                                                              |
 
 ## Data
 
@@ -54,6 +55,16 @@ Comments use the shape a backend will use later:
 `{ id, postId, authorName, text, createdAt }` (`createdAt` is an ISO string).
 They are always rendered with `textContent`. With no accounts yet, local
 comments are signed "Guest".
+
+## Places
+
+`places` in database.js lists each city or town (name, province, centre).
+Every café has a `city` matching one of them; posts take their place from
+their café. `getSelectedPlace()` / `setSelectedPlace()` in store.js are the
+only way to read or change the selected place (saved as `findit.place`),
+and `cafesInPlace(place)` is the one helper for "cafés here". The home
+board, Near you, the right rail, search, Brevi, the map centre and default
+distances follow the selected place; Saved and alerts never do.
 
 A café may have `hours: { open: "07:00", close: "21:00" }`. Without it the
 app shows no open/closed status rather than guessing.

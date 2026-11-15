@@ -2,6 +2,8 @@
    DATABASE — cafés and their posts
    ═══════════════════════════════════════════════════════════════ */
 
+// Every café has a `city` that matches a place in `places` (below).
+// Posts, events and jobs take their place from their café.
 // Optional café fields: `logo` (image path), `contact`, and
 // `hours: { open: "07:00", close: "21:00" }` (same every day; a close
 // earlier than open means past midnight). With no `hours`, the app shows
@@ -12,11 +14,28 @@
 // city centre, then from the user once they share their location.
 // `images` holds photo paths; the first one is the featured photo.
 
+/* ════════════════════════════════════════════════════════════
+   PLACES — one entry per city or town. The location picker, the map
+   centre and default distances all come from here, so a café in a new
+   town only needs a new entry. Each café's `city` must match a `name`.
+   Centres for Prosperidad and San Francisco are approximate town-centre
+   (poblacion) coordinates.
+   ════════════════════════════════════════════════════════════ */
+
+const places = [
+  { name: "Butuan City", province: "Agusan del Norte", lat: 8.9475, lng: 125.5406 },
+  { name: "Prosperidad", province: "Agusan del Sur", lat: 8.6057, lng: 125.9153 },
+  { name: "San Francisco", province: "Agusan del Sur", lat: 8.5074, lng: 125.9767 },
+];
+
+const DEFAULT_PLACE = "Butuan City";
+
 const cafeDatabase = [
   {
     id: 1,
     name: "Paramount Coffee",
     address: "J.C. Aquino Ave, Butuan City",
+    city: "Butuan City",
     lat: 8.947595260150733,
     lng: 125.53678236689736,
     rating: 4.9,
@@ -36,6 +55,7 @@ const cafeDatabase = [
     id: 2,
     name: "Craft Coffee Roastery",
     address: "Alviola Village, Baan Km 3, Butuan",
+    city: "Butuan City",
     lat: 8.957758479257523,
     lng: 125.58639774084497,
     rating: 4.8,
@@ -55,6 +75,7 @@ const cafeDatabase = [
     id: 3,
     name: "Project Brew",
     address: "Jose Rosales Ave, Butuan City",
+    city: "Butuan City",
     lat: 8.962,
     lng: 125.505,
     rating: 4.8,
@@ -67,6 +88,7 @@ const cafeDatabase = [
     id: 4,
     name: "Dodo Workspace & Café",
     address: "Butuan City Center",
+    city: "Butuan City",
     lat: 8.965,
     lng: 125.536,
     rating: 4.8,
@@ -79,6 +101,7 @@ const cafeDatabase = [
     id: 5,
     name: "Fulcrum Coffee",
     address: "SM City Butuan",
+    city: "Butuan City",
     lat: 8.971,
     lng: 125.525,
     rating: 4.9,
@@ -91,6 +114,7 @@ const cafeDatabase = [
     id: 6,
     name: "Mammoth Coffee",
     address: "Above Samgyup, Doongan, Butuan",
+    city: "Butuan City",
     lat: 8.958,
     lng: 125.54,
     rating: 4.7,
@@ -103,6 +127,7 @@ const cafeDatabase = [
     id: 7,
     name: "Historya by Antigo",
     address: "Marcos Calo St, Butuan City",
+    city: "Butuan City",
     lat: 8.968,
     lng: 125.531,
     rating: 4.8,
@@ -115,6 +140,7 @@ const cafeDatabase = [
     id: 8,
     name: "Second Shot Brewing Studio",
     address: "Ochoa Ave, Butuan City",
+    city: "Butuan City",
     lat: 8.978,
     lng: 125.515,
     rating: 4.8,
@@ -127,6 +153,7 @@ const cafeDatabase = [
     id: 9,
     name: "Coffee Capital",
     address: "Purok 2, Patin-ay, Prosperidad, Agusan del Sur",
+    city: "Prosperidad",
     lat: 8.54688786259318,
     lng: 125.94004069370828,
     rating: 4.7,
@@ -148,6 +175,7 @@ const cafeDatabase = [
     name: "Lakbai Coffee",
     address:
       "National Highway, Brgy. Hubang, San Francisco, Agusan del Sur 8501",
+    city: "San Francisco",
     lat: 8.514393284197975,
     lng: 125.968360677675,
     rating: 4.6,
@@ -167,6 +195,9 @@ const cafeDatabase = [
     id: 11,
     name: "Kold Coffee",
     address: "Agusan del Sur",
+    // The address only says "Agusan del Sur"; the coordinates are about
+    // 1 km from San Francisco's centre, so it is placed there (to confirm).
+    city: "San Francisco",
     lat: 8.499903198169438,
     lng: 125.97906359812762,
     rating: 4.7,

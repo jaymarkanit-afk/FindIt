@@ -298,10 +298,18 @@
         aria-label="FindIt, today"
         >Find<span>It</span></a
       >
-      <span class="loc-pill top-loc">
+      <button
+        class="loc-pill top-loc"
+        id="place-btn"
+        data-action="toggle-place-menu"
+        aria-haspopup="menu"
+        aria-expanded="false"
+        aria-controls="place-menu"
+      >
         <svg class="ico sm" aria-hidden="true"><use href="#i-pin" /></svg>
-        Butuan City
-      </span>
+        <span id="place-label">Butuan City</span>
+        <svg class="ico sm caret" aria-hidden="true"><use href="#i-chevron" /></svg>
+      </button>
       <div class="topbar-search">
         <label class="search-field">
           <svg class="ico sm" aria-hidden="true"><use href="#i-search" /></svg>
@@ -330,7 +338,7 @@
           </svg>
         </button>
         <button
-          class="icon-btn"
+          class="icon-btn account-btn"
           data-action="account"
           aria-label="Account: café owner sign-in"
         >
@@ -338,6 +346,13 @@
         </button>
       </div>
     </header>
+
+    <!-- ══════════ PLACE PICKER (js/place.js) ══════════ -->
+    <div class="place-backdrop" id="place-backdrop" hidden></div>
+    <div class="place-pop" id="place-pop" hidden>
+      <p class="place-pop-title" id="place-pop-title">Choose a place</p>
+      <div role="menu" id="place-menu" aria-labelledby="place-pop-title"></div>
+    </div>
 
     <!-- ══════════ ALERTS PANEL ══════════ -->
     <div class="notif-backdrop" id="notif-backdrop">
@@ -442,6 +457,7 @@
     <script src="js/ui.js"></script>
     <script src="js/interactions.js"></script>
     <script src="js/owner.js"></script>
+    <script src="js/place.js"></script>
     <script src="js/actions.js"></script>
     <script src="js/main.js"></script>
   </body>

@@ -5,12 +5,10 @@
 let userLocation = null;
 let locationInitialized = false;
 
-// Distances are measured from here until the user shares their location
-const CITY_CENTRE = { lat: 8.9475, lng: 125.5406 };
-
-// Set every café's `distance` (km) from the user, or from the city centre
+// Set every café's `distance` (km) from the user once they share their
+// location, otherwise from the centre of the selected place
 function updateDistances() {
-  const from = userLocation || CITY_CENTRE;
+  const from = userLocation || getSelectedPlace();
   cafeDatabase.forEach((cafe) => {
     cafe.distance = calculateDistance(from.lat, from.lng, cafe.lat, cafe.lng);
   });
@@ -18,7 +16,7 @@ function updateDistances() {
 
 // "from you" once location is known, otherwise "from city centre"
 function distanceFrom() {
-  return userLocation ? "from you" : "from city centre";
+  return userLocation ? "from you" : `from ${getSelectedPlace().name} centre`;
 }
 
 // Keep every "from …" label on the page in step with the distances
@@ -115,7 +113,9 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 function updateGeoInfoCard() {
-  const nearest = [...cafeDatabase].sort((a, b) => a.distance - b.distance)[0];
+  const place = getSelectedPlace();
+  const inPlace = cafesInPlace(place);
+  const nearest = [...inPlace].sort((a, b) => a.distance - b.distance)[0];
 
   const geoLocation = document.getElementById("geo-location");
   const geoCafeCount = document.getElementById("geo-cafe-count");
@@ -124,9 +124,9 @@ function updateGeoInfoCard() {
   if (geoLocation) {
     geoLocation.textContent = userLocation
       ? `${userLocation.lat.toFixed(4)}°N, ${userLocation.lng.toFixed(4)}°E`
-      : "Butuan City";
+      : place.name;
   }
-  if (geoCafeCount) geoCafeCount.textContent = cafeDatabase.length;
+  if (geoCafeCount) geoCafeCount.textContent = inPlace.length;
   if (geoNearestDist)
     geoNearestDist.textContent = nearest ? nearest.distance + " km" : "–";
 }

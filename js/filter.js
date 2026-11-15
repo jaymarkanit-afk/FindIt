@@ -90,8 +90,10 @@ function getTrendingCafes(cafes) {
     .slice(0, TRENDING_MAX);
 }
 
-function getFilteredCafes() {
-  let filtered = [...cafeDatabase];
+// Cafés in the selected place that match the search and filter.
+// { anyPlace: true } skips the place (the map shows every place).
+function getFilteredCafes(opts = {}) {
+  let filtered = opts.anyPlace ? [...cafeDatabase] : cafesInPlace();
 
   // Apply search filter first
   if (currentSearchQuery) {
@@ -135,6 +137,6 @@ function filterAndDisplayCafes() {
   const filtered = getFilteredCafes();
   displaySearchResults(filtered);
   renderFeed();
-  updateMap(filtered);
+  updateMap(getFilteredCafes({ anyPlace: true }));
   displayNearbyCafesList();
 }

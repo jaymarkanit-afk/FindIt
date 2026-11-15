@@ -20,6 +20,15 @@ const ACTIONS = {
   "close-alerts": () => closeNotif(),
   "toggle-theme": (el, e) => toggleTheme(e),
 
+  // Place picker
+  "toggle-place-menu": () => togglePlaceMenu(),
+  "pick-place": (el) => pickPlace(el),
+  "place-locate": () => useMyLocationForPlace(),
+  "switch-place": (el) => {
+    setSelectedPlace(el.dataset.place);
+    showToast(`Showing ${el.dataset.place}`);
+  },
+
   // Filters
   "feed-filter": (el) => quickFilter(el.dataset.filter),
   "open-drawer": () => openDrawer(),
@@ -92,7 +101,7 @@ function onSearchKeydown(e) {
   const topbar = $(".topbar");
 
   // One delegated click listener per container
-  [topbar, drawer, alerts, pages, $(".side-col"), $(".bottom-nav"), $("#publish-bar")].forEach(
+  [topbar, drawer, alerts, pages, $(".side-col"), $(".bottom-nav"), $("#publish-bar"), $("#place-pop")].forEach(
     (container) => container.addEventListener("click", onActionClick),
   );
 
