@@ -23,7 +23,7 @@ const ACTIONS = {
   // Place picker
   "toggle-place-menu": () => togglePlaceMenu(),
   "pick-place": (el) => pickPlace(el),
-  "place-locate": () => useMyLocationForPlace(),
+  "place-locate": locatePlaceAction,
   "switch-place": (el) => {
     setSelectedPlace(el.dataset.place);
     showToast(`Showing ${el.dataset.place}`);
@@ -88,6 +88,10 @@ const ACTIONS = {
   publish: () => postAnn(),
   "view-published": () => viewPublished(),
 };
+
+function locatePlaceAction() {
+  return globalThis["useMyLocationForPlace"]();
+}
 
 function onActionClick(e) {
   const el = e.target.closest("[data-action]");
