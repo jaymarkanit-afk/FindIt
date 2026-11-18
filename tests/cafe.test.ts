@@ -17,32 +17,54 @@ function everyPhoto(target: Cafe, page: CafePagePhotos): string[] {
 }
 
 describe("photos on the café page", () => {
-  it("keeps post photos in their cards and leaves the rest for the Photos row", () => {
+  it("shows every featured photo in the Photos row; cards drop the ones it shows", () => {
     const paramount = cafe(1);
     const page = cafePagePhotos(paramount, cafeBoard(posts, 1));
     expect(page.banner).toBeNull();
-    // p1 uses paramount5, p10 uses 1–3, p5 uses 6: only 4 is left
-    expect(page.featured).toEqual(["Images/paramount/paramount4.jpg"]);
-    expect(page.posts.find((post) => post.id === "p10")?.photos).toHaveLength(3);
+    expect(page.featured).toEqual(paramount.featuredPhotos); // all six, in the owner's order
+    // p1 (paramount5), p10 (1–3) and p5 (6) are all featured, so their cards show no photo
+    for (const id of ["p1", "p10", "p5"]) expect(page.posts.find((post) => post.id === id)?.photos).toEqual([]);
+    const all = everyPhoto(paramount, page);
+    expect(new Set(all).size).toBe(all.length);
   });
 
-  it("never uses the logo or the banner again", () => {
+  it("keeps a card's photo when the page does not show it anywhere else", () => {
+    const craft: Cafe = { ...cafe(2), featuredPhotos: ["Images/craftcoffee/craftcoffe5.jpg", "Images/craftcoffee/craftcoffe2.jpg"] };
+    const page = cafePagePhotos(craft, cafeBoard(posts, 2));
+    expect(page.posts.find((post) => post.id === "p2")?.photos).toEqual([{ src: "Images/craftcoffee/craftcoffe3.jpg" }]);
+    // p11 had craftcoffe2 (featured) and craftcoffe4 (not): it keeps only 4
+    expect(page.posts.find((post) => post.id === "p11")?.photos).toEqual([{ src: "Images/craftcoffee/craftcoffe4.jpg" }]);
+  });
+
+  it("never uses the logo or the banner again, not even in the Photos row", () => {
     const craft: Cafe = { ...cafe(2), backgroundPhoto: "Images/craftcoffee/craftcoffe5.jpg", featuredPhotos: ["Images/craftcoffee/craftcoffe1.jpg", ...cafe(2).featuredPhotos] };
     const page = cafePagePhotos(craft, cafeBoard(posts, 2));
     expect(page.banner).toBe("Images/craftcoffee/craftcoffe5.jpg");
-    expect(page.featured).toEqual(["Images/craftcoffee/craftcoffe6.jpg"]);
+    expect(page.featured).toEqual([
+      "Images/craftcoffee/craftcoffe2.jpg",
+      "Images/craftcoffee/craftcoffe3.jpg",
+      "Images/craftcoffee/craftcoffe4.jpg",
+      "Images/craftcoffee/craftcoffe6.jpg",
+    ]);
     const all = everyPhoto(craft, page);
     expect(new Set(all).size).toBe(all.length);
   });
 
-  it("takes a photo out of a later card when an earlier part already shows it", () => {
-    const paramount: Cafe = { ...cafe(1), backgroundPhoto: "Images/paramount/paramount5.jpg" };
-    const repeat: Post = { ...posts.find((post) => post.id === "p10")!, id: "o1", time: Date.parse("2026-11-14T10:00+08:00") };
-    const page = cafePagePhotos(paramount, cafeBoard([...posts, repeat], 1));
-    expect(page.posts.find((post) => post.id === "p1")?.photos).toEqual([]); // its photo is the banner
-    expect(page.posts.find((post) => post.id === "o1")?.photos).toEqual([]); // p10 shows them first
-    const all = everyPhoto(paramount, page);
-    expect(new Set(all).size).toBe(all.length);
+  it("takes a photo out of a later card when an earlier card already shows it", () => {
+    const brew: Cafe = { ...cafe(3), backgroundPhoto: "banner.jpg" };
+    const base = posts.find((post) => post.id === "p10")!;
+    const first: Post = { ...base, id: "o2", cafeId: 3, time: 2, photos: [{ src: "a.jpg" }, { src: "banner.jpg" }] };
+    const second: Post = { ...base, id: "o1", cafeId: 3, time: 1, photos: [{ src: "a.jpg" }, { src: "b.jpg" }] };
+    const page = cafePagePhotos(brew, cafeBoard([first, second], 3));
+    expect(page.posts.map((post) => post.photos.map((photo) => photo.src))).toEqual([["a.jpg"], ["b.jpg"]]);
+  });
+
+  it("lets cards use featured photos that are past the cap of six", () => {
+    const brew: Cafe = { ...cafe(3), featuredPhotos: ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg"] };
+    const post: Post = { ...posts.find((item) => item.id === "p10")!, id: "o1", cafeId: 3, photos: [{ src: "7.jpg" }, { src: "1.jpg" }] };
+    const page = cafePagePhotos(brew, [post]);
+    expect(page.featured).toHaveLength(6);
+    expect(page.posts[0].photos).toEqual([{ src: "7.jpg" }]);
   });
 
   it("drops repeats inside the featured list and caps it at six", () => {

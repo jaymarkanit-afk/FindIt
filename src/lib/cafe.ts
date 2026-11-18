@@ -19,14 +19,16 @@ export const PHOTO_ROW_LIMIT = 3;
 
 export type CafePagePhotos = {
   banner: string | null; // the background photo, never the logo
-  posts: Post[]; // the board's posts, minus photos already shown above them
-  featured: string[]; // the Photos row, minus anything shown anywhere else
+  featured: string[]; // the Photos row: every featured photo (not the logo or banner)
+  posts: Post[]; // the board's posts, without photos the page already shows
 };
 
 // Decides where every photo on the café page goes, so none shows twice.
-// In page order: the logo (info card) and the banner come first; then
-// each post keeps its photos unless an earlier part of the page already
-// shows them; the Photos row gets the featured photos that are left.
+// The logo (info card) and the banner come first, and the Photos row has
+// priority over the cards: it always shows every featured photo (each
+// once, never the logo or the banner, as in the old app). A card then
+// shows only photos that appear nowhere else on the page, and is drawn
+// without the photo otherwise.
 export function cafePagePhotos(cafe: Cafe, posts: readonly Post[]): CafePagePhotos {
   const banner = cafe.backgroundPhoto && cafe.backgroundPhoto !== cafe.logo ? cafe.backgroundPhoto : null;
   const used = new Set([cafe.logo, banner].filter((src): src is string => Boolean(src)));
@@ -35,12 +37,14 @@ export function cafePagePhotos(cafe: Cafe, posts: readonly Post[]): CafePagePhot
     used.add(src);
     return true;
   };
+  const featured = cafe.featuredPhotos.filter(take).slice(0, FEATURED_MAX);
+  // Featured photos past the cap are not shown, so cards may still use them
+  for (const src of cafe.featuredPhotos) if (!featured.includes(src) && src !== cafe.logo && src !== banner) used.delete(src);
   const shownPosts = posts.map((post) => {
     const photos = post.photos.filter((photo) => take(photo.src));
     return photos.length === post.photos.length ? post : { ...post, photos };
   });
-  const featured = cafe.featuredPhotos.filter(take).slice(0, FEATURED_MAX);
-  return { banner, posts: shownPosts, featured };
+  return { banner, featured, posts: shownPosts };
 }
 
 export function featuredAlt(cafe: Cafe, index: number): string {

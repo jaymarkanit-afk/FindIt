@@ -95,7 +95,7 @@ describe("café page: on the board today", () => {
     expect(cards.map((card) => card.getAttribute("aria-label"))).toEqual([
       "Event: Acoustic Sunday Sessions, Paramount Coffee",
       "Promo: Sustainability Week, Paramount Coffee",
-      "Photos: 3 photos, Paramount Coffee",
+      "Photos: Photos, Paramount Coffee", // its three photos are in the Photos row
       "Event: Latte Art Workshop, Paramount Coffee",
       "Hiring: Weekend Barista & Cashier, Paramount Coffee",
     ]);
@@ -141,9 +141,22 @@ describe("café page: photos", () => {
     expect(tile).toHaveFocus();
   });
 
+  it("shows every featured photo, and cards drop the ones the row shows", async () => {
+    const { main } = await renderCafe(1); // Paramount: six featured, five of them also in posts
+    expect(within(main).getByRole("heading", { name: "Photos 6" })).toBeInTheDocument();
+    expect(within(within(main).getByRole("list", { name: "Paramount Coffee photos" })).getAllByRole("listitem")).toHaveLength(6);
+    expect(within(main).getByRole("button", { name: "See all" })).toBeInTheDocument();
+    for (const card of within(main).getAllByRole("article")) {
+      expect(within(card).queryByRole("button", { name: /^Open / })).not.toBeInTheDocument();
+    }
+    const sources = Array.from(main.querySelectorAll("img")).map((img) => img.getAttribute("src"));
+    expect(new Set(sources).size).toBe(sources.length);
+  });
+
   it("has no See all for three photos or fewer", async () => {
-    const { main } = await renderCafe(1); // Paramount: one photo left after its posts
-    expect(within(main).getByRole("heading", { name: "Photos 1" })).toBeInTheDocument();
+    localStorage.setItem("findit.cafeEdits", JSON.stringify({ "4": { featuredPhotos: ["Images/paramount/paramount1.jpg", "Images/paramount/paramount2.jpg"] } }));
+    const { main } = await renderCafe(4);
+    expect(within(main).getByRole("heading", { name: "Photos 2" })).toBeInTheDocument();
     expect(within(main).queryByRole("button", { name: "See all" })).not.toBeInTheDocument();
   });
 
@@ -164,7 +177,10 @@ describe("café page: photos", () => {
     expect(new Set(sources).size).toBe(sources.length);
     // craftcoffe3 is the banner, so the new-item card shows no photo
     expect(within(within(main).getByRole("article", { name: /Agusan Highlands/ })).queryByRole("button", { name: /^Open / })).not.toBeInTheDocument();
-    expect(within(main).getByRole("heading", { name: "Photos 1" })).toBeInTheDocument();
+    // The row shows craftcoffe2 and 6 (1 is the logo); the photos card keeps only craftcoffe4
+    expect(within(main).getByRole("heading", { name: "Photos 2" })).toBeInTheDocument();
+    const photosCard = within(main).getByRole("article", { name: /^Photos: 1 photo,/ });
+    expect(within(photosCard).getAllByRole("button", { name: /^Open / })).toHaveLength(1);
   });
 });
 

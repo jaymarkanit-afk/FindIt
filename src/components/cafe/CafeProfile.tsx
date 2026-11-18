@@ -21,7 +21,8 @@ type Viewing = { title: string; photos: ViewerPhoto[]; index: number; key: strin
 // The café page, as the old profile panel: back / share, the banner with
 // the logo overlapping it, the info card, "On the board today" (pinned
 // first, same cards as the board), Photos and Info. Every photo appears
-// once at most (see cafePagePhotos).
+// once at most; the Photos row has priority over the cards (see
+// cafePagePhotos).
 export function CafeProfile({ cafe: seedCafe, place, posts, today, now: serverNow }: Props) {
   const state = useUserState();
   const now = useNow(serverNow);
