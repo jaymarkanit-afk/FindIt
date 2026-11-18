@@ -33,6 +33,13 @@
   --on-ink-muted: #d9cfc6;
   --ink-line: rgba(255, 255, 255, 0.16);
 
+  /* Post tag chips (white text sits on these, in both themes) */
+  --tag-new: #c2410c;
+  --tag-event: #1d4ed8;
+  --tag-hiring: #0f6b4f;
+  --tag-promo: #7c3aed;
+  --tag-photos: #0e7490;
+
   /* Post tags as text on cards */
   --tag-new-text: #c2410c;
   --tag-event-text: #1d4ed8;
