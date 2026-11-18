@@ -1,0 +1,33 @@
+/* The shared "..." menu: a dropdown on wider screens, a sheet on phones. */
+
+.wrap { position: relative; display: inline-flex; }
+.button { border-color: transparent; background: var(--surface); box-shadow: var(--shadow-sm); }
+.button[aria-expanded="true"] { border-color: var(--ink); }
+
+.dropdown {
+  position: fixed; z-index: 450;
+  min-width: 200px; max-width: min(300px, calc(100vw - 16px)); padding: 6px;
+  border: 1px solid var(--card-border); border-radius: 14px;
+  background: var(--surface); color: var(--ink); box-shadow: var(--shadow-lg);
+  animation: drop .14s ease-out;
+}
+@keyframes drop { from { opacity: 0; transform: translateY(-4px); } }
+
+.items { display: flex; flex-direction: column; }
+.item { display: flex; align-items: center; width: 100%; min-height: var(--tap); padding: 0 14px; border: 0; border-radius: 10px; background: none; color: var(--ink); font-size: 15px; font-weight: 500; text-align: left; }
+.item:hover, .item:focus-visible { background: var(--surface2); outline: none; }
+.item:focus-visible { box-shadow: inset 0 0 0 2px var(--accent); }
+.danger { color: var(--danger); }
+
+.confirm { padding: 8px; }
+.question { margin: 0 0 10px; font-size: 14px; font-weight: 600; }
+.confirmBtns { display: flex; justify-content: flex-end; gap: 8px; }
+.dangerFill { background: var(--danger); color: #fff; }
+
+/* One-field dialogs (Edit label, Describe photo) */
+.dialogForm { display: flex; flex-direction: column; gap: 8px; }
+.dialogLabel { font-size: 13px; font-weight: 600; }
+.dialogField { width: 100%; min-height: 46px; padding: 0 12px; border: 1px solid var(--control-line); border-radius: var(--r-btn); background: var(--surface); font-size: 15px; }
+.dialogField:focus { border-color: var(--accent); outline: none; }
+.dialogHint { margin: 0 0 6px; color: var(--muted); font-size: 12.5px; }
+:global([data-theme="dark"]) .dangerFill { color: #1f1209; }

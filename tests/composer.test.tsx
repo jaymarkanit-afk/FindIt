@@ -181,7 +181,7 @@ describe("composer page", () => {
     expect(useRouter().push).toHaveBeenCalledWith(`/owner?tab=live&post=${id}&notice=published-alert`);
   });
 
-  it("adds, describes, reorders and removes photos within the type's limit", async () => {
+  it("keeps photos in upload order (first is Main), with Describe and Remove in the ... menu", async () => {
     const user = userEvent.setup();
     await signIn();
     await renderComposer();
@@ -191,18 +191,41 @@ describe("composer page", () => {
     await user.upload(screen.getByLabelText("Add photos"), [photo("a.jpg"), photo("b.jpg"), photo("bad.jpg")]);
     expect(screen.getByText("Some files could not be read as images.")).toBeInTheDocument();
     const list = screen.getByRole("list", { name: "Photos" });
-    expect(within(list).getAllByRole("listitem")).toHaveLength(2);
-    expect(within(list).getByText("Main")).toBeInTheDocument();
+    const items = within(list).getAllByRole("listitem");
+    expect(items).toHaveLength(2);
+    expect(within(items[0]).getByText("Main")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Move photo/ })).not.toBeInTheDocument();
 
-    await user.type(screen.getByLabelText("Description for photo 1 (optional)"), "Latte art");
-    await user.click(screen.getByRole("button", { name: "Move photo 1 later" }));
-    // Now last, its "later" button is disabled: focus goes to its first enabled one
-    expect(screen.getByRole("button", { name: "Move photo 2 later" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Move photo 2 earlier" })).toHaveFocus();
-    expect(screen.getByLabelText("Description for photo 2 (optional)")).toHaveValue("Latte art");
-    await user.click(screen.getByRole("button", { name: "Remove photo 1" }));
+    // Describe, in a small dialog
+    await user.click(screen.getByRole("button", { name: "More options for photo 1" }));
+    expect(screen.getAllByRole("menuitem").map((item) => item.textContent)).toEqual(["Describe", "Remove"]);
+    await user.click(screen.getByRole("menuitem", { name: "Describe" }));
+    const dialog = screen.getByRole("dialog", { name: "Describe photo 1" });
+    await user.type(within(dialog).getByLabelText("Description (optional)"), "Latte art{Enter}");
+    expect(within(items[0]).getByText("Latte art")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "More options for photo 1" })).toHaveFocus();
+
+    // Remove asks first
+    await user.click(screen.getByRole("button", { name: "More options for photo 1" }));
+    await user.click(screen.getByRole("menuitem", { name: "Remove" }));
+    expect(screen.getByText("Remove this photo?")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Remove" }));
     expect(within(list).getAllByRole("listitem")).toHaveLength(1);
+    expect(screen.getByRole("button", { name: "More options for photo 1" })).toHaveFocus(); // the next photo's menu
     expect(within(screen.getByRole("region", { name: "Preview" })).getByRole("article", { name: "Photos: 1 photo, Paramount Coffee" })).toBeInTheDocument();
+  });
+
+  it("publishes the photo descriptions as alt text", async () => {
+    const user = userEvent.setup();
+    await signIn();
+    await renderComposer();
+    await user.click(screen.getByRole("button", { name: "Photos" }));
+    await user.upload(screen.getByLabelText("Add photos"), [photo("a.jpg")]);
+    await user.click(screen.getByRole("button", { name: "More options for photo 1" }));
+    await user.click(screen.getByRole("menuitem", { name: "Describe" }));
+    await user.type(screen.getByLabelText("Description (optional)"), "  Latte art  {Enter}");
+    await user.click(screen.getByRole("button", { name: "Publish" }));
+    expect(getUserStateSnapshot().ownerPosts[0].photos).toEqual([{ src: "data:image/jpeg;base64,a.jpg", alt: "Latte art" }]);
   });
 
   it("says when photos do not fit the type, and marks unused ones after a type change", async () => {
@@ -286,11 +309,11 @@ describe("back on the dashboard", () => {
     );
   }
 
-  it("shows the published post's tab, focuses its Edit and shows the bar", async () => {
+  it("shows the published post's tab, focuses its ... menu and shows the bar", async () => {
     const user = userEvent.setup();
     await signIn();
     await renderDashboard({ tab: "live", postId: "p5", notice: "published-alert", focusCompose: false });
-    expect(within(screen.getByRole("article", { name: "Latte Art Workshop" })).getByRole("link", { name: "Edit" })).toHaveFocus();
+    expect(screen.getByRole("button", { name: "More options for Latte Art Workshop" })).toHaveFocus();
     expect(screen.getByText("On the board. People with alerts on were notified.")).toBeInTheDocument();
     expect(useRouter().replace).toHaveBeenCalledWith("/owner", { scroll: false });
     await user.click(screen.getByRole("button", { name: "View" }));
@@ -303,7 +326,7 @@ describe("back on the dashboard", () => {
     const id = getUserStateSnapshot().ownerPosts[0].id;
     await renderDashboard({ tab: "draft", postId: id, notice: null, focusCompose: false });
     expect(screen.getByRole("tab", { name: "Drafts 1" })).toHaveAttribute("aria-selected", "true");
-    expect(within(screen.getByRole("article", { name: "Rainy day" })).getByRole("link", { name: "Edit" })).toHaveFocus();
+    expect(screen.getByRole("button", { name: "More options for Rainy day" })).toHaveFocus();
   });
 
   it("focuses Post an update after Cancel", async () => {

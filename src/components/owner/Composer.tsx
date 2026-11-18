@@ -23,7 +23,8 @@ import {
   type FieldError,
 } from "@/lib/composer";
 import { useNow, useOwnerSession, useUserState } from "@/lib/hooks";
-import { moveItem } from "@/lib/owner";
+import { MoreMenu } from "@/components/menu/MoreMenu";
+import { TextDialog } from "@/components/menu/TextDialog";
 import { PHOTO_MAX_WIDTH, resizePhotos } from "@/lib/photos";
 import styles from "./composer.module.css";
 
@@ -58,20 +59,20 @@ function ComposerBody({ cafes, place, now: serverNow, original }: Props & { orig
   const [storageFull, setStorageFull] = useState(false);
   const [alertNow, setAlertNow] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [describing, setDescribing] = useState<number | null>(null);
   const root = useRef<HTMLDivElement>(null);
   const pendingFocus = useRef<string | null>("compose-title");
 
-  // Focus: the title on open, then the control marked data-focus="<key>"
-  // after a photo moves, or the first invalid field after a failed publish
+  // Focus: the title on open; after a photo is removed, the next photo's
+  // "..." button ("photo:<n>") or the add-photos field; after a failed
+  // publish, the first invalid field (data-focus="<key>")
   useEffect(() => {
     const key = pendingFocus.current;
     if (!key || !root.current) return;
     pendingFocus.current = null;
-    const target = root.current.querySelector<HTMLElement>(`[data-focus="${key}"]`);
-    // A move to the end disables that button: use the photo's first enabled one
-    const index = /-(\d+)$/.exec(key)?.[1];
-    const fallback = index === undefined ? null : root.current.querySelector<HTMLElement>(`[data-focus$="-${index}"]:not([disabled])`);
-    (target && !(target instanceof HTMLButtonElement && target.disabled) ? target : fallback)?.focus();
+    const photo = /^photo:(\d+)$/.exec(key)?.[1];
+    const selector = photo !== undefined ? `[data-photo="${photo}"] [aria-haspopup="menu"]` : `[data-focus="${key}"]`;
+    root.current.querySelector<HTMLElement>(selector)?.focus();
   });
 
   const cafe = visibleCafes(cafes, state).find((item) => item.id === OWNER_CAFE_ID);
@@ -110,19 +111,20 @@ function ComposerBody({ cafes, place, now: serverNow, original }: Props & { orig
     setPhotoNote(notes.join(" "));
   }
 
-  function movePhoto(index: number, step: -1 | 1) {
-    const to = index + step;
-    if (to < 0 || to >= form.photos.length) return;
-    pendingFocus.current = `${step < 0 ? "earlier" : "later"}-${to}`;
-    set("photos", moveItem(form.photos, index, to));
-  }
-
+  // Photos keep upload order; the first is "Main"
   function removePhoto(index: number) {
     const left = form.photos.length - 1;
-    pendingFocus.current = left > 0 ? `remove-${Math.min(index, left - 1)}` : "add-photos";
+    pendingFocus.current = left > 0 ? `photo:${Math.min(index, left - 1)}` : "add-photos";
     set(
       "photos",
       form.photos.filter((_, i) => i !== index),
+    );
+  }
+
+  function describePhoto(index: number, alt: string) {
+    set(
+      "photos",
+      form.photos.map((photo, i) => (i === index ? { ...photo, alt: alt.trim() } : photo)),
     );
   }
 
@@ -234,30 +236,22 @@ function ComposerBody({ cafes, place, now: serverNow, original }: Props & { orig
                 const n = index + 1;
                 const unused = index >= limit.max;
                 return (
-                  <li key={`${index}-${photo.src.slice(-24)}`} className={`${styles.thumb} ${unused ? styles.unused : ""}`}>
+                  <li key={`${index}-${photo.src.slice(-24)}`} className={`${styles.thumb} ${unused ? styles.unused : ""}`} data-photo={index}>
                     {/* eslint-disable-next-line @next/next/no-img-element -- a data: URL picked a moment ago; nothing to optimise */}
                     <img src={photo.src} alt="" />
                     {index === 0 && <span className={styles.main}>Main</span>}
-                    <input
-                      className={`${styles.fi} ${styles.alt}`}
-                      type="text"
-                      maxLength={120}
-                      placeholder={`Describe photo ${n} (optional)`}
-                      aria-label={`Description for photo ${n} (optional)`}
-                      value={photo.alt}
-                      onChange={(event) => set("photos", form.photos.map((p, i) => (i === index ? { ...p, alt: event.target.value } : p)))}
-                    />
-                    <span className={styles.thumbBtns}>
-                      <button type="button" className={styles.round} data-focus={`earlier-${index}`} aria-label={`Move photo ${n} earlier`} disabled={index === 0} onClick={() => movePhoto(index, -1)}>
-                        <Icon name="chevronLeft" />
-                      </button>
-                      <button type="button" className={styles.round} data-focus={`later-${index}`} aria-label={`Move photo ${n} later`} disabled={index === form.photos.length - 1} onClick={() => movePhoto(index, 1)}>
-                        <Icon name="chevronRight" />
-                      </button>
-                      <button type="button" className={styles.round} data-focus={`remove-${index}`} aria-label={`Remove photo ${n}`} onClick={() => removePhoto(index)}>
-                        <Icon name="close" />
-                      </button>
+                    <span className={styles.thumbText}>
+                      <span className={styles.thumbName}>Photo {n}</span>
+                      <span className={photo.alt ? styles.described : styles.undescribed}>{photo.alt || "No description"}</span>
                     </span>
+                    <MoreMenu
+                      className={styles.thumbMenu}
+                      itemName={`photo ${n}`}
+                      items={[
+                        { label: "Describe", onSelect: () => setDescribing(index) },
+                        { label: "Remove", onSelect: () => removePhoto(index), confirm: { question: "Remove this photo?", action: "Remove" } },
+                      ]}
+                    />
                     {unused && <span className={styles.thumbNote}>Not posted: this type takes {limit.max === 1 ? "1 photo" : `${limit.max} photos`}</span>}
                   </li>
                 );
@@ -362,6 +356,20 @@ function ComposerBody({ cafes, place, now: serverNow, original }: Props & { orig
           <PostCard post={preview} cafe={cafe} place={place} state={state} now={now} onOpenPhoto={() => {}} />
         </div>
       </section>
+
+      {describing !== null && form.photos[describing] && (
+        <TextDialog
+          key={describing}
+          open
+          title={`Describe photo ${describing + 1}`}
+          label="Description (optional)"
+          hint="Read out to people who use a screen reader."
+          initial={form.photos[describing].alt}
+          maxLength={120}
+          onSave={(value) => describePhoto(describing, value)}
+          onClose={() => setDescribing(null)}
+        />
+      )}
     </div>
   );
 }

@@ -13,6 +13,7 @@ import type { Cafe, CafeEdit, Comment, Place, Post, PostEdit, PostPhoto, PostSta
 import { commitUserState, getServerUserState, getUserStateSnapshot, subscribeUserState } from "@/lib/local/userState";
 import { getLocation, getServerLocation, locate, subscribeLocation, type LocateResult } from "@/lib/location";
 import { getOwnerSession, getServerOwnerSession, signIn as signInOwner, signOut as signOutOwner, subscribeOwnerSession } from "@/lib/ownerSession";
+import { checkDetails, storedHighlights, type DetailsError, type DetailsInput, type Highlight } from "@/lib/cafe";
 import { buildPost, validatePost, type ComposerForm, type FieldError } from "@/lib/composer";
 import { allPosts, applyCafeEdits, livePosts } from "@/lib/posts";
 
@@ -259,6 +260,22 @@ export async function saveComposedPost(
 function withoutId(post: Post): PostEdit {
   const { id: _id, ...fields } = post;
   return fields;
+}
+
+// Saves the café's highlights in upload order (at most six), in the stored
+// shape of findit.cafeEdits: plain strings, or { src, label } when labelled
+export async function saveHighlights(cafeId: number, list: readonly Highlight[]): Promise<boolean> {
+  return saveCafeEdit(cafeId, { featuredPhotos: storedHighlights(list.slice(0, FEATURED_MAX)) });
+}
+
+export type DetailsResult = { ok: true } | { ok: false; errors: DetailsError[]; storageFull: boolean };
+
+// Saves About, phone, Facebook, Instagram and hours (the Edit page fields),
+// after checking them; links must be http(s) on facebook.com / instagram.com
+export async function saveCafeDetails(cafeId: number, input: DetailsInput): Promise<DetailsResult> {
+  const { details, errors } = checkDetails(input);
+  if (errors.length) return { ok: false, errors, storageFull: false };
+  return (await saveCafeEdit(cafeId, details)) ? { ok: true } : { ok: false, errors: [], storageFull: true };
 }
 
 // Ends a live post now: it moves to Ended and is no longer pinned

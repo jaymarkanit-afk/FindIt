@@ -75,6 +75,27 @@ describe("reading data saved by the old app", () => {
     expect(loadUserState().cafeEdits).toEqual(edits);
   });
 
+  it("findit.cafeEdits with labelled highlights and the café's details", () => {
+    const edits = {
+      "1": {
+        featuredPhotos: ["Images/paramount/paramount1.jpg", { src: "data:image/jpeg;base64,AAAA", label: "Latte art" }, { src: "Images/paramount/paramount2.jpg" }],
+        about: "Single-origin coffee.",
+        phone: "0917 000 0000",
+        facebook: "https://facebook.com/paramount",
+        instagram: "",
+        hours: { open: "07:00", close: "21:00" },
+      },
+      "2": { hours: null },
+    };
+    oldSave("cafeEdits", edits);
+    expect(loadUserState().cafeEdits).toEqual(edits);
+  });
+
+  it("skips highlight entries it cannot read, keeping the rest", () => {
+    oldSave("cafeEdits", { "1": { featuredPhotos: ["a.jpg", 7, { label: "no src" }, { src: "b.jpg", label: 3 }, ""], hours: { open: 7 } } });
+    expect(loadUserState().cafeEdits).toEqual({ "1": { featuredPhotos: ["a.jpg", { src: "b.jpg" }] } });
+  });
+
   it("findit.postEdits", () => {
     const edits = { p1: { caption: "Edited", pinned: true }, p2: { deleted: true } };
     oldSave("postEdits", edits);

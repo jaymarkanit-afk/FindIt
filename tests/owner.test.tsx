@@ -124,18 +124,19 @@ describe("sign-in gate", () => {
 });
 
 describe("profile card", () => {
-  it("shows the café, its approval and its tracked numbers", async () => {
+  it("shows the same header customers see, its approval and its tracked numbers", async () => {
     await signedIn();
-    expect(screen.getByText("J.C. Aquino Ave, Butuan City")).toBeInTheDocument();
+    const header = screen.getByRole("region", { name: "Paramount Coffee" });
+    expect(within(header).getByText("J.C. Aquino Ave, Butuan City")).toBeInTheDocument();
+    expect(within(header).getByText("PC")).toBeInTheDocument();
+    expect(within(header).getByText("4.9 · 312 reviews")).toBeInTheDocument();
     expect(screen.getByText("Approved · visible to customers")).toBeInTheDocument();
-    expect(screen.getByText("PC")).toBeInTheDocument();
     expect(screen.getByText("live posts").nextElementSibling).toHaveTextContent("5");
-    expect(screen.getByText("rating · 312 reviews")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Post an update/ })).toHaveAttribute("href", "/owner/post");
     expect(screen.getByRole("link", { name: "View as customer" })).toHaveAttribute("href", "/cafe/1");
   });
 
-  it("adds, changes and removes the background photo in the old storage shape", async () => {
+  it("adds and removes the background photo in the old storage shape", async () => {
     const user = userEvent.setup();
     await signedIn();
     await user.upload(screen.getByLabelText("Add a background photo"), photo("bg.jpg"));
@@ -155,55 +156,126 @@ describe("profile card", () => {
     await user.upload(screen.getByLabelText("Add a background photo"), photo("bad.jpg"));
     expect(await screen.findByRole("alert")).toHaveTextContent("That file could not be read as an image.");
   });
+});
 
-  it("Edit page points to the background", async () => {
+describe("Edit page", () => {
+  it("saves About, phone, links and hours, and the header shows them", async () => {
+    const user = userEvent.setup();
+    await signedIn();
+    const open = screen.getByRole("button", { name: "Edit page" });
+    await user.click(open);
+    const dialog = screen.getByRole("dialog", { name: "Edit page" });
+    const about = within(dialog).getByLabelText("About");
+    expect(about).toHaveFocus();
+    expect(about).toHaveAttribute("maxLength", "150");
+    await user.type(about, "Single-origin coffee.");
+    await user.type(within(dialog).getByLabelText("Phone"), "0917 000 0000");
+    await user.type(within(dialog).getByLabelText("Facebook link"), "https://evil.example/paramount");
+    await user.type(within(dialog).getByLabelText("Opens"), "07:00");
+    await user.click(within(dialog).getByRole("button", { name: "Save" }));
+    expect(within(dialog).getByLabelText("Facebook link")).toHaveAccessibleDescription("Use a link to facebook.com that starts with https://");
+    expect(within(dialog).getByLabelText("Closes")).toHaveAccessibleDescription("Add both opening and closing times, or leave both empty.");
+
+    await user.clear(within(dialog).getByLabelText("Facebook link"));
+    await user.type(within(dialog).getByLabelText("Facebook link"), "https://facebook.com/paramount");
+    await user.type(within(dialog).getByLabelText("Closes"), "21:00");
+    await user.click(within(dialog).getByRole("button", { name: "Save" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(open).toHaveFocus();
+    expect(screen.getByRole("status")).toHaveTextContent("Page details saved");
+    expect(JSON.parse(localStorage.getItem("findit.cafeEdits") ?? "{}")["1"]).toEqual({
+      about: "Single-origin coffee.",
+      phone: "0917 000 0000",
+      facebook: "https://facebook.com/paramount",
+      instagram: "",
+      hours: { open: "07:00", close: "21:00" },
+    });
+    const header = screen.getByRole("region", { name: "Paramount Coffee" });
+    expect(within(header).getByText("Single-origin coffee.")).toBeInTheDocument();
+    expect(within(header).getByRole("link", { name: "0917 000 0000" })).toHaveAttribute("href", "tel:09170000000");
+  });
+
+  it("starts empty: no personal details are filled in for the owner", async () => {
     const user = userEvent.setup();
     await signedIn();
     await user.click(screen.getByRole("button", { name: "Edit page" }));
-    expect(screen.getByLabelText("Add a background photo")).toHaveFocus();
-    expect(screen.getByRole("status")).toHaveTextContent("Change your background here and your featured photos below.");
+    const dialog = screen.getByRole("dialog", { name: "Edit page" });
+    for (const label of ["About", "Phone", "Facebook link", "Instagram link", "Opens", "Closes"]) expect(within(dialog).getByLabelText(label)).toHaveValue("");
   });
 });
 
-describe("featured photos", () => {
-  const tiles = () => within(screen.getByRole("list", { name: "Featured photos" })).getAllByRole("img").map((img) => img.getAttribute("alt"));
+describe("highlights on the dashboard", () => {
+  const row = () => screen.getByRole("region", { name: "Highlights" });
 
-  it("shows six with Shown first, and no add tile at the limit", async () => {
+  it("shows the count, no New tile at six, and no arrows, drag or Shown first", async () => {
     await signedIn();
-    expect(screen.getByText("6 of 6 · shown at the top of your page")).toBeInTheDocument();
-    expect(tiles()).toHaveLength(6);
-    expect(screen.getByText("Shown first")).toBeInTheDocument();
-    expect(screen.queryByLabelText("Add featured photo")).not.toBeInTheDocument();
+    expect(within(row()).getByText("6 of 6")).toBeInTheDocument();
+    expect(within(row()).queryByLabelText("New highlight")).not.toBeInTheDocument();
+    expect(screen.queryByText("Shown first")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Move/ })).not.toBeInTheDocument();
+    expect(within(row()).getAllByRole("button", { name: /^More options for highlight/ })).toHaveLength(6);
   });
 
-  it("moves a photo and keeps focus on the same control of that photo", async () => {
-    const user = userEvent.setup();
+  it("loads highlights saved without labels", async () => {
+    localStorage.setItem("findit.cafeEdits", JSON.stringify({ "1": { featuredPhotos: ["Images/paramount/paramount1.jpg", "Images/paramount/paramount2.jpg"] } }));
     await signedIn();
-    await user.click(screen.getByRole("button", { name: "Move featured photo 1 right" }));
-    expect(JSON.parse(localStorage.getItem("findit.cafeEdits") ?? "{}")["1"].featuredPhotos.slice(0, 2)).toEqual([
-      "Images/paramount/paramount5.jpg",
-      "Images/paramount/paramount4.jpg",
-    ]);
-    expect(screen.getByRole("button", { name: "Move featured photo 2 right" })).toHaveFocus();
-    expect(screen.getByRole("button", { name: "Move featured photo 1 left" })).toBeDisabled();
+    expect(within(row()).getByText("2 of 6")).toBeInTheDocument();
+    expect(within(row()).getByRole("button", { name: "Open Paramount Coffee highlight 1" })).toBeInTheDocument();
   });
 
-  it("removes a photo, then adds up to the limit and says what did not fit", async () => {
+  it("removes one after the confirm, then adds new ones at the end, up to six", async () => {
     const user = userEvent.setup();
     await signedIn();
-    await user.click(screen.getByRole("button", { name: "Remove featured photo 6" }));
-    expect(screen.getByText("5 of 6 · shown at the top of your page")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Remove featured photo 5" })).toHaveFocus();
+    await user.click(within(row()).getByRole("button", { name: "More options for highlight 1" }));
+    await user.click(screen.getByRole("menuitem", { name: "Remove" }));
+    expect(screen.getByText("Remove this highlight?")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Remove" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Highlight removed");
+    expect(screen.getByRole("heading", { name: "Highlights" })).toHaveFocus();
+    expect(within(row()).getByText("5 of 6")).toBeInTheDocument();
 
-    await user.upload(screen.getByLabelText("Add featured photo"), [photo("one.jpg"), photo("two.jpg")]);
-    expect(await screen.findByRole("alert")).toHaveTextContent("You can feature up to 6 photos, so 1 was not added.");
-    expect(tiles()).toHaveLength(6);
-    expect(screen.getByRole("status")).toHaveTextContent("Featured photo added");
+    await user.upload(within(row()).getByLabelText("New highlight"), [photo("one.jpg"), photo("two.jpg")]);
+    expect(await within(row()).findByRole("alert")).toHaveTextContent("You can add up to 6 highlights, so 1 was not added.");
+    const stored = JSON.parse(localStorage.getItem("findit.cafeEdits") ?? "{}")["1"].featuredPhotos;
+    expect(stored).toHaveLength(6);
+    expect(stored[0]).toBe("Images/paramount/paramount5.jpg"); // the first was removed
+    expect(stored[5]).toBe("data:image/jpeg;base64,one.jpg"); // new ones go at the end
+    expect(within(row()).queryByLabelText("New highlight")).not.toBeInTheDocument();
+  });
+
+  it("edits a label in a small dialog and stores it with the photo", async () => {
+    const user = userEvent.setup();
+    await signedIn();
+    await user.click(within(row()).getByRole("button", { name: "More options for highlight 2" }));
+    await user.click(screen.getByRole("menuitem", { name: "Edit label" }));
+    const dialog = screen.getByRole("dialog", { name: "Edit label" });
+    const field = within(dialog).getByLabelText("Label (optional)");
+    expect(field).toHaveFocus();
+    expect(field).toHaveAttribute("maxLength", "14");
+    await user.type(field, "Latte art{Enter}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Label saved");
+    expect(within(row()).getByText("Latte art")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "More options for Latte art" })).toHaveFocus();
+    const stored = JSON.parse(localStorage.getItem("findit.cafeEdits") ?? "{}")["1"].featuredPhotos;
+    expect(stored[0]).toBe("Images/paramount/paramount4.jpg");
+    expect(stored[1]).toEqual({ src: "Images/paramount/paramount5.jpg", label: "Latte art" });
+  });
+
+  it("opens the photo viewer at the tapped highlight", async () => {
+    const user = userEvent.setup();
+    await signedIn();
+    await user.click(within(row()).getByRole("button", { name: "Open Paramount Coffee highlight 3" }));
+    expect(within(screen.getByRole("dialog", { name: "Paramount Coffee highlights" })).getByText("3 of 6")).toBeInTheDocument();
   });
 });
 
 describe("your posts", () => {
   const card = (name: string) => screen.getByRole("article", { name });
+  async function choose(user: ReturnType<typeof userEvent.setup>, post: string, item: string) {
+    await user.click(within(card(post)).getByRole("button", { name: `More options for ${post}` }));
+    await user.click(screen.getByRole("menuitem", { name: item }));
+  }
 
   it("has Live, Drafts and Ended tabs with counts and arrow-key moves", async () => {
     const user = userEvent.setup();
@@ -211,7 +283,6 @@ describe("your posts", () => {
     await signedIn();
     const live = screen.getByRole("tab", { name: "Live 4" });
     expect(live).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByRole("tab", { name: "Drafts 1" })).toBeInTheDocument();
     live.focus();
     await user.keyboard("{ArrowRight}");
     const drafts = screen.getByRole("tab", { name: "Drafts 1" });
@@ -223,7 +294,8 @@ describe("your posts", () => {
     expect(screen.getByText("Nothing here yet. Posts you publish show up in this list.")).toBeInTheDocument();
   });
 
-  it("shows sips, comments and keeps on each post", async () => {
+  it("keeps the numbers on each post and puts the actions in the ... menu", async () => {
+    const user = userEvent.setup();
     localStorage.setItem("findit.sips", '["p1"]');
     localStorage.setItem("findit.keeps", '["p1"]');
     localStorage.setItem("findit.comments", JSON.stringify([{ id: "c1", postId: "p1", authorName: "Guest", text: "Hi", createdAt: "2026-11-14T10:00:00.000Z" }]));
@@ -232,26 +304,42 @@ describe("your posts", () => {
     expect(within(promo).getByText("Sips").nextElementSibling).toHaveTextContent("139");
     expect(within(promo).getByText("Comments").nextElementSibling).toHaveTextContent("1");
     expect(within(promo).getByText("Keeps").nextElementSibling).toHaveTextContent("1");
-    expect(within(promo).getByRole("link", { name: "Edit" })).toHaveAttribute("href", "/owner/post/p1");
+    expect(within(promo).queryByRole("button", { name: "Pin to top" })).not.toBeInTheDocument(); // no button row
+
+    await user.click(within(promo).getByRole("button", { name: "More options for Sustainability Week" }));
+    expect(screen.getAllByRole("menuitem").map((item) => item.textContent)).toEqual(["Edit", "Pin to top", "End post", "Delete"]);
+    await user.click(screen.getByRole("menuitem", { name: "Edit" }));
+    expect(useRouter().push).toHaveBeenCalledWith("/owner/post/p1");
   });
 
-  it("pins one post per café", async () => {
+  it("has no Pin or End for drafts", async () => {
+    const user = userEvent.setup();
+    localStorage.setItem("findit.postEdits", JSON.stringify({ p9: { status: "draft" } }));
+    await signedIn();
+    await user.click(screen.getByRole("tab", { name: "Drafts 1" }));
+    await user.click(screen.getByRole("button", { name: "More options for Weekend Barista & Cashier" }));
+    expect(screen.getAllByRole("menuitem").map((item) => item.textContent)).toEqual(["Edit", "Delete"]);
+  });
+
+  it("pins one post per café, and Unpin undoes it", async () => {
     const user = userEvent.setup();
     await signedIn();
-    await user.click(within(card("Latte Art Workshop")).getByRole("button", { name: "Pin to top" }));
+    await choose(user, "Latte Art Workshop", "Pin to top");
     expect(screen.getByRole("status")).toHaveTextContent("Pinned to the top of your page");
-    expect(within(card("Latte Art Workshop")).getByRole("button", { name: "Pinned to top" })).toHaveFocus();
-    await user.click(within(card("Sustainability Week")).getByRole("button", { name: "Pin to top" }));
+    expect(within(card("Latte Art Workshop")).getByRole("button", { name: "More options for Latte Art Workshop" })).toHaveFocus();
+    await choose(user, "Sustainability Week", "Pin to top");
     const panel = screen.getByRole("tabpanel");
     expect(within(panel).getAllByRole("article")[0]).toHaveAccessibleName("Sustainability Week");
     expect(within(panel).getAllByText("Pinned")).toHaveLength(1);
     expect(JSON.parse(localStorage.getItem("findit.postEdits") ?? "{}")).toEqual({ p5: { pinned: false }, p1: { pinned: true } });
+    await choose(user, "Sustainability Week", "Unpin");
+    expect(screen.getByRole("status")).toHaveTextContent("Unpinned");
   });
 
   it("ends a post: it moves to Ended, unpinned, with the time", async () => {
     const user = userEvent.setup();
     await signedIn();
-    await user.click(within(card("Latte Art Workshop")).getByRole("button", { name: "End post" }));
+    await choose(user, "Latte Art Workshop", "End post");
     expect(screen.getByRole("status")).toHaveTextContent("Post ended. Find it under Ended.");
     expect(screen.getByRole("heading", { name: "Your posts" })).toHaveFocus();
     expect(screen.getByRole("tab", { name: "Ended 1" })).toBeInTheDocument();
@@ -260,20 +348,22 @@ describe("your posts", () => {
     expect(typeof edit.endedAt).toBe("number");
   });
 
-  it("deletes only after the inline confirm", async () => {
+  it("deletes only after the confirm in the menu", async () => {
     const user = userEvent.setup();
     await signedIn();
-    const workshop = card("Latte Art Workshop");
-    await user.click(within(workshop).getByRole("button", { name: "Delete" }));
-    expect(within(workshop).getByText("Delete this post?")).toBeInTheDocument();
-    expect(within(workshop).getByRole("button", { name: "Keep it" })).toHaveFocus();
-    await user.click(within(workshop).getByRole("button", { name: "Keep it" }));
-    expect(within(workshop).getByRole("button", { name: "Delete" })).toHaveFocus();
+    await choose(user, "Latte Art Workshop", "Delete");
+    expect(screen.getByText("Delete this post? This can't be undone.")).toBeInTheDocument();
+    const keep = screen.getByRole("button", { name: "Keep" });
+    expect(keep).toHaveFocus();
+    await user.click(keep);
+    expect(within(card("Latte Art Workshop")).getByRole("button", { name: "More options for Latte Art Workshop" })).toHaveFocus();
+    expect(getUserStateSnapshot().postEdits).toEqual({});
 
-    await user.click(within(workshop).getByRole("button", { name: "Delete" }));
-    await user.click(within(workshop).getByRole("button", { name: "Delete" }));
+    await choose(user, "Latte Art Workshop", "Delete");
+    await user.click(screen.getByRole("button", { name: "Delete" }));
     expect(screen.queryByRole("article", { name: "Latte Art Workshop" })).not.toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent("Post deleted");
+    expect(screen.getByRole("heading", { name: "Your posts" })).toHaveFocus();
     expect(JSON.parse(localStorage.getItem("findit.postEdits") ?? "{}")).toEqual({ p5: { deleted: true } });
   });
 });

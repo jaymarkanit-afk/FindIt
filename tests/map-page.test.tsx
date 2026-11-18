@@ -25,6 +25,8 @@ async function renderMap(placeName = "Butuan City", focusCafeId: number | null =
   );
   const map = screen.getByRole("region", { name: `Map of cafés around ${place.name}` });
   await waitFor(() => expect(map).toHaveAttribute("data-ready", "true"));
+  // The markers are drawn by an effect just after the map is ready
+  await waitFor(() => expect(map.querySelector(".leaflet-marker-icon")).not.toBeNull());
   const main = screen.getByRole("main");
   return { map, main };
 }

@@ -133,6 +133,9 @@ html:has([data-overlay-open]) { overflow: hidden; }
   fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
 }
 
+/* The three-dots icon needs heavier dots than a stroke-2 line gives */
+.ico-dots { stroke-width: 3.2; }
+
 /* ── Shared controls ──────────────────────────────────────── */
 
 .btn {

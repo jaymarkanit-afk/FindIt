@@ -9,6 +9,8 @@ export const STATUS_LABEL: Record<PostStatus, string> = { live: "Live", draft: "
 
 export const STORAGE_FULL_PHOTO =
   "This photo could not be saved: FindIt's storage in this browser is full. Your current photo is kept.";
+export const STORAGE_FULL_DETAILS =
+  "These details could not be saved: FindIt's storage in this browser is full. Remove a photo, then try again.";
 
 // The café's posts by status; live ones with the pinned post first
 export function postsByStatus(posts: readonly Post[], cafeId: number, today: string): Record<PostStatus, Post[]> {

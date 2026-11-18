@@ -19,7 +19,7 @@
 // the default in memory only, so nothing the old app saved is destroyed.
 
 import { DEFAULT_PLACE } from "@/data/seed";
-import type { CafeEdit, Comment, Post, PostEdit, Theme, UserState } from "@/data/types";
+import type { CafeEdit, Comment, FeaturedPhoto, Post, PostEdit, Theme, UserState } from "@/data/types";
 import { isRecord, normalizePost } from "@/lib/posts";
 import { onExternalChange, readJSON, readRaw, writeJSON, writeRaw } from "./storage";
 
@@ -57,12 +57,26 @@ function isComment(value: unknown): value is Comment {
   );
 }
 
+// A featured photo: the old plain string, or { src, label? } once labelled
+function toFeaturedPhoto(value: unknown): FeaturedPhoto | null {
+  if (typeof value === "string") return value || null;
+  if (!isRecord(value) || typeof value.src !== "string" || !value.src) return null;
+  return typeof value.label === "string" && value.label ? { src: value.src, label: value.label } : { src: value.src };
+}
+
 function toCafeEdit(value: unknown): CafeEdit | null {
   if (!isRecord(value)) return null;
   const edit: CafeEdit = {};
   if (value.backgroundPhoto === null || typeof value.backgroundPhoto === "string") edit.backgroundPhoto = value.backgroundPhoto;
   if (Array.isArray(value.featuredPhotos))
-    edit.featuredPhotos = value.featuredPhotos.filter((photo): photo is string => typeof photo === "string");
+    edit.featuredPhotos = value.featuredPhotos.map(toFeaturedPhoto).filter((photo): photo is FeaturedPhoto => photo !== null);
+  for (const key of ["about", "phone", "facebook", "instagram"] as const) {
+    const text = value[key];
+    if (typeof text === "string") edit[key] = text;
+  }
+  const hours = value.hours;
+  if (hours === null) edit.hours = null;
+  else if (isRecord(hours) && typeof hours.open === "string" && typeof hours.close === "string") edit.hours = { open: hours.open, close: hours.close };
   return edit;
 }
 

@@ -1,0 +1,31 @@
+/* Highlights: rounded square tiles (the app's tile style) with a thin
+   accent border and a short label under each */
+
+.section { min-width: 0; }
+.head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+.title { margin: 0; font: 700 18px var(--font-d); }
+.title:focus { outline: none; }
+.title:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+.count { color: var(--muted); font-size: 13px; font-weight: 600; }
+
+.row { display: flex; gap: 12px; margin: 0; padding: 4px 2px 8px; list-style: none; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; }
+.item { flex: 0 0 88px; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; }
+.tileWrap { position: relative; display: block; }
+.tile {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  width: 88px; height: 88px; padding: 0; overflow: hidden;
+  border: 1.5px solid var(--accent); border-radius: 22px;
+  background: var(--placeholder); color: var(--muted); cursor: pointer;
+}
+.tile:focus-visible, .newTile:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
+.cover { object-fit: cover; }
+.newTile { border: 1.5px dashed var(--control-line); background: var(--surface); }
+.newTile:hover { border-color: var(--accent); color: var(--ink); }
+.newTile svg { width: 28px; height: 28px; }
+.menu { position: absolute; top: -6px; right: -6px; z-index: 1; }
+.menu button { position: relative; width: 36px; height: 36px; min-width: 36px; }
+/* The visible circle is 36px; the tap area stays 44px */
+.menu button::after { content: ""; position: absolute; inset: -4px; }
+.label { display: block; max-width: 88px; overflow: hidden; color: var(--ink); font-size: 12px; font-weight: 600; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.label:empty { display: none; }
+.error { margin: 6px 0 0; color: var(--danger); font-size: 13px; font-weight: 600; }

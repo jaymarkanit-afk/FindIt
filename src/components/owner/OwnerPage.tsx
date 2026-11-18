@@ -9,7 +9,6 @@ import { useNow, useOwnerSession, useUserState } from "@/lib/hooks";
 import { commentsToAnswer, postsByStatus } from "@/lib/owner";
 import type { BoardDay } from "@/lib/posts";
 import { CommentsToAnswer } from "./CommentsToAnswer";
-import { FeaturedPhotos } from "./FeaturedPhotos";
 import { OwnerGate } from "./OwnerGate";
 import { ProfileCard } from "./ProfileCard";
 import { PublishBar, type PublishNotice } from "./PublishBar";
@@ -26,8 +25,8 @@ export type ReturnFromComposer = {
 
 type Props = { cafes: Cafe[]; posts: Post[]; today: BoardDay; now: number; returned?: ReturnFromComposer | null };
 
-// /owner: the demo sign-in, then the dashboard (profile card, featured
-// photos, your posts, comments to answer), as the old Owner panel
+// /owner: the demo sign-in, then the dashboard (the profile card with the
+// highlights, your posts, comments to answer), as the old Owner panel
 export function OwnerPage({ cafes, posts, today, now: serverNow, returned = null }: Props) {
   const router = useRouter();
   const signedIn = useOwnerSession();
@@ -58,8 +57,7 @@ export function OwnerPage({ cafes, posts, today, now: serverNow, returned = null
     <div className={styles.dash}>
       <div className={styles.grid}>
         <div className={styles.main}>
-          <ProfileCard cafe={cafe} liveCount={groups.live.length} focusCompose={returned?.focusCompose ?? false} />
-          <FeaturedPhotos cafe={cafe} />
+          <ProfileCard cafe={cafe} liveCount={groups.live.length} now={now} focusCompose={returned?.focusCompose ?? false} />
           <YourPosts groups={groups} state={state} now={now} tab={tab} onTab={setTab} focusPostId={returned?.postId ?? null} />
         </div>
         <aside className={styles.rail} aria-labelledby="answer-h">

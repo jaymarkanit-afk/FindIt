@@ -1,45 +1,40 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useId, useState } from "react";
+import { useState } from "react";
 import { PostCard } from "@/components/board/PostCard";
 import { Icon } from "@/components/Icon";
 import { PhotoViewer, type ViewerPhoto } from "@/components/PhotoViewer";
 import { useToast } from "@/components/shell/Toast";
 import { toggleAlerts, toggleSavedCafe, visibleCafes, visiblePosts, type Cafe, type Place, type Post } from "@/lib/api";
-import { cafeInitials } from "@/lib/board";
-import { cafeBoard, cafeMinutes, cafePagePhotos, featuredAlt, hoursLabel, openStatus, PHOTO_ROW_LIMIT, ratingText } from "@/lib/cafe";
+import { cafeBoard, cafePagePhotos } from "@/lib/cafe";
 import { useNow, useUserState } from "@/lib/hooks";
 import { imageUrl, postPhotoAlt, type BoardDay } from "@/lib/posts";
+import { CafeHeader } from "./CafeHeader";
+import { Highlights } from "./Highlights";
 import styles from "./cafe.module.css";
 
 type Props = { cafe: Cafe; place: Place; posts: Post[]; today: BoardDay; now: number; replyTo?: string | null };
 
 type Viewing = { title: string; photos: ViewerPhoto[]; index: number; key: string };
 
-// The café page, as the old profile panel: back / share, the banner with
-// the logo overlapping it, the info card, "On the board today" (pinned
-// first, same cards as the board), Photos and Info. Every photo appears
-// once at most; the Photos row has priority over the cards (see
-// cafePagePhotos).
+// The café page, like a profile: back / share, then the header (banner,
+// logo, name, address, rating, tags, About, contact), Get alerts /
+// Directions / save, the Highlights row and "On the board today" (pinned
+// first, the board's cards). Every photo appears once at most; the
+// Highlights row has priority over the cards (see cafePagePhotos).
 export function CafeProfile({ cafe: seedCafe, place, posts, today, now: serverNow, replyTo = null }: Props) {
   const state = useUserState();
   const now = useNow(serverNow);
   const toast = useToast();
-  const photosId = useId();
-  const [expanded, setExpanded] = useState(false);
   const [viewing, setViewing] = useState<Viewing | null>(null);
 
-  // Saved owner changes (background and featured photos) apply on top
+  // Saved owner changes (photos, About, contact, hours) apply on top
   const cafe = visibleCafes([seedCafe], state)[0] ?? seedCafe;
   const board = cafeBoard(visiblePosts(posts, state, today.iso), cafe.id);
   const photos = cafePagePhotos(cafe, board);
   const alertsOn = state.alerts.includes(cafe.id);
   const saved = state.savedCafes.includes(cafe.id);
-  const rating = ratingText(cafe);
-  const status = openStatus(cafe, cafeMinutes(now));
-  const hours = hoursLabel(cafe);
 
   async function alerts() {
     const on = await toggleAlerts(cafe.id);
@@ -66,8 +61,6 @@ export function CafeProfile({ cafe: seedCafe, place, posts, today, now: serverNo
     }
   }
 
-  const featuredPhotos = photos.featured.map((src, index) => ({ src: imageUrl(src), alt: featuredAlt(cafe, index) }));
-
   return (
     <div className={styles.page}>
       <div className={styles.bar}>
@@ -79,51 +72,7 @@ export function CafeProfile({ cafe: seedCafe, place, posts, today, now: serverNo
         </button>
       </div>
 
-      {photos.banner && (
-        <div className={styles.banner}>
-          <Image src={imageUrl(photos.banner)} alt={`${cafe.name} background photo`} fill sizes="(max-width: 760px) 100vw, 720px" className={styles.cover} preload />
-        </div>
-      )}
-
-      <section className={`${styles.card} ${photos.banner ? styles.withBanner : ""}`} aria-labelledby="cafe-name">
-        <div className={styles.top}>
-          {cafe.logo ? (
-            <span className={`${styles.tileLg} ${styles.tileLogo}`}>
-              <Image src={imageUrl(cafe.logo)} alt={`${cafe.name} logo`} width={60} height={60} />
-            </span>
-          ) : (
-            <span className={styles.tileLg} aria-hidden="true">
-              {cafeInitials(cafe)}
-            </span>
-          )}
-          <div className={styles.topText}>
-            <h1 className={styles.name} id="cafe-name">{cafe.name}</h1>
-            <p className={styles.address}>{cafe.address}</p>
-          </div>
-        </div>
-        <div className={styles.facts}>
-          {rating ? (
-            <span>
-              <Icon name="star" />
-              {rating}
-            </span>
-          ) : (
-            <span className={styles.muted}>No reviews yet</span>
-          )}
-          {status && (
-            <span>
-              <Icon name="clock" />
-              {status.label}
-            </span>
-          )}
-        </div>
-        {cafe.tags.length > 0 && (
-          <ul className={styles.tags} aria-label="Tags">
-            {cafe.tags.map((tag) => (
-              <li key={tag} className={styles.chip}>{tag}</li>
-            ))}
-          </ul>
-        )}
+      <CafeHeader cafe={cafe} now={now} banner={photos.banner}>
         <div className={styles.actions}>
           <button type="button" className={`${styles.alertBtn} ${alertsOn ? styles.alertOn : ""}`} aria-pressed={alertsOn} onClick={() => void alerts()}>
             <Icon name="bell" />
@@ -143,10 +92,18 @@ export function CafeProfile({ cafe: seedCafe, place, posts, today, now: serverNo
             <Icon name="bookmark" className={styles.fillable} />
           </button>
         </div>
-      </section>
+      </CafeHeader>
+
+      {photos.highlights.length > 0 && (
+        <div className={styles.section}>
+          <Highlights cafe={cafe} highlights={photos.highlights} />
+        </div>
+      )}
 
       <section className={styles.section} aria-labelledby="cafe-board-h">
-        <h2 className={styles.secTitle} id="cafe-board-h">On the board today</h2>
+        <h2 className={styles.secTitle} id="cafe-board-h">
+          On the board today
+        </h2>
         {photos.posts.length ? (
           <div className={styles.boardList}>
             {photos.posts.map((post) => (
@@ -175,69 +132,9 @@ export function CafeProfile({ cafe: seedCafe, place, posts, today, now: serverNo
         )}
       </section>
 
-      <section className={styles.section} aria-labelledby="cafe-photos-h">
-        <div className={styles.secHead}>
-          <h2 className={styles.secTitle} id="cafe-photos-h">
-            Photos {featuredPhotos.length > 0 && <span className={styles.count}>{featuredPhotos.length}</span>}
-          </h2>
-          {featuredPhotos.length > PHOTO_ROW_LIMIT && (
-            <button type="button" className={styles.textBtn} aria-expanded={expanded} aria-controls={photosId} onClick={() => setExpanded(!expanded)}>
-              {expanded ? "Show less" : "See all"}
-            </button>
-          )}
-        </div>
-        {featuredPhotos.length ? (
-          <ul id={photosId} className={expanded ? styles.photoGrid : styles.photoRow} aria-label={`${cafe.name} photos`}>
-            {featuredPhotos.map((photo, index) => (
-              <li key={photo.src} className={styles.photoItem}>
-                <button
-                  type="button"
-                  className={styles.photoTile}
-                  aria-label={`Open ${photo.alt}`}
-                  onClick={() => setViewing({ key: `featured-${index}`, title: `${cafe.name} photos`, index, photos: featuredPhotos })}
-                >
-                  <Image src={photo.src} alt="" fill sizes="(max-width: 699px) 50vw, 240px" className={styles.cover} />
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div className={styles.photoEmpty}>
-            <Icon name="camera" />
-            <strong>No photos yet</strong>
-            <span>Photos show here once the café adds them.</span>
-          </div>
-        )}
-      </section>
-
-      {(hours || cafe.contact) && (
-        <section className={styles.section} aria-labelledby="cafe-info-h">
-          <h2 className={styles.secTitle} id="cafe-info-h">Info</h2>
-          <dl className={styles.infoList}>
-            <InfoRow icon="pin" label="Address" value={cafe.address} />
-            <InfoRow icon="clock" label="Hours" value={hours} />
-            <InfoRow icon="phone" label="Contact" value={cafe.contact ?? ""} />
-          </dl>
-        </section>
-      )}
-
       {viewing && (
         <PhotoViewer key={viewing.key} open onClose={() => setViewing(null)} title={viewing.title} photos={viewing.photos} startIndex={viewing.index} />
       )}
-    </div>
-  );
-}
-
-// Rows without data are left out
-function InfoRow({ icon, label, value }: { icon: "pin" | "clock" | "phone"; label: string; value: string }) {
-  if (!value) return null;
-  return (
-    <div className={styles.infoRow}>
-      <Icon name={icon} />
-      <div>
-        <dt>{label}</dt>
-        <dd>{value}</dd>
-      </div>
     </div>
   );
 }

@@ -119,33 +119,28 @@ describe("café page: on the board today", () => {
     expect(within(main).getByText("Nothing new today")).toBeInTheDocument();
   });
 });
-
-describe("café page: photos", () => {
-  it("shows a row that expands to a grid and opens the viewer", async () => {
+describe("café page: highlights", () => {
+  it("shows the row with labels and opens the viewer at the tapped photo", async () => {
     const user = userEvent.setup();
-    const { main } = await renderCafe(10); // Lakbai: five featured photos, no posts
-    expect(within(main).getByRole("heading", { name: "Photos 5" })).toBeInTheDocument();
-    const list = within(main).getByRole("list", { name: "Lakbai Coffee photos" });
-    expect(within(list).getAllByRole("listitem")).toHaveLength(5);
+    localStorage.setItem("findit.cafeEdits", JSON.stringify({ "10": { featuredPhotos: ["Images/Lakbai/lakbai2.jpg", { src: "Images/Lakbai/Lakbai3.jpg", label: "Garden seats" }, "Images/Lakbai/lakbai4.jpg"] } }));
+    const { main } = await renderCafe(10);
+    const row = within(main).getByRole("region", { name: "Highlights" });
+    expect(within(row).getByText("3 of 6")).toBeInTheDocument();
+    expect(within(row).getByText("Garden seats")).toBeInTheDocument();
+    expect(within(row).queryByRole("button", { name: /More options/ })).not.toBeInTheDocument(); // customers get no menu
+    expect(within(row).queryByLabelText("New highlight")).not.toBeInTheDocument();
 
-    const toggle = within(main).getByRole("button", { name: "See all" });
-    expect(toggle).toHaveAttribute("aria-controls", list.id);
-    await user.click(toggle);
-    expect(within(main).getByRole("button", { name: "Show less" })).toHaveAttribute("aria-expanded", "true");
-
-    const tile = within(list).getByRole("button", { name: "Open Lakbai Coffee featured photo 3" });
+    const tile = within(row).getByRole("button", { name: "Open Garden seats" });
     await user.click(tile);
-    const viewer = screen.getByRole("dialog", { name: "Lakbai Coffee photos" });
-    expect(within(viewer).getByText("3 of 5")).toBeInTheDocument();
+    const viewer = screen.getByRole("dialog", { name: "Lakbai Coffee highlights" });
+    expect(within(viewer).getByText("2 of 3")).toBeInTheDocument();
     await user.keyboard("{Escape}");
     expect(tile).toHaveFocus();
   });
 
-  it("shows every featured photo, and cards drop the ones the row shows", async () => {
+  it("gives highlights priority over the cards, so no photo shows twice", async () => {
     const { main } = await renderCafe(1); // Paramount: six featured, five of them also in posts
-    expect(within(main).getByRole("heading", { name: "Photos 6" })).toBeInTheDocument();
-    expect(within(within(main).getByRole("list", { name: "Paramount Coffee photos" })).getAllByRole("listitem")).toHaveLength(6);
-    expect(within(main).getByRole("button", { name: "See all" })).toBeInTheDocument();
+    expect(within(within(main).getByRole("region", { name: "Highlights" })).getByText("6 of 6")).toBeInTheDocument();
     for (const card of within(main).getAllByRole("article")) {
       expect(within(card).queryByRole("button", { name: /^Open / })).not.toBeInTheDocument();
     }
@@ -153,16 +148,9 @@ describe("café page: photos", () => {
     expect(new Set(sources).size).toBe(sources.length);
   });
 
-  it("has no See all for three photos or fewer", async () => {
-    localStorage.setItem("findit.cafeEdits", JSON.stringify({ "4": { featuredPhotos: ["Images/paramount/paramount1.jpg", "Images/paramount/paramount2.jpg"] } }));
-    const { main } = await renderCafe(4);
-    expect(within(main).getByRole("heading", { name: "Photos 2" })).toBeInTheDocument();
-    expect(within(main).queryByRole("button", { name: "See all" })).not.toBeInTheDocument();
-  });
-
-  it("says when there are none", async () => {
+  it("is left out when the café has none", async () => {
     const { main } = await renderCafe(3);
-    expect(within(main).getByText("No photos yet")).toBeInTheDocument();
+    expect(within(main).queryByRole("region", { name: "Highlights" })).not.toBeInTheDocument();
   });
 
   it("shows the background photo with the logo, and no photo twice", async () => {
@@ -178,23 +166,49 @@ describe("café page: photos", () => {
     // craftcoffe3 is the banner, so the new-item card shows no photo
     expect(within(within(main).getByRole("article", { name: /Agusan Highlands/ })).queryByRole("button", { name: /^Open / })).not.toBeInTheDocument();
     // The row shows craftcoffe2 and 6 (1 is the logo); the photos card keeps only craftcoffe4
-    expect(within(main).getByRole("heading", { name: "Photos 2" })).toBeInTheDocument();
+    expect(within(within(main).getByRole("region", { name: "Highlights" })).getByText("2 of 6")).toBeInTheDocument();
     const photosCard = within(main).getByRole("article", { name: /^Photos: 1 photo,/ });
     expect(within(photosCard).getAllByRole("button", { name: /^Open / })).toHaveLength(1);
   });
 });
 
-describe("café page: info", () => {
-  it("is left out when it would only repeat the address", async () => {
+describe("café page: header", () => {
+  it("hides the About line and the contact line when nothing is set", async () => {
     const { main } = await renderCafe(1);
-    expect(within(main).queryByRole("heading", { name: "Info" })).not.toBeInTheDocument();
+    expect(within(main).queryByRole("list", { name: "Contact" })).not.toBeInTheDocument();
+    expect(within(main).queryByRole("heading", { name: "Info" })).not.toBeInTheDocument(); // the old Info card is gone
   });
 
-  it("lists hours and contact when the data has them, and the open status", async () => {
-    const { main } = await renderCafe(1, (cafe) => ({ ...cafe, hours: { open: "07:00", close: "21:00" }, contact: "0917 000 0000" }));
-    expect(within(main).getByRole("heading", { name: "Info" })).toBeInTheDocument();
-    expect(within(main).getByText("7 AM – 9 PM, every day")).toBeInTheDocument();
-    expect(within(main).getByText("0917 000 0000")).toBeInTheDocument();
-    expect(within(main).getByText("Open now · Closes 9 PM")).toBeInTheDocument();
+  it("shows About and the contact details the owner chose, in profile order", async () => {
+    localStorage.setItem(
+      "findit.cafeEdits",
+      JSON.stringify({ "1": { about: "Single-origin coffee from Mindanao farms.", phone: "+63 917 000 0000", facebook: "https://facebook.com/paramount", instagram: "", hours: { open: "07:00", close: "21:00" } } }),
+    );
+    const { main } = await renderCafe(1);
+    const header = within(main).getByRole("region", { name: "Paramount Coffee" });
+    expect(within(header).getByText("Single-origin coffee from Mindanao farms.")).toBeInTheDocument();
+    const contact = within(header).getByRole("list", { name: "Contact" });
+    expect(within(contact).getByRole("link", { name: "+63 917 000 0000" })).toHaveAttribute("href", "tel:+639170000000");
+    const facebook = within(contact).getByRole("link", { name: "Facebook (opens in a new tab)" });
+    expect(facebook).toHaveAttribute("href", "https://facebook.com/paramount");
+    expect(facebook).toHaveAttribute("target", "_blank");
+    expect(facebook).toHaveAttribute("rel", "noopener noreferrer");
+    expect(within(contact).queryByRole("link", { name: /Instagram/ })).not.toBeInTheDocument(); // empty: hidden
+    expect(within(contact).getByText("7 AM – 9 PM, every day")).toBeInTheDocument();
+    expect(within(header).getByText("Open now · Closes 9 PM")).toBeInTheDocument();
+    // Header, then actions, then Highlights, then the board
+    const order = [
+      within(main).getByText("Single-origin coffee from Mindanao farms."),
+      within(main).getByRole("button", { name: /Get alerts|Alerts on/ }),
+      within(main).getByRole("heading", { name: "Highlights" }),
+      within(main).getByRole("heading", { name: "On the board today" }),
+    ];
+    for (let i = 1; i < order.length; i++) expect(order[i - 1].compareDocumentPosition(order[i]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("never shows a link that is not on facebook.com or instagram.com", async () => {
+    localStorage.setItem("findit.cafeEdits", JSON.stringify({ "1": { facebook: "https://evil.example/fb", instagram: "javascript:alert(1)" } }));
+    const { main } = await renderCafe(1);
+    expect(within(main).queryByRole("list", { name: "Contact" })).not.toBeInTheDocument();
   });
 });

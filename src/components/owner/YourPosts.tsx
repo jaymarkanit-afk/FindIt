@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, type KeyboardEvent } from "react";
 import { Icon, type IconName } from "@/components/Icon";
+import { MoreMenu } from "@/components/menu/MoreMenu";
 import { useToast } from "@/components/shell/Toast";
 import { endPost, removePost, setPinned, type Post, type PostStatus, type UserState } from "@/lib/api";
 import { commentCount, timeAgo } from "@/lib/board";
@@ -26,21 +27,25 @@ type Props = {
 };
 
 // "Your posts": Live / Drafts / Ended tabs (arrow keys move between them),
-// each post with its numbers and actions; Delete asks inline first
+// each post with its numbers and a "..." menu: Edit, Pin to top / Unpin,
+// End post (live posts) and Delete (asks first)
 export function YourPosts({ groups, state, now, tab, onTab, focusPostId }: Props) {
+  const router = useRouter();
   const toast = useToast();
   const section = useRef<HTMLElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
-  const pendingFocus = useRef<string | null>(focusPostId ? `${focusPostId}-edit` : null);
-  const [confirming, setConfirming] = useState<string | null>(null);
+  // What to focus after the next render: "post:<id>" (that post's "..."
+  // button), "tab:<status>" or "heading"
+  const pendingFocus = useRef<string | null>(focusPostId ? `post:${focusPostId}` : null);
 
-  // After a change, move focus to the control marked data-focus="<key>"
-  // (looked up inside this section only), or to the heading
   useEffect(() => {
     const key = pendingFocus.current;
     if (!key) return;
     pendingFocus.current = null;
-    const target = key === "heading" ? null : section.current?.querySelector<HTMLElement>(`[data-focus="${key}"]`); // ids are letters and digits
+    const [kind, value] = key.split(":");
+    const selector = kind === "post" ? `[data-post="${value}"] [aria-haspopup="menu"]` : kind === "tab" ? `#tab-${value}` : null;
+    // Post ids and tab names are letters and digits only
+    const target = selector ? section.current?.querySelector<HTMLElement>(selector) : null;
     (target ?? heading.current)?.focus();
   });
 
@@ -50,16 +55,16 @@ export function YourPosts({ groups, state, now, tab, onTab, focusPostId }: Props
     const j = keys[event.key];
     if (j === undefined) return;
     event.preventDefault();
-    pendingFocus.current = `tab-${TABS[j]}`;
+    pendingFocus.current = `tab:${TABS[j]}`;
     onTab(TABS[j]);
   }
 
   async function pin(post: Post) {
     const on = !post.pinned;
-    pendingFocus.current = `${post.id}-pin`;
     if (await setPinned(post.id, on)) toast(on ? "Pinned to the top of your page" : "Unpinned");
   }
 
+  // The post leaves this tab, and its "..." button with it: focus the heading
   async function end(post: Post) {
     pendingFocus.current = "heading";
     if (await endPost(post.id)) toast("Post ended. Find it under Ended.");
@@ -67,21 +72,11 @@ export function YourPosts({ groups, state, now, tab, onTab, focusPostId }: Props
 
   async function remove(post: Post) {
     pendingFocus.current = "heading";
-    setConfirming(null);
     await removePost(post.id);
     toast("Post deleted");
   }
 
-  // The inline confirm takes focus on "Keep it", the safe choice
-  function askDelete(post: Post) {
-    pendingFocus.current = `${post.id}-keep`;
-    setConfirming(post.id);
-  }
-
-  function cancelDelete(post: Post) {
-    pendingFocus.current = `${post.id}-delete`;
-    setConfirming(null);
-  }
+  const DELETE_CONFIRM = { question: "Delete this post? This can't be undone.", action: "Delete" };
 
   const list = groups[tab];
 
@@ -94,7 +89,6 @@ export function YourPosts({ groups, state, now, tab, onTab, focusPostId }: Props
         {TABS.map((key) => (
           <button
             key={key}
-            data-focus={`tab-${key}`}
             type="button"
             role="tab"
             id={`tab-${key}`}
@@ -113,11 +107,10 @@ export function YourPosts({ groups, state, now, tab, onTab, focusPostId }: Props
           <p className={styles.empty}>Nothing here yet. Posts you publish show up in this list.</p>
         ) : (
           list.map((post) => {
-            const live = tab === "live";
             const headline = postHeadline(post);
             const photo = post.photos[0];
             return (
-              <article key={post.id} className={`${styles.card} ${styles.dpost}`} aria-label={headline}>
+              <article key={post.id} className={`${styles.card} ${styles.dpost}`} aria-label={headline} data-post={post.id}>
                 {photo ? (
                   <span className={styles.thumb}>
                     <Image src={imageUrl(photo.src)} alt="" fill sizes="(max-width: 559px) 100vw, 84px" className={styles.cover} />
@@ -134,7 +127,7 @@ export function YourPosts({ groups, state, now, tab, onTab, focusPostId }: Props
                 )}
                 <div className={styles.body}>
                   <div className={styles.tags}>
-                    {live && post.pinned && <span className={styles.pinChip}>Pinned</span>}
+                    {tab === "live" && post.pinned && <span className={styles.pinChip}>Pinned</span>}
                     <span className={`${styles.tagChip} ${styles[`tag_${post.type}`]}`}>{TYPE_LABELS[post.type]}</span>
                     <span className={`${styles.status} ${styles[`status_${tab}`]}`}>{STATUS_LABEL[tab]}</span>
                     <span className={styles.time}>
@@ -158,41 +151,24 @@ export function YourPosts({ groups, state, now, tab, onTab, focusPostId }: Props
                       <dd>{keepCount(post, state.keeps)}</dd>
                     </div>
                   </dl>
-                  <div className={styles.postActs}>
-                    {confirming === post.id ? (
-                      <>
-                        <p className={styles.confirmText} id={`confirm-${post.id}`}>
-                          Delete this post?
-                        </p>
-                        <button data-focus={`${post.id}-keep`} type="button" className="btn btn-quiet" onClick={() => cancelDelete(post)}>
-                          Keep it
-                        </button>
-                        <button type="button" className={`btn ${styles.dangerFill}`} aria-describedby={`confirm-${post.id}`} onClick={() => void remove(post)}>
-                          Delete
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <Link data-focus={`${post.id}-edit`} className="btn btn-quiet" href={`/owner/post/${post.id}`}>
-                          Edit
-                        </Link>
-                        {live && (
-                          <button data-focus={`${post.id}-pin`} type="button" className={`btn btn-quiet ${post.pinned ? styles.pinOn : ""}`} aria-pressed={post.pinned} onClick={() => void pin(post)}>
-                            {post.pinned ? "Pinned to top" : "Pin to top"}
-                          </button>
-                        )}
-                        {live && (
-                          <button type="button" className="btn btn-quiet" onClick={() => void end(post)}>
-                            End post
-                          </button>
-                        )}
-                        <button data-focus={`${post.id}-delete`} type="button" className={`btn btn-quiet ${styles.danger}`} onClick={() => askDelete(post)}>
-                          Delete
-                        </button>
-                      </>
-                    )}
-                  </div>
                 </div>
+                <MoreMenu
+                  className={styles.postMenu}
+                  itemName={headline}
+                  items={
+                    tab === "live"
+                      ? [
+                          { label: "Edit", onSelect: () => router.push(`/owner/post/${post.id}`) },
+                          { label: post.pinned ? "Unpin" : "Pin to top", onSelect: () => void pin(post) },
+                          { label: "End post", onSelect: () => void end(post) },
+                          { label: "Delete", confirm: DELETE_CONFIRM, onSelect: () => void remove(post) },
+                        ]
+                      : [
+                          { label: "Edit", onSelect: () => router.push(`/owner/post/${post.id}`) },
+                          { label: "Delete", confirm: DELETE_CONFIRM, onSelect: () => void remove(post) },
+                        ]
+                  }
+                />
               </article>
             );
           })

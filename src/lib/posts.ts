@@ -227,7 +227,13 @@ export function livePosts(posts: readonly Post[], today: string = localISODate()
 export function applyCafeEdits(cafes: readonly Cafe[], cafeEdits: Readonly<Record<string, CafeEdit>>): Cafe[] {
   return cafes.map((cafe) => {
     const edit = cafeEdits[String(cafe.id)];
-    return edit ? { ...cafe, ...edit } : cafe;
+    if (!edit) return cafe;
+    const { hours, ...rest } = edit;
+    const merged: Cafe = { ...cafe, ...rest };
+    // hours: null means the owner cleared them
+    if (hours === null) delete merged.hours;
+    else if (hours) merged.hours = hours;
+    return merged;
   });
 }
 
