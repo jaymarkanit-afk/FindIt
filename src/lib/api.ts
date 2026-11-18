@@ -9,14 +9,15 @@
 // call a server.
 
 import { cafes as seedCafes, DEFAULT_PLACE, places as seedPlaces, posts as seedPosts } from "@/data/seed";
-import type { Cafe, CafeEdit, Comment, Place, Post, PostEdit, PostType, Theme, UserState } from "@/data/types";
+import type { Cafe, CafeEdit, Comment, Place, Post, PostEdit, PostPhoto, PostStatus, PostType, Theme, UserState } from "@/data/types";
 import { commitUserState, getServerUserState, getUserStateSnapshot, subscribeUserState } from "@/lib/local/userState";
 import { getLocation, getServerLocation, locate, subscribeLocation, type LocateResult } from "@/lib/location";
+import { getOwnerSession, getServerOwnerSession, signIn as signInOwner, signOut as signOutOwner, subscribeOwnerSession } from "@/lib/ownerSession";
 import { allPosts, applyCafeEdits, livePosts } from "@/lib/posts";
 
 export type { LocateResult };
 
-export type { Cafe, CafeEdit, Comment, Place, Post, PostEdit, PostType, Theme, UserState };
+export type { Cafe, CafeEdit, Comment, Place, Post, PostEdit, PostPhoto, PostStatus, PostType, Theme, UserState };
 
 /* ── Catalog (server-safe) ─────────────────────────────────── */
 
@@ -128,8 +129,17 @@ export const COMMENT_MAX = 280;
 // There are no customer accounts yet, so local comments are signed "Guest"
 export const LOCAL_AUTHOR_NAME = "Guest";
 
+// Comments are signed "Guest", except the signed-in owner replying on their
+// own café's posts, who signs as the café (the old commentAuthorFor())
+export function commentAuthorFor(postId: string): string {
+  if (!getOwnerSession()) return LOCAL_AUTHOR_NAME;
+  const post = ownerVisiblePosts(seedPosts, getUserStateSnapshot()).find((item) => item.id === postId);
+  const cafe = post && post.cafeId === OWNER_CAFE_ID ? seedCafes.find((item) => item.id === OWNER_CAFE_ID) : undefined;
+  return cafe ? cafe.name : LOCAL_AUTHOR_NAME;
+}
+
 // Resolves to the new comment, or null when the text is empty or storage is full
-export async function addComment(postId: string, text: string, authorName: string = LOCAL_AUTHOR_NAME): Promise<Comment | null> {
+export async function addComment(postId: string, text: string, authorName: string = commentAuthorFor(postId)): Promise<Comment | null> {
   const clean = text.trim().slice(0, COMMENT_MAX);
   if (!clean) return null;
   const comment: Comment = {
@@ -184,6 +194,33 @@ export async function locateVisitor(): Promise<LocateResult> {
 }
 
 /* ── Demo owner (local only; becomes server calls with accounts) ── */
+
+// The demo owner always posts as Paramount Coffee, as in the old app
+export const OWNER_CAFE_ID = 1;
+
+// The demo sign-in: any email and password, kept in memory for this tab
+// (a reload signs out). See src/lib/ownerSession.ts.
+export const ownerSessionStore = {
+  subscribe: subscribeOwnerSession,
+  getSnapshot: getOwnerSession,
+  getServerSnapshot: getServerOwnerSession,
+};
+
+// Resolves to false (still signed out) when either field is empty
+export async function ownerSignIn(email: string, password: string): Promise<boolean> {
+  if (!email.trim() || !password) return false;
+  signInOwner();
+  return true;
+}
+
+export async function ownerSignOut(): Promise<void> {
+  signOutOwner();
+}
+
+// Ends a live post now: it moves to Ended and is no longer pinned
+export async function endPost(id: string): Promise<boolean> {
+  return updatePost(id, { status: "ended", endedAt: Date.now(), pinned: false });
+}
 
 export const FEATURED_MAX = 6;
 

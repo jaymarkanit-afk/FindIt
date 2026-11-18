@@ -23,13 +23,15 @@ type Props = {
   // The café page: mark the pinned post, and leave the café out of the
   // footer (it would link to the page you are on and repeat its logo)
   onCafePage?: boolean;
+  // Start with the comment thread open (the owner's Reply)
+  openThread?: boolean;
 };
 
 // The type names used in each card's accessible name ("Promo: …, Café")
 const TYPE_NAMES: Record<Post["type"], string> = { new: "New", photos: "Photos", event: "Event", hiring: "Hiring", promo: "Promo" };
 
 // One board card: a shape per update type, the shared footer and the thread
-export function PostCard({ post, cafe, place, state, now, onOpenPhoto, onCafePage = false }: Props) {
+export function PostCard({ post, cafe, place, state, now, onOpenPhoto, onCafePage = false, openThread = false }: Props) {
   const toast = useToast();
   const headline = postHeadline(post);
   const kept = state.keeps.includes(post.id);
@@ -210,17 +212,27 @@ export function PostCard({ post, cafe, place, state, now, onOpenPhoto, onCafePag
   return (
     <article className={`${styles.post} ${post.type === "promo" ? styles.postPromo : ""}`} aria-label={`${TYPE_NAMES[post.type]}: ${headline}, ${cafe.name}`}>
       {main}
-      <CardFooter post={post} cafe={cafe} place={place} state={state} headline={headline} kept={kept} showCafe={!onCafePage} onKeep={() => void keep()} />
+      <CardFooter post={post} cafe={cafe} place={place} state={state} headline={headline} kept={kept} showCafe={!onCafePage} openThread={openThread} onKeep={() => void keep()} />
     </article>
   );
 }
 
-type FooterProps = { post: Post; cafe: Cafe; place: Place; state: UserState; headline: string; kept: boolean; showCafe: boolean; onKeep: () => void };
+type FooterProps = {
+  post: Post;
+  cafe: Cafe;
+  place: Place;
+  state: UserState;
+  headline: string;
+  kept: boolean;
+  showCafe: boolean;
+  openThread: boolean;
+  onKeep: () => void;
+};
 
 // Café on the left; sip, comments and keep on the right; then the thread
-function CardFooter({ post, cafe, place, state, headline, kept, showCafe, onKeep }: FooterProps) {
+function CardFooter({ post, cafe, place, state, headline, kept, showCafe, openThread, onKeep }: FooterProps) {
   const threadId = `thread-${useId().replace(/:/g, "")}`;
-  const [threadOpen, setThreadOpen] = useState(false);
+  const [threadOpen, setThreadOpen] = useState(openThread);
   const sipped = state.sips.includes(post.id);
   const comments = commentsFor(state, post.id);
   const meta = [cafeStreet(cafe), `${distanceKm(place, cafe)} km`].join(" · ");

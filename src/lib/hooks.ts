@@ -2,9 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { savedPlace, setPlace, userStateStore, visitorLocationStore, type Place, type UserState } from "@/lib/api";
+import { ownerSessionStore, savedPlace, setPlace, userStateStore, visitorLocationStore, type Place, type UserState } from "@/lib/api";
 import type { LatLng } from "@/lib/board";
 import { getBoardView, getServerBoardView, subscribeBoardView, type BoardView } from "@/lib/boardView";
+
+// Whether the demo owner is signed in (memory only: a reload signs out)
+export function useOwnerSession(): boolean {
+  return useSyncExternalStore(ownerSessionStore.subscribe, ownerSessionStore.getSnapshot, ownerSessionStore.getServerSnapshot);
+}
 
 // The visitor's location once they have shared it (this tab only)
 export function useVisitorLocation(): LatLng | null {

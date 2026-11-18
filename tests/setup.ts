@@ -5,8 +5,10 @@ import { afterEach, vi } from "vitest";
 
 afterEach(() => cleanup());
 
+// A plain <img>, without next/image's own props (they are not DOM attributes)
+type NextImageOnly = { unoptimized?: boolean; fill?: boolean; preload?: boolean; priority?: boolean; quality?: number };
 vi.mock("next/image", () => ({
-  default: ({ unoptimized: _unoptimized, ...props }: React.ComponentProps<"img"> & { unoptimized?: boolean }) =>
+  default: ({ unoptimized: _u, fill: _f, preload: _p, priority: _pr, quality: _q, ...props }: React.ComponentProps<"img"> & NextImageOnly) =>
     React.createElement("img", props),
 }));
 vi.mock("next/link", () => ({

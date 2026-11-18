@@ -14,7 +14,7 @@ import { useNow, useUserState } from "@/lib/hooks";
 import { imageUrl, postPhotoAlt, type BoardDay } from "@/lib/posts";
 import styles from "./cafe.module.css";
 
-type Props = { cafe: Cafe; place: Place; posts: Post[]; today: BoardDay; now: number };
+type Props = { cafe: Cafe; place: Place; posts: Post[]; today: BoardDay; now: number; replyTo?: string | null };
 
 type Viewing = { title: string; photos: ViewerPhoto[]; index: number; key: string };
 
@@ -23,7 +23,7 @@ type Viewing = { title: string; photos: ViewerPhoto[]; index: number; key: strin
 // first, same cards as the board), Photos and Info. Every photo appears
 // once at most; the Photos row has priority over the cards (see
 // cafePagePhotos).
-export function CafeProfile({ cafe: seedCafe, place, posts, today, now: serverNow }: Props) {
+export function CafeProfile({ cafe: seedCafe, place, posts, today, now: serverNow, replyTo = null }: Props) {
   const state = useUserState();
   const now = useNow(serverNow);
   const toast = useToast();
@@ -158,6 +158,7 @@ export function CafeProfile({ cafe: seedCafe, place, posts, today, now: serverNo
                 state={state}
                 now={now}
                 onCafePage
+                openThread={post.id === replyTo}
                 onOpenPhoto={(_, index) =>
                   setViewing({
                     key: `${post.id}-${index}`,
