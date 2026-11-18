@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { Icon } from "@/components/Icon";
 import { useToast } from "@/components/shell/Toast";
 import { saveCafeEdit, type Cafe } from "@/lib/api";
@@ -12,16 +12,22 @@ import { BACKGROUND_MAX_WIDTH, resizePhoto } from "@/lib/photos";
 import { imageUrl } from "@/lib/posts";
 import styles from "./owner.module.css";
 
-type Props = { cafe: Cafe; liveCount: number };
+type Props = { cafe: Cafe; liveCount: number; focusCompose?: boolean };
 
 // The dashboard's profile card: background photo (change / remove), logo or
 // initials overlapping it, name, address, approval, the tracked numbers
 // and the main actions
-export function ProfileCard({ cafe, liveCount }: Props) {
+export function ProfileCard({ cafe, liveCount, focusCompose = false }: Props) {
   const toast = useToast();
   const backgroundInput = useRef<HTMLInputElement>(null);
+  const composeLink = useRef<HTMLAnchorElement>(null);
   const [error, setError] = useState("");
   const background = cafe.backgroundPhoto;
+
+  // Back from the composer with Cancel: focus returns to "Post an update"
+  useEffect(() => {
+    if (focusCompose) composeLink.current?.focus();
+  }, [focusCompose]);
 
   async function onBackground(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -103,7 +109,7 @@ export function ProfileCard({ cafe, liveCount }: Props) {
       </dl>
 
       <div className={styles.acts}>
-        <Link className="btn btn-accent" href="/owner/post" id="compose-new">
+        <Link ref={composeLink} className="btn btn-accent" href="/owner/post" id="compose-new">
           <Icon name="spark" /> Post an update
         </Link>
         <button type="button" className="btn btn-quiet" onClick={editPage}>

@@ -13,6 +13,7 @@ import type { Cafe, CafeEdit, Comment, Place, Post, PostEdit, PostPhoto, PostSta
 import { commitUserState, getServerUserState, getUserStateSnapshot, subscribeUserState } from "@/lib/local/userState";
 import { getLocation, getServerLocation, locate, subscribeLocation, type LocateResult } from "@/lib/location";
 import { getOwnerSession, getServerOwnerSession, signIn as signInOwner, signOut as signOutOwner, subscribeOwnerSession } from "@/lib/ownerSession";
+import { buildPost, validatePost, type ComposerForm, type FieldError } from "@/lib/composer";
 import { allPosts, applyCafeEdits, livePosts } from "@/lib/posts";
 
 export type { LocateResult };
@@ -215,6 +216,49 @@ export async function ownerSignIn(email: string, password: string): Promise<bool
 
 export async function ownerSignOut(): Promise<void> {
   signOutOwner();
+}
+
+// The owner's post with this id (seed or owner post, edits applied), if it
+// belongs to the owner's café
+export function ownerPost(state: UserState, id: string): Post | undefined {
+  return ownerVisiblePosts(seedPosts, state).find((post) => post.id === id && post.cafeId === OWNER_CAFE_ID);
+}
+
+export type SaveResult = { ok: true; id: string } | { ok: false; errors: FieldError[]; storageFull: boolean };
+
+// Saves the composer's post: a new owner post, or changes to the one being
+// edited (owner posts in place, seed posts through postEdits, as before).
+// Publishing checks the required fields first; a draft is saved as it is.
+// With "Send alerts now" off, the post is marked seen so it skips the bell.
+export async function saveComposedPost(
+  form: ComposerForm,
+  { editingId, asDraft, alertNow }: { editingId: string | null; asDraft: boolean; alertNow: boolean },
+): Promise<SaveResult> {
+  const state = getUserStateSnapshot();
+  const original = editingId ? ownerPost(state, editingId) : undefined;
+  const now = Date.now();
+  const built = buildPost(form, {
+    id: original?.id ?? `o${now}`,
+    cafeId: OWNER_CAFE_ID,
+    time: original?.time ?? now,
+    sips: original?.sips ?? 0,
+    pinned: asDraft ? false : (original?.pinned ?? false),
+    eventDay: original?.type === "event" ? original.event.day : undefined,
+  });
+  const post: Post = { ...built, ...(asDraft ? { status: "draft" as const } : {}), ...(original ? { editedAt: now } : {}) };
+  if (!asDraft) {
+    const errors = validatePost(post);
+    if (errors.length) return { ok: false, errors, storageFull: false };
+  }
+  const saved = original ? await updatePost(original.id, withoutId(post)) : await publishOwnerPost(post);
+  if (!saved) return { ok: false, errors: [], storageFull: true };
+  if (!asDraft && !alertNow) await markSeen([post.id]);
+  return { ok: true, id: post.id };
+}
+
+function withoutId(post: Post): PostEdit {
+  const { id: _id, ...fields } = post;
+  return fields;
 }
 
 // Ends a live post now: it moves to Ended and is no longer pinned

@@ -1,0 +1,13 @@
+/* The confirmation bar after publishing, from the old app's owner.css */
+.bar {
+  position: fixed; left: 50%; bottom: calc(var(--bottom-h) + env(safe-area-inset-bottom) + 12px); z-index: 260;
+  width: min(560px, calc(100vw - 24px));
+  display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 16px;
+  border-radius: 18px; background: var(--ink-surface); color: var(--on-ink); box-shadow: var(--shadow-lg);
+  font-size: 14px; font-weight: 600;
+  opacity: 0; pointer-events: none; visibility: hidden; transform: translate(-50%, 16px);
+  transition: opacity .25s, transform .25s, visibility 0s linear .25s;
+}
+.bar[data-shown="true"] { opacity: 1; pointer-events: all; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s; }
+.bar span { flex: 1; }
+.bar :global(.btn) { background: #fff; color: #23170f; }
