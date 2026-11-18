@@ -1,0 +1,79 @@
+/* Overlay variants: "sheet" (bottom sheet on phones, centred card wider),
+   "side" (panel from the right), "viewer" (full screen, always dark). */
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 12, 6, 0.55);
+  animation: fade 0.2s ease-out;
+}
+
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 520px;
+  max-height: 85dvh;
+  padding: 12px var(--gutter) calc(20px + env(safe-area-inset-bottom));
+  border-radius: 26px 26px 0 0;
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow: var(--shadow-lg);
+  animation: rise 0.28s cubic-bezier(0.32, 1, 0.32, 1);
+}
+.panel:focus { outline: none; }
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.title { margin: 0; font: 700 20px var(--font-d); }
+.close { margin-left: auto; }
+.body { overflow: auto; min-height: 0; }
+
+@media (min-width: 700px) {
+  .root[data-variant="sheet"] { align-items: center; padding: 24px; }
+  .root[data-variant="sheet"] .panel { border-radius: var(--r-card); padding-bottom: 20px; }
+}
+
+.root[data-variant="side"] { justify-content: flex-end; align-items: stretch; }
+.root[data-variant="side"] .panel {
+  max-width: 420px;
+  max-height: none;
+  height: 100%;
+  border-radius: 0;
+  padding-top: 16px;
+  animation-name: slide;
+}
+
+.root[data-variant="viewer"] { align-items: stretch; }
+.root[data-variant="viewer"] .backdrop { background: rgba(8, 5, 3, 0.94); }
+.root[data-variant="viewer"] .panel {
+  max-width: none;
+  max-height: none;
+  height: 100%;
+  border-radius: 0;
+  background: transparent;
+  color: var(--on-ink);
+  box-shadow: none;
+  animation-name: fade;
+}
+.root[data-variant="viewer"] .close { background: var(--ink-surface); color: var(--on-ink); border-color: var(--ink-line); }
+.root[data-variant="viewer"] .body { flex: 1; display: flex; }
+
+@keyframes fade { from { opacity: 0; } }
+@keyframes rise { from { transform: translateY(24px); opacity: 0; } }
+@keyframes slide { from { transform: translateX(32px); opacity: 0; } }

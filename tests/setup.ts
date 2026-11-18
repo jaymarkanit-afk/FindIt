@@ -14,5 +14,11 @@ vi.mock("next/link", () => ({
 }));
 vi.mock("next/navigation", () => {
   const router = { refresh: vi.fn(), push: vi.fn(), replace: vi.fn(), back: vi.fn(), prefetch: vi.fn() };
-  return { useRouter: () => router };
+  return {
+    useRouter: () => router,
+    usePathname: vi.fn(() => "/"),
+    notFound: () => {
+      throw new Error("NEXT_NOT_FOUND");
+    },
+  };
 });

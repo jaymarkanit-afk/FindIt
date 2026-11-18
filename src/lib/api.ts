@@ -28,6 +28,10 @@ export async function listCafes(): Promise<Cafe[]> {
   return seedCafes;
 }
 
+export async function getCafe(id: number): Promise<Cafe | undefined> {
+  return seedCafes.find((cafe) => cafe.id === id);
+}
+
 // Seed posts only; local owner posts and edits are added on the client
 // with visiblePosts()
 export async function listPosts(): Promise<Post[]> {

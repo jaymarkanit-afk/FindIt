@@ -1,0 +1,101 @@
+/* App shell: top bar, page, bottom nav, toast. Ported from the old app's
+   topbar.css, bottom-nav.css and notifications.css (toast). */
+
+.app { min-height: 100dvh; }
+
+.skip {
+  position: absolute; left: 12px; top: -60px; z-index: 600;
+  padding: 10px 14px; border-radius: var(--r-btn);
+  background: var(--ink); color: var(--surface); font-weight: 700; text-decoration: none;
+}
+.skip:focus { top: 12px; }
+
+/* ── Top bar ─────────────────────────────────────────────── */
+
+.topbar {
+  position: sticky; top: 0; z-index: 200;
+  height: var(--nav-h);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 0 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--card-border);
+}
+.brand {
+  display: inline-flex; align-items: center; min-height: var(--tap);
+  color: var(--ink); font: 700 22px var(--font-d); letter-spacing: -0.02em; text-decoration: none;
+}
+.topActions { display: flex; align-items: center; gap: 8px; min-width: 0; }
+
+.placeBtn {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: var(--tap); max-width: 100%; min-width: 0; padding: 0 16px 0 12px;
+  border: 1px solid var(--control-line); border-radius: 999px;
+  background: var(--surface); color: var(--ink); font-size: 14px; font-weight: 600;
+}
+.placeBtn:hover { border-color: var(--ink); }
+.placeLabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.placeHint { margin: 0 0 10px; color: var(--muted); font-size: 14px; }
+.placeList { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.placeOption {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; min-height: 56px; padding: 8px 16px;
+  border: 1px solid var(--card-border); border-radius: 16px;
+  background: var(--surface); color: var(--ink); text-align: left;
+}
+.placeOption:hover { border-color: var(--control-line); }
+.placeOption[aria-current="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.placeName { display: block; font-weight: 700; }
+.placeProvince { display: block; margin-top: 2px; color: var(--muted); font-size: 13px; }
+
+/* ── Page ────────────────────────────────────────────────── */
+
+.main { padding-bottom: calc(var(--bottom-h) + env(safe-area-inset-bottom) + 24px); }
+.main:focus { outline: none; }
+
+/* ── Bottom nav ──────────────────────────────────────────── */
+
+.bottomNav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 250;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--surface);
+  border-top: 1px solid var(--card-border);
+}
+.bottomNav ul {
+  display: flex; justify-content: center;
+  height: var(--bottom-h); margin: 0; padding: 0; list-style: none;
+}
+.bottomNav li { flex: 1; max-width: 128px; } /* five items: at most 640px, centred */
+.navItem {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  height: 100%; min-height: var(--tap);
+  color: var(--muted); text-decoration: none;
+}
+.navIcon {
+  width: 52px; height: 30px; border-radius: 15px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+.navLabel { font-size: 11px; font-weight: 600; }
+.navItem[aria-current="page"] { color: var(--ink); }
+.navItem[aria-current="page"] .navIcon { background: var(--ink); color: var(--surface); }
+.navItem:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 14px; }
+
+/* ── Toast ───────────────────────────────────────────────── */
+
+.toast {
+  position: fixed; left: 50%; bottom: calc(var(--bottom-h) + env(safe-area-inset-bottom) + 14px); z-index: 1000;
+  max-width: calc(100vw - 32px); padding: 11px 18px;
+  border-radius: var(--r-btn);
+  background: var(--ink-surface); color: var(--on-ink);
+  font-size: 14px; font-weight: 500; text-align: center;
+  box-shadow: var(--shadow);
+  opacity: 0; pointer-events: none;
+  transform: translate(-50%, 10px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.toast[data-visible="true"] { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 640px) {
+  .topbar { padding: 0 var(--gutter); }
+}

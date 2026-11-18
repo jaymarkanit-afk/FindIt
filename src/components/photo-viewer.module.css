@@ -1,0 +1,13 @@
+.viewer { flex: 1; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+.figure { flex: 1; display: flex; flex-direction: column; gap: 10px; min-height: 0; margin: 0; }
+.frame { position: relative; flex: 1; min-height: 200px; }
+.image { object-fit: contain; }
+.caption { color: var(--on-ink-muted); font-size: 14px; text-align: center; }
+.controls { display: flex; justify-content: center; gap: 16px; }
+.step {
+  display: inline-grid; place-items: center;
+  width: 52px; height: 52px; padding: 0;
+  border: 1px solid var(--ink-line); border-radius: 50%;
+  background: var(--ink-surface); color: var(--on-ink);
+}
+.step:hover { border-color: var(--on-ink-muted); }
