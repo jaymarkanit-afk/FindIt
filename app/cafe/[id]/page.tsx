@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Placeholder } from "@/components/Placeholder";
+import { connection } from "next/server";
+import { CafeProfile } from "@/components/cafe/CafeProfile";
 import { RememberCafe } from "@/components/RememberCafe";
-import styles from "@/components/placeholder.module.css";
-import { getCafe, type Cafe } from "@/lib/api";
+import { getCafe, getPlace, listPosts, requestTime, type Cafe } from "@/lib/api";
+import { boardDay } from "@/lib/posts";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -20,13 +21,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CafePage({ params }: Props) {
   const cafe = await cafeFor(params);
   if (!cafe) notFound();
+  await connection(); // "x min ago" and the open status use the request time
+  const [place, posts] = await Promise.all([getPlace(cafe.city), listPosts()]);
+  const now = requestTime();
   return (
-    <Placeholder title={cafe.name}>
+    <>
       <RememberCafe id={cafe.id} />
-      <p className={styles.meta}>{cafe.address}</p>
-      <p className={styles.meta}>
-        ★ {cafe.rating} · {cafe.reviews} reviews · {cafe.tags.join(" · ")}
-      </p>
-    </Placeholder>
+      <CafeProfile cafe={cafe} place={place} posts={posts} today={boardDay(new Date(now))} now={now} />
+    </>
   );
 }

@@ -20,13 +20,16 @@ type Props = {
   state: UserState;
   now: number;
   onOpenPhoto: (postId: string, index: number) => void;
+  // The café page: mark the pinned post, and leave the café out of the
+  // footer (it would link to the page you are on and repeat its logo)
+  onCafePage?: boolean;
 };
 
 // The type names used in each card's accessible name ("Promo: …, Café")
 const TYPE_NAMES: Record<Post["type"], string> = { new: "New", photos: "Photos", event: "Event", hiring: "Hiring", promo: "Promo" };
 
 // One board card: a shape per update type, the shared footer and the thread
-export function PostCard({ post, cafe, place, state, now, onOpenPhoto }: Props) {
+export function PostCard({ post, cafe, place, state, now, onOpenPhoto, onCafePage = false }: Props) {
   const toast = useToast();
   const headline = postHeadline(post);
   const kept = state.keeps.includes(post.id);
@@ -45,6 +48,7 @@ export function PostCard({ post, cafe, place, state, now, onOpenPhoto }: Props) 
 
   const tag = (label: string, tone: string) => (
     <p className={`${styles.cardTag} ${tone}`}>
+      {onCafePage && post.pinned && <span className={styles.pinChip}>Pinned</span>}
       {label}
       <span className={styles.cardTime}>
         {" · "}
@@ -206,15 +210,15 @@ export function PostCard({ post, cafe, place, state, now, onOpenPhoto }: Props) 
   return (
     <article className={`${styles.post} ${post.type === "promo" ? styles.postPromo : ""}`} aria-label={`${TYPE_NAMES[post.type]}: ${headline}, ${cafe.name}`}>
       {main}
-      <CardFooter post={post} cafe={cafe} place={place} state={state} headline={headline} kept={kept} onKeep={() => void keep()} />
+      <CardFooter post={post} cafe={cafe} place={place} state={state} headline={headline} kept={kept} showCafe={!onCafePage} onKeep={() => void keep()} />
     </article>
   );
 }
 
-type FooterProps = { post: Post; cafe: Cafe; place: Place; state: UserState; headline: string; kept: boolean; onKeep: () => void };
+type FooterProps = { post: Post; cafe: Cafe; place: Place; state: UserState; headline: string; kept: boolean; showCafe: boolean; onKeep: () => void };
 
 // Café on the left; sip, comments and keep on the right; then the thread
-function CardFooter({ post, cafe, place, state, headline, kept, onKeep }: FooterProps) {
+function CardFooter({ post, cafe, place, state, headline, kept, showCafe, onKeep }: FooterProps) {
   const threadId = `thread-${useId().replace(/:/g, "")}`;
   const [threadOpen, setThreadOpen] = useState(false);
   const sipped = state.sips.includes(post.id);
@@ -224,13 +228,15 @@ function CardFooter({ post, cafe, place, state, headline, kept, onKeep }: Footer
   return (
     <>
       <footer className={styles.cardFoot}>
-        <Link className={styles.cardCafe} href={`/cafe/${cafe.id}`}>
-          <CafeTile cafe={cafe} size="sm" />
-          <span className={styles.cardCafeText}>
-            <span className={styles.cardCafeName}>{cafe.name}</span>
-            <span className={styles.cardCafeMeta}>{meta}</span>
-          </span>
-        </Link>
+        {showCafe && (
+          <Link className={styles.cardCafe} href={`/cafe/${cafe.id}`}>
+            <CafeTile cafe={cafe} size="sm" />
+            <span className={styles.cardCafeText}>
+              <span className={styles.cardCafeName}>{cafe.name}</span>
+              <span className={styles.cardCafeMeta}>{meta}</span>
+            </span>
+          </Link>
+        )}
         <div className={styles.cardActs}>
           <button type="button" className={`${styles.miniPill} ${sipped ? styles.on : ""}`} aria-pressed={sipped} onClick={() => void toggleSip(post.id)}>
             <Icon name="cup" className={styles.fillable} />

@@ -14,7 +14,12 @@ const paths = {
   chevronLeft: ["M15 18l-6-6 6-6"],
   chevronRight: ["M9 18l6-6-6-6"],
   check: ["M20 6 9 17l-5-5"],
+  back: ["M19 12H5", "m12 19-7-7 7-7"],
+  share: ["M12 15V3", "m8 7 4-4 4 4", "M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"],
+  route: ["M21 3 10 14", "M21 3l-7 18-4-7-7-4z"],
+  phone: ["M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"],
   // Circles and rects from the sprite, written as paths
+  clock: ["M3 12a9 9 0 1 0 18 0a9 9 0 1 0-18 0", "M12 7v5l3 2"],
   bear: [
     "M4 6.5a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0",
     "M15 6.5a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0",

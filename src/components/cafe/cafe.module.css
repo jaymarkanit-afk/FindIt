@@ -1,0 +1,71 @@
+/* The café page, ported from the old app's profile.css (and the alert
+   button and chips from cards.css). */
+
+.page { width: 100%; max-width: 760px; margin: 0 auto; padding-bottom: 8px; }
+.cover { object-fit: cover; }
+.muted { color: var(--muted); }
+
+/* Back / share */
+.bar { display: flex; justify-content: space-between; padding: 12px var(--gutter) 10px; }
+
+/* Background photo, with the logo tile overlapping its bottom edge */
+.banner { position: relative; height: 150px; margin: 0 var(--gutter); overflow: hidden; border-radius: var(--r-card) var(--r-card) 0 0; background: var(--placeholder); }
+@media (min-width: 700px) { .banner { height: 220px; } }
+
+/* Info card */
+.card { margin: 0 var(--gutter); padding: 16px; border: 1px solid var(--card-border); border-radius: var(--r-card); background: var(--surface); }
+.withBanner { border-top: none; border-top-left-radius: 0; border-top-right-radius: 0; }
+.top { display: flex; align-items: center; gap: 12px; }
+.withBanner .top { align-items: flex-end; }
+.topText { min-width: 0; }
+.tileLg { position: relative; width: 60px; height: 60px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 18px; background: var(--ink-surface); color: var(--on-ink); font: 700 20px var(--font-d); letter-spacing: .02em; }
+.tileLogo { padding: 5px; border: 1px solid var(--card-border); background: #fff; }
+.tileLogo img { width: 100%; height: 100%; object-fit: contain; }
+.withBanner .tileLg { align-self: flex-start; margin-top: -52px; border: 3px solid #fff; box-shadow: var(--shadow-sm); }
+.name { margin: 0; font: 700 22px/1.2 var(--font-d); }
+.address { margin: 2px 0 0; color: var(--muted); font-size: 13.5px; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 14px; font-size: 13.5px; font-weight: 500; }
+.facts > span { display: inline-flex; align-items: center; gap: 6px; }
+.facts svg { width: 16px; height: 16px; color: var(--muted); }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0; padding: 0; list-style: none; }
+.chip { display: inline-flex; align-items: center; height: 28px; padding: 0 11px; border-radius: 14px; background: var(--track); color: var(--ink); font-size: 12px; font-weight: 600; white-space: nowrap; }
+.actions { display: flex; gap: 8px; margin-top: 16px; }
+.alertBtn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: var(--tap); padding: 0 14px; border: 1px solid var(--accent); border-radius: var(--r-btn); background: var(--accent); color: var(--on-accent); font-size: 14px; font-weight: 600; white-space: nowrap; }
+.alertBtn svg { width: 18px; height: 18px; }
+.alertOn { border-color: var(--control-line); background: var(--surface); color: var(--ink); }
+.saved { border-color: var(--ink); background: var(--ink); color: var(--surface); }
+.saved .fillable { fill: currentColor; }
+
+/* Sections */
+.section { margin: 22px var(--gutter) 0; }
+.secHead { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.secTitle { margin: 0 0 10px; font: 700 18px var(--font-d); }
+.secHead .secTitle { margin: 0; }
+.count { margin-left: 4px; color: var(--muted); font: 600 14px var(--font-b); }
+.textBtn { display: inline-flex; align-items: center; min-width: var(--tap); min-height: var(--tap); padding: 0 4px; margin-right: -4px; border: 0; background: none; color: var(--accent); font-size: 14px; font-weight: 600; white-space: nowrap; }
+.textBtn:hover { text-decoration: underline; text-underline-offset: 3px; }
+.boardList { display: flex; flex-direction: column; gap: 14px; }
+.empty { margin: 0; padding: 28px 20px; border: 1.5px dashed var(--control-line); border-radius: var(--r-card); color: var(--muted); text-align: center; }
+
+/* Photos: one sideways row; "See all" turns it into a grid in place */
+.photoRow, .photoGrid { margin: 0; padding: 0; list-style: none; }
+.photoRow { display: flex; gap: 8px; margin: 0 calc(-1 * var(--gutter)); padding: 2px var(--gutter) 8px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scroll-padding-inline: var(--gutter); scrollbar-width: thin; }
+.photoRow .photoItem { flex: 0 0 150px; height: 180px; scroll-snap-align: start; }
+.photoGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.photoGrid .photoItem { aspect-ratio: 5 / 6; }
+@media (min-width: 700px) {
+  .photoRow { margin: 0; padding: 2px 0 8px; scroll-padding-inline: 0; }
+  .photoGrid { grid-template-columns: repeat(3, 1fr); }
+}
+.photoTile { position: relative; display: block; width: 100%; height: 100%; padding: 0; border: 0; overflow: hidden; border-radius: var(--r-photo); background: var(--placeholder); }
+.photoEmpty { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 20px 16px; border: 1.5px dashed var(--control-line); border-radius: 18px; color: var(--muted); font-size: 13.5px; text-align: center; }
+.photoEmpty svg { width: 24px; height: 24px; margin-bottom: 4px; }
+.photoEmpty strong { color: var(--ink); font-size: 15px; font-weight: 600; }
+
+/* Info */
+.infoList { margin: 0; padding: 4px 16px; border: 1px solid var(--card-border); border-radius: var(--r-card); background: var(--surface); }
+.infoRow { display: flex; gap: 12px; padding: 14px 0; border-top: 1px solid var(--card-border); }
+.infoRow:first-child { border-top: none; }
+.infoRow svg { margin-top: 2px; color: var(--muted); }
+.infoRow dt { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.infoRow dd { margin: 0; font-size: 15px; }

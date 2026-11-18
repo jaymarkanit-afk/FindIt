@@ -161,6 +161,7 @@ export function postHeadline(post: Post): string {
     case "photos": {
       const first = post.caption.trim().split("\n")[0];
       if (first) return first.length > 60 ? `${first.slice(0, 57).trim()}…` : first;
+      if (post.photos.length === 0) return "Photos";
       return post.photos.length === 1 ? "1 photo" : `${post.photos.length} photos`;
     }
   }
