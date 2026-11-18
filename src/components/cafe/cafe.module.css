@@ -1,0 +1,61 @@
+/* The café page, ported from the old app's profile.css (and the alert
+   button and chips from cards.css), with the profile-style header. */
+
+.page { width: 100%; max-width: 760px; margin: 0 auto; padding-bottom: 8px; }
+.cover { object-fit: cover; }
+.muted { color: var(--muted); }
+
+/* Back / share */
+.bar { display: flex; justify-content: space-between; padding: 12px var(--gutter) 10px; }
+
+/* Header: banner (with the logo overlapping it) and the profile card */
+.header { margin: 0 var(--gutter); }
+.banner { position: relative; height: 150px; overflow: hidden; border-radius: var(--r-card) var(--r-card) 0 0; background: var(--placeholder); }
+.noBanner { background: linear-gradient(135deg, var(--accent-pale), var(--track)); }
+@media (min-width: 700px) { .banner { height: 220px; } }
+.bannerActs { position: absolute; right: 12px; bottom: 12px; z-index: 1; display: flex; gap: 8px; }
+.card { padding: 16px; border: 1px solid var(--card-border); border-radius: var(--r-card); background: var(--surface); }
+.withBanner { border-top: none; border-top-left-radius: 0; border-top-right-radius: 0; }
+
+/* Inside the owner's profile card: no outer margin or border of its own */
+.embedded { margin: 0; }
+.embedded .banner { border-radius: 0; }
+.embedded .card { border: 0; border-radius: 0; background: transparent; }
+
+.top { display: flex; align-items: center; gap: 12px; }
+.withBanner .top { align-items: flex-end; }
+.topText { min-width: 0; }
+.tileLg { position: relative; z-index: 1; width: 60px; height: 60px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 18px; background: var(--ink-surface); color: var(--on-ink); font: 700 20px var(--font-d); letter-spacing: .02em; }
+.tileLogo { padding: 5px; border: 1px solid var(--card-border); background: #fff; }
+.tileLogo img { width: 100%; height: 100%; object-fit: contain; }
+.withBanner .tileLg { align-self: flex-start; margin-top: -52px; border: 3px solid #fff; box-shadow: var(--shadow-sm); }
+.name { margin: 0; font: 700 22px/1.2 var(--font-d); }
+.address { margin: 2px 0 0; color: var(--muted); font-size: 13.5px; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 14px; font-size: 13.5px; font-weight: 500; }
+.facts > span { display: inline-flex; align-items: center; gap: 6px; }
+.facts svg { width: 16px; height: 16px; color: var(--muted); }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0; padding: 0; list-style: none; }
+.chip { display: inline-flex; align-items: center; height: 28px; padding: 0 11px; border-radius: 14px; background: var(--track); color: var(--ink); font-size: 12px; font-weight: 600; white-space: nowrap; }
+
+/* About and the contact line */
+.about { margin: 12px 0 0; font-size: 14.5px; line-height: 1.45; overflow-wrap: anywhere; }
+.contact { display: flex; flex-wrap: wrap; gap: 0 14px; margin: 8px 0 0; padding: 0; list-style: none; font-size: 13.5px; font-weight: 600; }
+.contact a, .contactText { display: inline-flex; align-items: center; gap: 6px; min-height: var(--tap); color: var(--ink); }
+.contact a { color: var(--accent); text-decoration: none; }
+.contact a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.contact svg { width: 16px; height: 16px; }
+.contactText svg { color: var(--muted); }
+
+/* Actions */
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.alertBtn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: var(--tap); padding: 0 14px; border: 1px solid var(--accent); border-radius: var(--r-btn); background: var(--accent); color: var(--on-accent); font-size: 14px; font-weight: 600; white-space: nowrap; }
+.alertBtn svg { width: 18px; height: 18px; }
+.alertOn { border-color: var(--control-line); background: var(--surface); color: var(--ink); }
+.saved { border-color: var(--ink); background: var(--ink); color: var(--surface); }
+.saved .fillable { fill: currentColor; }
+
+/* Sections below the header */
+.section { margin: 22px var(--gutter) 0; }
+.secTitle { margin: 0 0 10px; font: 700 18px var(--font-d); }
+.boardList { display: flex; flex-direction: column; gap: 14px; }
+.empty { margin: 0; padding: 28px 20px; border: 1.5px dashed var(--control-line); border-radius: var(--r-card); color: var(--muted); text-align: center; }

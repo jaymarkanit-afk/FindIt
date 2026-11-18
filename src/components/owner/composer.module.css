@@ -1,0 +1,69 @@
+/* The owner's composer, ported from the old app's owner.css. */
+
+.page { width: 100%; max-width: 640px; margin: 0 auto; padding-bottom: 8px; }
+.head { display: flex; align-items: center; gap: 12px; padding: 14px var(--gutter) 6px; }
+.title { flex: 1; margin: 0; font: 700 20px var(--font-d); }
+.title:focus { outline: none; }
+.headBtns { display: flex; gap: 8px; }
+.as { margin: 0; padding: 0 var(--gutter) 12px; color: var(--muted); font-size: 13.5px; }
+.as strong { color: var(--ink); font-weight: 600; }
+.composeError { margin: 0 var(--gutter) 10px; padding: 10px 12px; border: 1px solid var(--danger); border-radius: var(--r-btn); background: var(--surface); color: var(--danger); font-size: 13px; font-weight: 600; }
+
+.card { display: flex; flex-direction: column; gap: 14px; margin: 0 var(--gutter); padding: 14px; border: 1px solid var(--card-border); border-radius: var(--r-card); background: var(--surface); }
+.fg { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.fg label, .fieldLabel { font-size: 13px; font-weight: 600; }
+.fgRow { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.req { color: var(--muted); font-weight: 500; }
+.hint { margin: 0; color: var(--muted); font-size: 12.5px; }
+.fi { width: 100%; min-height: 46px; padding: 0 12px; border: 1px solid var(--control-line); border-radius: var(--r-btn); background: var(--surface); font-size: 15px; }
+.fi:focus { border-color: var(--accent); outline: none; }
+.fi::placeholder { color: var(--muted); }
+.fi[aria-invalid="true"] { border-color: var(--danger); }
+.fieldError { margin: 0; color: var(--danger); font-size: 13px; font-weight: 600; }
+.types { overflow-x: auto; scrollbar-width: none; }
+.types button { flex: 1 0 auto; }
+
+/* Photos */
+.thumbs { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.thumb { position: relative; display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; grid-template-areas: "img text menu" "note note note"; align-items: center; gap: 6px 12px; padding: 8px; border: 1px solid var(--card-border); border-radius: var(--r-photo); background: var(--surface2); }
+.thumbText { grid-area: text; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.thumbName { font-size: 14px; font-weight: 600; }
+.described, .undescribed { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.undescribed { color: var(--muted); }
+.thumbMenu { grid-area: menu; }
+.thumb img { grid-area: img; width: 72px; height: 72px; border-radius: 10px; object-fit: cover; }
+.unused img { opacity: .45; }
+.main { position: absolute; top: 12px; left: 12px; padding: 1px 7px; border-radius: 9px; background: var(--ink-surface); color: var(--on-ink); font-size: 11px; font-weight: 700; }
+.thumbNote { grid-area: note; color: var(--warn); font-size: 12.5px; font-weight: 600; }
+.photoAdd { position: relative; min-height: 96px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border: 1.5px dashed var(--control-line); border-radius: var(--r-photo); color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; }
+.photoAdd:hover, .photoAdd:focus-within { border-color: var(--accent); color: var(--ink); }
+.photoAdd input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+/* Type-specific fields */
+.extra { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.wide { grid-column: 1 / -1; }
+
+/* Caption */
+.count { color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.warn { color: var(--warn); font-weight: 700; }
+.caption { min-height: 120px; padding: 11px 12px; line-height: 1.45; resize: vertical; white-space: pre-wrap; }
+
+/* Send alerts now */
+.toggleRow { display: flex; align-items: center; gap: 12px; min-height: 60px; margin: 12px var(--gutter) 0; padding: 12px 14px; border: 1px solid var(--card-border); border-radius: var(--r-card); background: var(--surface); line-height: 1.35; cursor: pointer; }
+.toggleText { flex: 1; font-size: 14.5px; font-weight: 600; }
+.toggleText small { display: block; color: var(--muted); font-size: 12.5px; font-weight: 400; }
+.switch { position: relative; width: 50px; height: 30px; flex-shrink: 0; margin: 0; border-radius: 15px; background: var(--control-line); appearance: none; -webkit-appearance: none; cursor: pointer; transition: background .2s; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .3); transition: transform .2s; }
+.switch:checked { background: var(--accent); }
+.switch:checked::after { transform: translateX(20px); }
+.switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Preview */
+.previewWrap { padding: 0 var(--gutter); }
+.secLabel { margin: 22px 0 10px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+
+@media (max-width: 559px) {
+  .head { flex-wrap: wrap; }
+  .headBtns { width: 100%; }
+  .headBtns > button { flex: 1; }
+}

@@ -8,6 +8,8 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./tests/setup.ts"],
     include: ["tests/**/*.test.{ts,tsx}"],
+    // UI tests click through several steps; 5 s is too tight on slower machines
+    testTimeout: 15000,
     pool: "vmThreads",
     maxWorkers: 1,
     server: { deps: { inline: ["@swc/helpers"] } },

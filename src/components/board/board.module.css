@@ -1,0 +1,216 @@
+/* The Today board, ported from the old app's feed.css, cards.css
+   (Brevi, rows, tiles), sidebar.css (right rail) and drawer.css. */
+
+/* ── Columns: board, plus the rail on desktop ─────────────── */
+.layout { display: flex; justify-content: center; gap: 32px; max-width: 1100px; margin: 0 auto; }
+.mainCol { flex: 1; min-width: 0; max-width: 760px; padding-bottom: 8px; }
+
+.rail { display: none; width: 280px; flex-shrink: 0; padding: 24px 0; position: sticky; top: var(--nav-h); align-self: flex-start; max-height: calc(100dvh - var(--nav-h) - var(--bottom-h)); overflow-y: auto; }
+@media (min-width: 1000px) { .rail { display: block; } }
+
+/* ── Heading ─────────────────────────────────────────────── */
+.todayHead { padding: 20px var(--gutter) 2px; }
+.todayDate { margin: 0; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.todayTitle { margin: 4px 0 0; font: 700 32px/1.1 var(--font-d); letter-spacing: -.02em; }
+
+/* Phone-width search (the top bar has search from 700px up) */
+.homeSearch { padding: 14px var(--gutter) 0; }
+@media (min-width: 700px) { .homeSearch { display: none; } }
+
+/* ── Brevi ───────────────────────────────────────────────── */
+.mascotBar { display: flex; align-items: center; gap: 12px; margin: 16px var(--gutter) 0; padding: 14px; border-radius: var(--r-card); background: var(--ink-surface); color: var(--on-ink); }
+.mascotAva { width: 50px; height: 50px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: var(--r-tile); background: rgba(255, 255, 255, .12); }
+.mascotAva svg { width: 28px; height: 28px; }
+.mascotName { margin: 0; color: var(--on-ink-muted); font-size: 11px; font-weight: 700; letter-spacing: .14em; }
+.mascotMsg { margin: 2px 0 0; font-size: 14px; line-height: 1.45; }
+
+/* ── Sections ────────────────────────────────────────────── */
+.boardSec { margin-top: 24px; padding: 0 var(--gutter); }
+.secTitle { margin: 0 0 8px; font: 700 18px var(--font-d); }
+.distFrom { color: var(--muted); font: 500 13px var(--font-b); }
+.secLabel { margin: 0 0 8px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.empty { margin: 0; padding: 28px 20px; border: 1.5px dashed var(--control-line); border-radius: var(--r-card); color: var(--muted); text-align: center; }
+
+/* ── Tiles ───────────────────────────────────────────────── */
+.tile { width: 44px; height: 44px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; border-radius: var(--r-tile); background: var(--ink-surface); color: var(--on-ink); font: 700 15px var(--font-d); letter-spacing: .02em; }
+.tileSm { width: 34px; height: 34px; border-radius: 11px; font-size: 12px; }
+.tileLogo { padding: 4px; border: 1px solid var(--card-border); background: #fff; }
+.tileLogo img { width: 100%; height: 100%; object-fit: contain; }
+
+/* ── Near you: one sideways row ──────────────────────────── */
+.nearRow { display: flex; gap: 10px; margin: 0 calc(-1 * var(--gutter)); padding: 2px var(--gutter) 6px; list-style: none; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scroll-padding-inline: var(--gutter); scrollbar-width: none; }
+.nearRow::-webkit-scrollbar { display: none; }
+.nearItem { flex: 0 0 168px; scroll-snap-align: start; }
+.nearTile { width: 100%; height: 100%; display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid var(--card-border); border-radius: 18px; background: var(--surface); color: var(--ink); text-decoration: none; }
+.nearTile:hover { border-color: var(--control-line); }
+.nearTop { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.distChip { padding: 3px 9px; border-radius: 12px; background: var(--track); font-size: 12px; font-weight: 600; white-space: nowrap; }
+.nearName { min-height: 2.6em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-size: 15px; font-weight: 600; line-height: 1.3; }
+.nearStreet { overflow: hidden; color: var(--muted); font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+@media (min-width: 700px) { .nearRow { margin: 0; padding: 2px 0 6px; scroll-padding-inline: 0; } }
+
+/* ── Filter row ──────────────────────────────────────────── */
+.filterRow { display: flex; align-items: center; gap: 8px; margin: 12px 0 16px; }
+.boardFilter { flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.boardFilter::-webkit-scrollbar { display: none; }
+.boardFilter button { flex: 1 0 auto; font-size: 13.5px; }
+.filtersBtn { flex-shrink: 0; font-size: 13.5px; }
+
+/* ── Filter drawer ───────────────────────────────────────── */
+.drawerGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.drawerCard { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 14px; border: 1px solid var(--card-border); border-radius: 16px; background: var(--surface); color: var(--ink); font-size: 14px; font-weight: 600; text-align: left; }
+.drawerCard svg { color: var(--muted); }
+.drawerCard[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--surface); }
+.drawerCard[aria-pressed="true"] svg { color: var(--surface); }
+.btnBlock { width: 100%; }
+
+/* ── Search results ──────────────────────────────────────── */
+.searchResults { margin-bottom: 16px; }
+.recStack { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.recRow { width: 100%; min-height: 64px; display: flex; align-items: center; gap: 12px; padding: 9px 12px 9px 9px; border: 1px solid var(--card-border); border-radius: 18px; background: var(--surface); color: var(--ink); text-decoration: none; }
+.recRow:hover { border-color: var(--control-line); }
+.recThumb { width: 46px; height: 46px; flex-shrink: 0; border-radius: 12px; object-fit: cover; background: var(--placeholder); }
+.recInfo { flex: 1; min-width: 0; }
+.recName, .recSub { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.recName { font-size: 14px; font-weight: 600; }
+.recSub { color: var(--muted); font-size: 12.5px; }
+.recChip { flex-shrink: 0; padding: 4px 9px; border-radius: 12px; background: var(--track); font-size: 12px; font-weight: 600; }
+.foundElsewhere { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.foundElsewhere > button { align-self: flex-start; }
+.foundLabel { margin: 0; color: var(--muted); font-size: 13px; font-weight: 700; }
+
+/* ── Cards ───────────────────────────────────────────────── */
+.boardList { display: flex; flex-direction: column; gap: 14px; }
+.post { overflow: hidden; border: 1px solid var(--card-border); border-radius: var(--r-card); background: var(--surface); }
+.postPromo { border: 2px dashed var(--tag-promo-text); }
+.cover { object-fit: cover; }
+
+.cardTag { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.pinChip { display: inline-flex; align-items: center; height: 22px; margin-right: 8px; padding: 0 9px; border-radius: 11px; background: var(--ink-surface); color: var(--on-ink); font-size: 11px; letter-spacing: .04em; vertical-align: 1px; }
+.cardTime { color: var(--muted); font-weight: 500; letter-spacing: 0; text-transform: none; }
+.toneTagNew { color: var(--tag-new-text); }
+.toneTagEvent { color: var(--tag-event-text); }
+.toneTagPromo { color: var(--tag-promo-text); }
+.toneTagHiring { color: var(--tag-hiring-text); }
+.toneTagPhotos { color: var(--tag-photos-text); }
+
+.cardTitle { margin: 0; font: 700 20px/1.25 var(--font-d); overflow-wrap: anywhere; }
+.cardRow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-top: 14px; }
+.cardRow > button { margin-left: auto; }
+.cardPrice { font: 700 18px var(--font-d); }
+.btnDone { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--control-line); }
+
+.photoBtn, .ticketBanner, .couponPhoto, .pgTile { position: relative; display: block; width: 100%; padding: 0; border: 0; overflow: hidden; background: var(--placeholder); }
+
+/* New item: menu board, photo one third */
+.menuCard { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+.noPhoto { grid-template-columns: 1fr; }
+.menuPhoto { position: relative; min-height: 190px; background: var(--placeholder); }
+.menuPhoto .photoBtn { position: absolute; inset: 0; height: 100%; }
+.countChip { position: absolute; top: 10px; left: 10px; padding: 3px 9px; border-radius: 12px; background: rgba(20, 12, 6, .75); color: #fff; font-size: 12px; font-weight: 700; }
+.menuBody { min-width: 0; padding: 18px; }
+.menuItem { margin: 0; font: 700 26px/1.15 var(--font-d); letter-spacing: -.01em; overflow-wrap: anywhere; }
+.menuMeta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 14px; }
+.menuPrice { font: 700 20px var(--font-d); }
+.availChip { display: inline-flex; align-items: center; min-height: 28px; padding: 0 11px; border-radius: 14px; background: var(--track); font-size: 12.5px; font-weight: 600; }
+
+/* Event: ticket with a dark day stub and a tear line */
+.ticket { display: grid; grid-template-columns: 96px minmax(0, 1fr); }
+.ticketStub { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 16px 6px; background: var(--ink-surface); color: var(--on-ink); text-align: center; }
+.stubDay { font: 700 24px/1.1 var(--font-d); letter-spacing: .04em; }
+.stubTime { color: var(--on-ink-muted); font-size: 13.5px; font-weight: 600; }
+.ticketBody { min-width: 0; border-left: 2px dashed var(--control-border); }
+.ticketBanner { height: 160px; }
+.ticketContent { padding: 16px 16px 16px 18px; }
+
+/* Promo: coupon */
+.couponHasPhoto { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+.couponPhoto { min-height: 180px; }
+.couponBody { min-width: 0; padding: 18px; }
+.couponOffer { margin: 6px 0 0; font-size: 16px; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; }
+.couponValid { margin: 4px 0 0; color: var(--muted); font-size: 13.5px; }
+.couponKeep { margin-top: 14px; border: 1.5px solid var(--tag-promo-text); background: transparent; color: var(--tag-promo-text); }
+.couponKept { border-color: var(--tag-promo-text); background: var(--tag-promo-text); color: var(--surface); }
+
+/* Hiring: compact job card */
+.job { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; padding: 16px; }
+.jobIcon { width: 48px; height: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: var(--r-tile); background: var(--tag-hiring-text); color: var(--surface); }
+.jobBody { flex: 1 1 180px; min-width: 0; }
+.jobBody .cardTag { margin-bottom: 2px; }
+.jobRole { margin: 0; font: 700 18px/1.25 var(--font-d); overflow-wrap: anywhere; }
+.jobLine { margin: 2px 0 0; overflow: hidden; color: var(--muted); font-size: 13.5px; text-overflow: ellipsis; white-space: nowrap; }
+.job > button { margin-left: auto; }
+.jobCaption { flex: 1 0 100%; }
+.jobCaption .captionWrap { margin-top: 0; }
+
+/* Photos: the photos lead, edge to edge */
+.photoCard { display: block; }
+.pg { display: grid; gap: 3px; background: var(--card-border); }
+.pg1 { grid-template-columns: 1fr; }
+.pg1 .pgTile { aspect-ratio: 4 / 3; }
+.pg2 { grid-template-columns: 1fr 1fr; }
+.pg2 .pgTile { aspect-ratio: 1 / 1; }
+.pg3 { grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; aspect-ratio: 3 / 2; }
+.pg3 .pgTile { height: 100%; }
+.pg3 .pgTile:first-child { grid-row: span 2; }
+.pg4 { grid-template-columns: 1fr 1fr; }
+.pg4 .pgTile { aspect-ratio: 1 / 1; }
+.pgMore { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(20, 12, 6, .55); color: #fff; font: 700 30px var(--font-d); }
+.photoBody { padding: 14px 16px 4px; }
+
+/* ── Captions: three lines, then "more" ──────────────────── */
+.captionWrap { margin-top: 8px; }
+.caption { margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: 14.5px; line-height: 1.5; white-space: pre-line; overflow-wrap: anywhere; }
+.captionOpen { display: block; -webkit-line-clamp: unset; overflow: visible; }
+.caption a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.moreBtn { min-width: var(--tap); min-height: var(--tap); padding: 0 2px; border: 0; background: none; color: var(--accent); font-size: 14px; font-weight: 600; text-align: left; }
+.moreBtn:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── Footer ──────────────────────────────────────────────── */
+.cardFoot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 12px 10px 14px; border-top: 1px solid var(--card-border); }
+.cardCafe { flex: 1 1 210px; min-width: 0; min-height: var(--tap); display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; }
+.cardCafe:hover .cardCafeName { text-decoration: underline; }
+.cardCafeText { min-width: 0; }
+.cardCafeName, .cardCafeMeta { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cardCafeName { font-size: 14px; font-weight: 600; }
+.cardCafeMeta { color: var(--muted); font-size: 12.5px; }
+.cardActs { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.miniPill { display: inline-flex; align-items: center; gap: 6px; min-width: var(--tap); min-height: var(--tap); padding: 0 12px; border: 1px solid var(--control-line); border-radius: var(--r-pill); background: var(--surface); color: var(--ink); font-size: 13px; font-weight: 600; }
+.miniPill[aria-expanded="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.miniRound { width: var(--tap); height: var(--tap); display: inline-flex; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--control-line); border-radius: 50%; background: var(--surface); color: var(--ink); }
+.on { border-color: var(--ink); background: var(--ink); color: var(--surface); }
+.on .fillable { fill: currentColor; }
+
+/* ── Comment thread ──────────────────────────────────────── */
+.thread { padding: 12px 14px 14px; border-top: 1px solid var(--card-border); background: var(--surface2); }
+.threadList { display: flex; flex-direction: column; gap: 6px; margin: 0 0 10px; padding: 0; list-style: none; font-size: 14px; line-height: 1.45; overflow-wrap: anywhere; }
+.threadList strong { font-weight: 600; }
+.threadEmpty { color: var(--muted); }
+.threadForm { display: flex; gap: 8px; }
+.field { flex: 1; min-width: 0; min-height: 46px; padding: 0 12px; border: 1px solid var(--control-line); border-radius: var(--r-btn); background: var(--surface); font-size: 15px; }
+.field:focus { border-color: var(--accent); outline: none; }
+.field::placeholder { color: var(--muted); }
+
+/* ── Right rail ──────────────────────────────────────────── */
+.sideSec { padding: 0 0 22px; }
+.sideTitle { margin: 0 0 10px; font: 700 16px var(--font-d); }
+.railList { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.miniTicket { width: 100%; min-height: 60px; display: flex; overflow: hidden; border: 1px solid var(--card-border); border-radius: 14px; background: var(--surface); color: var(--ink); text-decoration: none; }
+.miniTicket:hover, .railJob:hover { border-color: var(--control-line); }
+.miniStub { flex: 0 0 58px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 6px 4px; background: var(--ink-surface); color: var(--on-ink); }
+.miniStub .stubDay { font-size: 15px; }
+.miniStub .stubTime { font-size: 11.5px; }
+.miniBody { min-width: 0; padding: 9px 12px; border-left: 2px dashed var(--control-border); }
+.miniTitle, .miniSub { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.miniTitle { font-size: 14px; font-weight: 600; }
+.miniSub { color: var(--muted); font-size: 12.5px; }
+.railJob { display: block; width: 100%; min-height: 52px; padding: 9px 12px; border: 1px solid var(--card-border); border-radius: 14px; background: var(--surface); color: var(--ink); text-decoration: none; }
+
+/* ── Phones ──────────────────────────────────────────────── */
+@media (max-width: 559px) {
+  .couponHasPhoto, .menuCard { grid-template-columns: 1fr; }
+  .couponPhoto { min-height: 0; aspect-ratio: 16 / 9; }
+  .menuPhoto { min-height: 0; aspect-ratio: 16 / 10; }
+  .ticket { grid-template-columns: 84px minmax(0, 1fr); }
+  .todayTitle { font-size: 30px; }
+}
