@@ -34,7 +34,7 @@ const cafeNamed = (name: string) => {
   return cafe;
 };
 const run = (filter: BoardFilter, term = "", sips: string[] = []) =>
-  filteredCafes({ cafes: inPlace("Butuan City"), posts, place: butuan, filter, term, sips, now: NOW }).map((cafe) => cafe.name);
+  filteredCafes({ cafes: inPlace("Butuan City"), posts, origin: butuan, filter, term, sips, now: NOW }).map((cafe) => cafe.name);
 
 describe("distances and café labels", () => {
   it("measures from the place centre, to one decimal, as the old app did", () => {

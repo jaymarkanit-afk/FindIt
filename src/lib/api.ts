@@ -11,7 +11,10 @@
 import { cafes as seedCafes, DEFAULT_PLACE, places as seedPlaces, posts as seedPosts } from "@/data/seed";
 import type { Cafe, CafeEdit, Comment, Place, Post, PostEdit, PostType, Theme, UserState } from "@/data/types";
 import { commitUserState, getServerUserState, getUserStateSnapshot, subscribeUserState } from "@/lib/local/userState";
+import { getLocation, getServerLocation, locate, subscribeLocation, type LocateResult } from "@/lib/location";
 import { allPosts, applyCafeEdits, livePosts } from "@/lib/posts";
+
+export type { LocateResult };
 
 export type { Cafe, CafeEdit, Comment, Place, Post, PostEdit, PostType, Theme, UserState };
 
@@ -163,6 +166,21 @@ export async function setTheme(theme: Theme): Promise<boolean> {
 
 export async function setLastCafe(cafeId: number): Promise<boolean> {
   return commitUserState({ lastCafe: cafeId });
+}
+
+/* ── The visitor's location (browser geolocation, this tab only) ── */
+
+// For useSyncExternalStore (see useVisitorLocation in src/lib/hooks.ts)
+export const visitorLocationStore = {
+  subscribe: subscribeLocation,
+  getSnapshot: getLocation,
+  getServerSnapshot: getServerLocation,
+};
+
+// Asks the browser for the visitor's position. Resolves to the location,
+// or to a message saying why it is not available.
+export async function locateVisitor(): Promise<LocateResult> {
+  return locate();
 }
 
 /* ── Demo owner (local only; becomes server calls with accounts) ── */

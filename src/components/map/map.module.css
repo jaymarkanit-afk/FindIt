@@ -1,0 +1,43 @@
+/* The Map page, ported from the old app's map.css. */
+
+.page { width: 100%; max-width: 760px; margin: 0 auto; padding-bottom: 8px; }
+.head { padding: 22px var(--gutter) 14px; }
+.title { margin: 0; font: 700 26px var(--font-d); }
+.intro { margin: 4px 0 0; color: var(--muted); }
+
+/* Search + Filters */
+.search { display: flex; gap: 8px; padding: 0 var(--gutter); }
+.search > label { flex: 1; min-width: 0; }
+
+/* Location strip */
+.geo { display: flex; align-items: center; gap: 10px; margin: 12px var(--gutter) 0; padding: 8px 8px 8px 12px; border: 1px solid var(--card-border); border-radius: 18px; background: var(--surface); }
+.geoWhere { flex: 1; min-width: 0; min-height: var(--tap); display: flex; align-items: center; gap: 10px; padding: 0; border: 0; background: none; color: var(--ink); text-align: left; }
+.geoWhere > svg { color: var(--accent); }
+.geoText { min-width: 0; }
+.geoLocation { display: block; overflow: hidden; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.geoStats { display: block; color: var(--muted); font-size: 12.5px; }
+
+/* Map */
+.frame { position: relative; isolation: isolate; height: 400px; margin: 12px var(--gutter) 0; overflow: hidden; border: 1px solid var(--card-border); border-radius: var(--r-card); background: var(--placeholder); }
+@media (min-width: 700px) { .frame { height: 480px; } }
+.map { width: 100%; height: 100%; z-index: 1; font-family: var(--font-b); }
+.locate { position: absolute; right: 12px; bottom: 12px; z-index: 2; border-color: #d6cec7; background: #fff; color: #23170f; box-shadow: var(--shadow); }
+
+/* Leaflet markers and popups (always light, like the map tiles) */
+.marker { border: none; background: none; }
+.pin { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; border-radius: 12px; background: #23170f; color: #fff; box-shadow: 0 3px 10px rgba(0, 0, 0, .35); }
+.pin svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.dim { opacity: .45; transform: scale(.85); }
+.userDot { width: 20px; height: 20px; border: 3px solid #fff; border-radius: 50%; background: #c2410c; box-shadow: 0 2px 8px rgba(0, 0, 0, .35); }
+.pop { width: 190px; color: #23170f; font-family: var(--font-b); }
+.pop p { margin: 0; }
+.popName { font-size: 14px; font-weight: 700; }
+.popMeta { margin-top: 2px !important; color: #6b5d53; font-size: 12px; }
+.popLink { display: flex; align-items: center; justify-content: center; min-height: var(--tap); margin-top: 10px; border-radius: var(--r-btn); background: #c2410c; color: #fff !important; font-weight: 600; text-decoration: none; }
+
+/* Nearby */
+.section { margin: 22px var(--gutter) 0; }
+.secTitle { margin: 0 0 10px; font: 700 18px var(--font-d); }
+.distFrom { color: var(--muted); font: 500 13px var(--font-b); }
+.list { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.empty { margin: 0; padding: 28px 20px; border: 1.5px dashed var(--control-line); border-radius: var(--r-card); color: var(--muted); text-align: center; }

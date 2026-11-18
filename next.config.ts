@@ -6,13 +6,15 @@ const isDev = process.env.NODE_ENV === "development";
 const isPreview = process.env.VERCEL_ENV === "preview";
 const toolbar = (sources: string) => (isPreview ? ` ${sources}` : "");
 
-// No nonces, so pages stay cacheable; Next.js needs 'unsafe-inline' for its
-// inline scripts and styles. Map tiles (OpenStreetMap) are added with the map.
+// No nonces, so pages stay cacheable; Next.js (and Leaflet) need
+// 'unsafe-inline' for inline scripts and styles. Map tiles come from
+// OpenStreetMap's tile server (src/lib/map.ts, TILE_URL).
+const MAP_TILES = "https://tile.openstreetmap.org";
 const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}${toolbar("https://vercel.live")}`,
   `style-src 'self' 'unsafe-inline'${toolbar("https://vercel.live")}`,
-  `img-src 'self' blob: data: https://images.unsplash.com${toolbar("https://vercel.live https://vercel.com")}`,
+  `img-src 'self' blob: data: https://images.unsplash.com ${MAP_TILES}${toolbar("https://vercel.live https://vercel.com")}`,
   `font-src 'self'${toolbar("https://vercel.live https://assets.vercel.com")}`,
   `connect-src 'self'${toolbar("https://vercel.live wss://ws-us3.pusher.com")}`,
   `frame-src ${isPreview ? "https://vercel.live" : "'none'"}`,

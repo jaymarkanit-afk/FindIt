@@ -50,7 +50,7 @@ export function TodayBoard({ place, cafes, posts, today, now: serverNow }: Props
   const liveHere = live.filter((post) => hereIds.has(post.cafeId));
 
   const term = searchTerm(search);
-  const matching = filteredCafes({ cafes: cafesHere, posts: live, place, filter, term, sips: state.sips, now });
+  const matching = filteredCafes({ cafes: cafesHere, posts: live, origin: place, filter, term, sips: state.sips, now });
   const shown = boardPosts(liveHere, matching, filter);
   const drawerOnly = !SEGMENT_FILTERS.includes(filter);
 

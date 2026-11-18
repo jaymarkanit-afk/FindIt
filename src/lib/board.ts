@@ -95,10 +95,12 @@ export function cafeMatches(cafe: Cafe, term: string): boolean {
   );
 }
 
+export type LatLng = { lat: number; lng: number };
+
 type FilterInput = {
-  cafes: readonly Cafe[]; // cafés in the selected place
+  cafes: readonly Cafe[]; // cafés in the selected place (the map: every café)
   posts: readonly Post[]; // live posts
-  place: Place;
+  origin: LatLng; // where distances are measured from (place centre or the visitor)
   filter: BoardFilter;
   term: string; // from searchTerm()
   sips: readonly string[];
@@ -106,14 +108,14 @@ type FilterInput = {
 };
 
 // Cafés in the place that match the search and the filter (getFilteredCafes)
-export function filteredCafes({ cafes, posts, place, filter, term, sips, now }: FilterInput): Cafe[] {
+export function filteredCafes({ cafes, posts, origin, filter, term, sips, now }: FilterInput): Cafe[] {
   let list = term ? cafes.filter((cafe) => cafeMatches(cafe, term)) : [...cafes];
   const hasPost = (cafe: Cafe, type: PostType) => posts.some((post) => post.cafeId === cafe.id && post.type === type);
   switch (filter) {
     case "findItNearMe":
       list = list
-        .filter((cafe) => distanceKm(place, cafe) < NEAR_ME_KM)
-        .sort((a, b) => distanceKm(place, a) - distanceKm(place, b));
+        .filter((cafe) => distanceKm(origin, cafe) < NEAR_ME_KM)
+        .sort((a, b) => distanceKm(origin, a) - distanceKm(origin, b));
       break;
     case "findItTrending": {
       const scores = trendingScores(posts, sips, now);

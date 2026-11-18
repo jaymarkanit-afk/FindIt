@@ -2,8 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { savedPlace, setPlace, userStateStore, type Place, type UserState } from "@/lib/api";
+import { savedPlace, setPlace, userStateStore, visitorLocationStore, type Place, type UserState } from "@/lib/api";
+import type { LatLng } from "@/lib/board";
 import { getBoardView, getServerBoardView, subscribeBoardView, type BoardView } from "@/lib/boardView";
+
+// The visitor's location once they have shared it (this tab only)
+export function useVisitorLocation(): LatLng | null {
+  return useSyncExternalStore(visitorLocationStore.subscribe, visitorLocationStore.getSnapshot, visitorLocationStore.getServerSnapshot);
+}
 
 // The board's search text and filter (see src/lib/boardView.ts)
 export function useBoardView(): BoardView {
