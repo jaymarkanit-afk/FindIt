@@ -1,7 +1,6 @@
 # Dependencies
 node_modules/
 .npm
-package-lock.json
 yarn.lock
 
 # Vercel
@@ -17,11 +16,11 @@ yarn.lock
 .DS_Store
 
 # Environment
-.env
-.env.local
-.env.*.local
+.env*
 
 # Build outputs
+.next/
+*.tsbuildinfo
 dist/
 build/
 out/
