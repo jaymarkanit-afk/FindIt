@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import * as api from "@/lib/api";
 import { DEFAULT_PLACE } from "@/data/seed";
 import { DEFAULT_USER_STATE, getUserStateSnapshot, resetUserStateCache } from "@/lib/local/userState";
-import { postDetails, postHeadline, postStatus } from "@/lib/posts";
+import { boardDay, postDetails, postHeadline, postStatus } from "@/lib/posts";
 import type { UserState } from "@/data/types";
 
 beforeEach(() => {
@@ -34,6 +34,23 @@ describe("seed data", () => {
     expect((await api.getPlace("San Francisco")).name).toBe("San Francisco");
     expect((await api.getPlace(undefined)).name).toBe("Butuan City");
     expect((await api.getPlace("Atlantis")).name).toBe("Butuan City");
+  });
+});
+
+describe("board date", () => {
+  it("uses Manila's date, not the server's", () => {
+    // 17:30 UTC on the 18th is 01:30 on the 19th in Manila
+    expect(boardDay(new Date("2026-11-18T17:30:00Z"))).toEqual({ iso: "2026-11-19", label: "Thursday, 19 November" });
+    expect(boardDay(new Date("2026-11-18T15:59:00Z"))).toEqual({ iso: "2026-11-18", label: "Wednesday, 18 November" });
+  });
+
+  it("decides which promos have ended by the board date", async () => {
+    const promo = (await api.listPosts())[0];
+    if (promo.type !== "promo") throw new Error("p1 should be a promo");
+    const ended = { ...promo, promo: { ...promo.promo, validUntil: "2026-11-18" } };
+    const ids = (today: string) => api.visiblePosts([ended], DEFAULT_USER_STATE, today).map((post) => post.id);
+    expect(ids("2026-11-18")).toEqual(["p1"]);
+    expect(ids("2026-11-19")).toEqual([]);
   });
 });
 

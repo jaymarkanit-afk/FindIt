@@ -115,6 +115,26 @@ export function localISODate(date: Date = new Date()): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
+// Every café is in the Philippines, so "today" on the board is Manila's
+// date, whatever the server's or visitor's clock says
+export const CAFE_TIME_ZONE = "Asia/Manila";
+
+export type BoardDay = { iso: string; label: string };
+
+// { iso: "2026-11-18", label: "Wednesday, 18 November" } for the board heading
+export function boardDay(now: Date = new Date(), timeZone: string = CAFE_TIME_ZONE): BoardDay {
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    new Intl.DateTimeFormat("en-GB", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" })
+      .formatToParts(now)
+      .find((p) => p.type === type)?.value ?? "";
+  // Built from two parts, as the old app did (js/feed.js renderTodayHeading),
+  // because the joined en-GB pattern differs between ICU versions
+  const weekday = new Intl.DateTimeFormat("en-GB", { timeZone, weekday: "long" }).format(now);
+  const dayMonth = new Intl.DateTimeFormat("en-GB", { timeZone, day: "numeric", month: "long" }).format(now);
+  const label = `${weekday}, ${dayMonth}`;
+  return { iso: `${part("year")}-${part("month")}-${part("day")}`, label };
+}
+
 // "live" | "draft" | "ended". Events and promos end once their date passes.
 export function postStatus(post: Post, today: string = localISODate()): PostStatus {
   if (post.status === "draft" || post.status === "ended") return post.status;

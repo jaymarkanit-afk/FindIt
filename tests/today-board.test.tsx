@@ -7,7 +7,8 @@ import { resetUserStateCache } from "@/lib/local/userState";
 
 async function renderBoard(placeName = "Butuan City") {
   const [place, places, cafes, posts] = await Promise.all([getPlace(placeName), listPlaces(), listCafes(), listPosts()]);
-  return render(<TodayBoard place={place} hasPlaceCookie places={places} cafes={cafes} posts={posts} />);
+  const today = { iso: "2026-11-14", label: "Saturday, 14 November" };
+  return render(<TodayBoard place={place} hasPlaceCookie places={places} cafes={cafes} posts={posts} today={today} />);
 }
 
 describe("TodayBoard", () => {
@@ -20,6 +21,7 @@ describe("TodayBoard", () => {
     await renderBoard();
     expect(screen.getByRole("heading", { name: "Today in Butuan City" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Sustainability Week" })).toBeInTheDocument();
+    expect(screen.getByText("Saturday, 14 November")).toHaveAttribute("datetime", "2026-11-14");
   });
 
   it("shows San Francisco's posts (Kold Coffee)", async () => {

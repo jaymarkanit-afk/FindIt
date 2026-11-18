@@ -53,9 +53,11 @@ export function visibleCafes(cafes: readonly Cafe[], state: UserState): Cafe[] {
   return applyCafeEdits(cafes, state.cafeEdits);
 }
 
-// Live posts with owner posts and edits applied, newest first
-export function visiblePosts(posts: readonly Post[], state: UserState): Post[] {
-  return livePosts(allPosts(posts, state.ownerPosts, state.postEdits));
+// Live posts with owner posts and edits applied, newest first. Pass the
+// board's `today` (see boardDay) so the server and browser agree on which
+// promos and events have ended.
+export function visiblePosts(posts: readonly Post[], state: UserState, today?: string): Post[] {
+  return livePosts(allPosts(posts, state.ownerPosts, state.postEdits), today);
 }
 
 // Every post including drafts and ended ones (owner dashboard)
