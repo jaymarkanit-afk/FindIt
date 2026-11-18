@@ -5,7 +5,8 @@ import { useState } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Overlay } from "@/components/overlay/Overlay";
 import { AppShell } from "@/components/shell/AppShell";
-import { getPlace, listPlaces } from "@/lib/api";
+import { getPlace, listCafes, listPlaces, listPosts } from "@/lib/api";
+import { resetBoardView } from "@/lib/boardView";
 import { resetUserStateCache } from "@/lib/local/userState";
 import { THEME_SCRIPT } from "@/lib/theme";
 
@@ -16,12 +17,16 @@ beforeEach(() => {
   document.cookie = "findit.place=; Max-Age=0; Path=/";
   vi.mocked(usePathname).mockReturnValue("/");
   vi.mocked(useRouter().refresh).mockClear();
+  act(() => resetBoardView());
 });
 
+const NOW = Date.parse("2026-11-15T09:00+08:00");
+
 async function renderShell(children: React.ReactNode = <p>Page</p>) {
-  const [place, places] = await Promise.all([getPlace("Butuan City"), listPlaces()]);
+  const [place, places, cafes, posts] = await Promise.all([getPlace("Butuan City"), listPlaces(), listCafes(), listPosts()]);
+  const today = { iso: "2026-11-15", label: "Sunday, 15 November" };
   return render(
-    <AppShell place={place} places={places} hasPlaceCookie>
+    <AppShell place={place} places={places} hasPlaceCookie cafes={cafes} posts={posts} today={today} now={NOW}>
       {children}
     </AppShell>,
   );
@@ -129,6 +134,69 @@ describe("App shell", () => {
     const cafe = screen.getByRole("link", { name: "Café" });
     expect(cafe).toHaveAttribute("href", "/cafe/9");
     expect(cafe).toHaveAttribute("aria-current", "page");
+  });
+});
+
+describe("Alerts", () => {
+  it("counts new updates from cafés with alerts on (Paramount and Craft by default)", async () => {
+    await renderShell();
+    const bell = screen.getByRole("button", { name: "Alerts, 8 new" });
+    expect(bell).toHaveTextContent("8");
+  });
+
+  it("shows 9+ past nine", async () => {
+    localStorage.setItem("findit.alerts", JSON.stringify([1, 2, 5, 7, 8, 11]));
+    await renderShell();
+    expect(screen.getByRole("button", { name: "Alerts, 12 new" })).toHaveTextContent("9+");
+  });
+
+  it("lists them in a panel, marks them seen and clears the badge", async () => {
+    const user = userEvent.setup();
+    await renderShell();
+    await user.click(screen.getByRole("button", { name: "Alerts, 8 new" }));
+
+    const panel = screen.getByRole("dialog", { name: "Alerts" });
+    const rows = within(panel).getAllByRole("link");
+    expect(rows).toHaveLength(8);
+    expect(rows[0]).toHaveAttribute("href", "/cafe/1");
+    expect(rows[0]).toHaveTextContent("Paramount Coffee");
+    expect(rows[0]).toHaveTextContent("Sustainability Week");
+    expect(rows[0]).toHaveTextContent("Promo · Butuan City · 15 hr ago · New");
+    expect(JSON.parse(localStorage.getItem("findit.seen") ?? "[]")).toHaveLength(8);
+
+    await user.keyboard("{Escape}");
+    const bell = screen.getByRole("button", { name: "Alerts" });
+    expect(bell).toHaveFocus();
+    expect(bell).not.toHaveTextContent(/\d/);
+
+    await user.click(bell);
+    expect(within(screen.getByRole("dialog", { name: "Alerts" })).queryByText(/ · New$/)).not.toBeInTheDocument();
+  });
+
+  it("closes when a row is followed", async () => {
+    const user = userEvent.setup();
+    await renderShell();
+    await user.click(screen.getByRole("button", { name: /^Alerts/ }));
+    await user.click(within(screen.getByRole("dialog", { name: "Alerts" })).getAllByRole("link")[0]);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("explains an empty list", async () => {
+    const user = userEvent.setup();
+    localStorage.setItem("findit.alerts", "[]");
+    await renderShell();
+    await user.click(screen.getByRole("button", { name: "Alerts" }));
+    expect(screen.getByText("Tap “Get alerts” on a café to see its updates here.")).toBeInTheDocument();
+  });
+});
+
+describe("Top-bar search", () => {
+  it("opens the best match on Enter", async () => {
+    const user = userEvent.setup();
+    await renderShell();
+    const field = screen.getByRole("searchbox", { name: "Search cafés" });
+    await user.type(field, "historya{Enter}");
+    expect(useRouter().push).toHaveBeenCalledWith("/cafe/7");
   });
 });
 

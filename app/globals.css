@@ -136,6 +136,21 @@ html:has([data-overlay-open]) { overflow: hidden; }
 .btn-accent { background: var(--accent); color: var(--on-accent); }
 .btn-accent:hover { background: var(--accent-hover); }
 .btn-quiet { background: var(--surface); border: 1px solid var(--control-line); color: var(--ink); }
+.btn-quiet:hover { background: var(--surface2); }
+.btn-dark { background: var(--ink); color: var(--surface); }
+
+/* Search field (top bar and the board at phone width) */
+.search-field {
+  display: flex; align-items: center; gap: 8px;
+  height: var(--tap); padding: 0 14px;
+  border: 1px solid var(--control-line); border-radius: var(--r-pill);
+  background: var(--surface); color: var(--muted);
+  transition: border-color 0.15s;
+}
+.search-field:focus-within { border-color: var(--accent); }
+.search-field input { flex: 1; min-width: 0; height: 100%; border: 0; background: transparent; color: var(--ink); font-size: 14px; }
+.search-field input:focus-visible { outline: none; }
+.search-field input::placeholder { color: var(--muted); }
 
 .icon-btn {
   display: inline-grid; place-items: center;

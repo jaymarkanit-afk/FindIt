@@ -1,128 +1,148 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { Icon } from "@/components/Icon";
 import { PhotoViewer } from "@/components/PhotoViewer";
-import { toggleSip, visibleCafes, visiblePosts, type Cafe, type Place, type Post, type PostType } from "@/lib/api";
-import { useUserState } from "@/lib/hooks";
-import { imageUrl, postDetails, postHeadline, postPhotoAlt, sipCount, type BoardDay } from "@/lib/posts";
-import styles from "./today-board.module.css";
+import { SearchField } from "@/components/SearchField";
+import { BreviBar } from "@/components/board/BreviBar";
+import { CafeTile } from "@/components/board/CafeTile";
+import { FilterDrawer } from "@/components/board/FilterDrawer";
+import { PostCard } from "@/components/board/PostCard";
+import { RightRail } from "@/components/board/RightRail";
+import { SearchResults } from "@/components/board/SearchResults";
+import styles from "@/components/board/board.module.css";
+import { visibleCafes, visiblePosts, type Cafe, type Place, type Post } from "@/lib/api";
+import {
+  boardPosts,
+  cafeStreet,
+  distanceFromLabel,
+  distanceKm,
+  filterLabel,
+  filteredCafes,
+  nearYou,
+  railPosts,
+  searchTerm,
+  SEGMENT_FILTERS,
+} from "@/lib/board";
+import { setBoardFilter } from "@/lib/boardView";
+import { useBoardView, useNow, useUserState } from "@/lib/hooks";
+import { imageUrl, postPhotoAlt, type BoardDay } from "@/lib/posts";
 
-const filters: Array<{ key: "all" | PostType; label: string }> = [
-  { key: "all", label: "All" }, { key: "new", label: "New" }, { key: "photos", label: "Photos" },
-  { key: "promo", label: "Promos" }, { key: "event", label: "Events" }, { key: "hiring", label: "Hiring" },
-];
-const labels: Record<PostType, string> = { new: "New on the menu", photos: "Photos", promo: "Promo", event: "Event", hiring: "Hiring" };
+type Props = { place: Place; cafes: Cafe[]; posts: Post[]; today: BoardDay; now: number };
 
-type Props = { place: Place; cafes: Cafe[]; posts: Post[]; today: BoardDay };
-
-// Post photos fill a 148px column (110px on phones), so the browser picks
-// a file that size times the screen density instead of the full photo
-const POST_IMAGE_SIZES = "(max-width: 700px) 110px, 148px";
-
-export function TodayBoard({ place, cafes, posts, today }: Props) {
-  const [filter, setFilter] = useState<"all" | PostType>("all");
-  const [viewing, setViewing] = useState<string | null>(null);
+// The Today board, as the old home panel: heading, phone search, Brevi,
+// Near you, the filter and the cards, with the "This week" / "Now hiring"
+// rail beside it on desktop.
+export function TodayBoard({ place, cafes, posts, today, now: serverNow }: Props) {
   const state = useUserState();
+  const { search, filter } = useBoardView();
+  const now = useNow(serverNow);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerKey, setDrawerKey] = useState(0);
+  const [viewing, setViewing] = useState<{ postId: string; index: number } | null>(null);
 
-  const cafesHere = visibleCafes(cafes, state).filter((cafe) => cafe.city === place.name);
+  const allCafes = visibleCafes(cafes, state);
+  const cafesHere = allCafes.filter((cafe) => cafe.city === place.name);
   const cafeById = new Map(cafesHere.map((cafe) => [cafe.id, cafe]));
-  const postsHere = visiblePosts(posts, state, today.iso).filter((post) => cafeById.has(post.cafeId));
-  const shown = postsHere.filter((post) => filter === "all" || post.type === filter);
-  const viewed = postsHere.find((post) => post.id === viewing);
-  const viewedCafe = viewed && cafeById.get(viewed.cafeId);
+  const hereIds = new Set(cafeById.keys());
+  const live = visiblePosts(posts, state, today.iso);
+  const liveHere = live.filter((post) => hereIds.has(post.cafeId));
+
+  const term = searchTerm(search);
+  const matching = filteredCafes({ cafes: cafesHere, posts: live, place, filter, term, sips: state.sips, now });
+  const shown = boardPosts(liveHere, matching, filter);
+  const drawerOnly = !SEGMENT_FILTERS.includes(filter);
+
+  const viewedPost = viewing && liveHere.find((post) => post.id === viewing.postId);
+  const viewedCafe = viewedPost && cafeById.get(viewedPost.cafeId);
+
+  function openDrawer() {
+    setDrawerKey((key) => key + 1);
+    setDrawerOpen(true);
+  }
 
   return (
-    <div className={styles.board}>
-      <header className={styles.heading}>
-        <p className={styles.date}><time dateTime={today.iso}>{today.label}</time></p>
-        <h1 className={styles.title}>Today in {place.name}</h1>
-        <p className={styles.intro}>Here is what local cafés are up to right now.</p>
-      </header>
+    <div className={styles.layout}>
+      <div className={styles.mainCol}>
+        <header className={styles.todayHead}>
+          <p className={styles.todayDate}><time dateTime={today.iso}>{today.label}</time></p>
+          <h1 className={styles.todayTitle}>Today in {place.name}</h1>
+        </header>
 
-      {cafesHere.length > 0 && (
-        <section className={styles.section} aria-labelledby="near-title">
-          <h2 className={styles.sectionTitle} id="near-title">Near you</h2>
-          <ul className={styles.nearRow}>
-            {cafesHere.slice(0, 3).map((cafe) => (
-              <li key={cafe.id}>
-                <Link className={styles.cafeTile} href={`/cafe/${cafe.id}`}>
-                  <span className="tile"><Image src={imageUrl(cafe.img)} alt="" width={44} height={44} /></span>
-                  <span className={styles.cafeText}>
-                    <span className={styles.cafeName}>{cafe.name}</span>
-                    <span className={styles.cafeMeta}>★ {cafe.rating} · {cafe.tags[0]}</span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      <section className={styles.section} aria-labelledby="board-title">
-        <h2 className={styles.sectionTitle} id="board-title">On the board today</h2>
-        <div className={`segmented ${styles.filters}`} role="group" aria-label="Filter board posts">
-          {filters.map((item) => (
-            <button key={item.key} type="button" data-active={filter === item.key} aria-pressed={filter === item.key} onClick={() => setFilter(item.key)}>
-              {item.label}
-            </button>
-          ))}
+        <div className={styles.homeSearch}>
+          <SearchField cafes={allCafes} placeName={place.name} />
         </div>
-        <div className={styles.cards} aria-live="polite">
-          {shown.length ? shown.map((post) => {
-            const cafe = cafeById.get(post.cafeId);
-            if (!cafe) return null;
-            const sipped = state.sips.includes(post.id);
-            const photo = post.photos[0];
-            const detail = postDetails(post);
-            const photoCount = post.photos.length;
-            return (
-              <article className={styles.post} key={post.id}>
-                <div className={styles.postBody}>
-                  {photo ? (
-                    <button
-                      type="button"
-                      className={styles.postPhoto}
-                      aria-label={photoCount === 1 ? `View photo from ${cafe.name}` : `View ${photoCount} photos from ${cafe.name}`}
-                      onClick={() => setViewing(post.id)}
-                    >
-                      <Image className={styles.postImage} src={imageUrl(photo.src)} alt="" width={148} height={162} sizes={POST_IMAGE_SIZES} />
-                    </button>
-                  ) : (
-                    <div className={styles.postImage} />
-                  )}
-                  <div className={styles.postContent}>
-                    <span className={styles.tag}>{labels[post.type]}</span>
-                    <h3 className={styles.postTitle}>{postHeadline(post)}</h3>
-                    <p className={styles.caption}>{post.caption}</p>
-                    {detail && <span className={styles.detail}>{detail}</span>}
-                  </div>
-                </div>
-                <footer className={styles.postFooter}>
-                  <Link className={styles.cafeMetaLine} href={`/cafe/${cafe.id}`}>
-                    <span className="tile"><Image src={imageUrl(cafe.img)} alt="" width={44} height={44} /></span>
-                    <span>{cafe.name}</span>
+
+        <BreviBar place={place} cafes={cafesHere} now={now} />
+
+        {cafesHere.length > 0 && (
+          <section className={styles.boardSec} aria-labelledby="near-title">
+            <h2 className={styles.secTitle}>
+              <span id="near-title">Near you</span> <span className={styles.distFrom}>{distanceFromLabel(place)}</span>
+            </h2>
+            <ul className={styles.nearRow} aria-label="Cafés near you">
+              {nearYou(cafesHere, place).map((cafe) => (
+                <li key={cafe.id} className={styles.nearItem}>
+                  <Link className={styles.nearTile} href={`/cafe/${cafe.id}`}>
+                    <span className={styles.nearTop}>
+                      <CafeTile cafe={cafe} />
+                      <span className={styles.distChip}>{distanceKm(place, cafe)} km</span>
+                    </span>
+                    <span className={styles.nearName}>{cafe.name}</span>
+                    <span className={styles.nearStreet}>{cafeStreet(cafe)}</span>
                   </Link>
-                  <button className={styles.sip} type="button" data-active={sipped} aria-pressed={sipped} onClick={() => void toggleSip(post.id)}>
-                    ☕ {sipCount(post, state.sips)} sips
-                  </button>
-                </footer>
-              </article>
-            );
-          }) : (
-            <p className={styles.empty}>{postsHere.length ? "Nothing on the board for this filter yet." : `Nothing on the board in ${place.name} today`}</p>
-          )}
-        </div>
-      </section>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
-      {viewed && viewedCafe && (
+        <section className={styles.boardSec} aria-labelledby="board-title">
+          <h2 className={styles.secTitle} id="board-title">On the board today</h2>
+          <div className={styles.filterRow}>
+            <div className={`segmented ${styles.boardFilter}`} role="group" aria-label="Show on the board">
+              {SEGMENT_FILTERS.map((key) => (
+                <button key={key} type="button" data-active={filter === key} aria-pressed={filter === key} onClick={() => setBoardFilter(key)}>
+                  {filterLabel(key, "short")}
+                </button>
+              ))}
+            </div>
+            <button type="button" className={`btn btn-quiet ${styles.filtersBtn}`} aria-haspopup="dialog" aria-expanded={drawerOpen} onClick={openDrawer}>
+              <Icon name="sliders" />
+              {drawerOnly ? `Filters: ${filterLabel(filter)}` : "Filters"}
+            </button>
+          </div>
+
+          {term && <SearchResults term={term} results={matching} allCafes={allCafes} place={place} />}
+
+          <div className={styles.boardList}>
+            {shown.length ? (
+              shown.map((post) => {
+                const cafe = cafeById.get(post.cafeId);
+                return cafe ? (
+                  <PostCard key={post.id} post={post} cafe={cafe} place={place} state={state} now={now} onOpenPhoto={(postId, index) => setViewing({ postId, index })} />
+                ) : null;
+              })
+            ) : (
+              <p className={styles.empty}>{liveHere.length ? "Nothing on the board for this filter yet." : `Nothing on the board in ${place.name} today`}</p>
+            )}
+          </div>
+        </section>
+      </div>
+
+      <RightRail events={railPosts(liveHere, hereIds, "event")} jobs={railPosts(liveHere, hereIds, "hiring")} cafeById={cafeById} />
+
+      <FilterDrawer key={drawerKey} open={drawerOpen} current={filter} onClose={() => setDrawerOpen(false)} />
+
+      {viewing && viewedPost && viewedCafe && (
         <PhotoViewer
-          key={viewed.id}
+          key={`${viewedPost.id}-${viewing.index}`}
           open
           onClose={() => setViewing(null)}
           title={`Photos from ${viewedCafe.name}`}
-          photos={viewed.photos.map((p, index) => ({ src: imageUrl(p.src), alt: postPhotoAlt(viewed, index, viewedCafe) }))}
+          startIndex={viewing.index}
+          photos={viewedPost.photos.map((photo, index) => ({ src: imageUrl(photo.src), alt: postPhotoAlt(viewedPost, index, viewedCafe) }))}
         />
       )}
     </div>

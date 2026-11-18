@@ -2,7 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { cookies } from "next/headers";
 import { AppShell } from "@/components/shell/AppShell";
-import { getPlace, listPlaces, PLACE_COOKIE } from "@/lib/api";
+import { getPlace, listCafes, listPlaces, listPosts, PLACE_COOKIE, requestTime } from "@/lib/api";
+import { boardDay } from "@/lib/posts";
 import { THEME_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
@@ -25,7 +26,8 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const placeCookie = (await cookies()).get(PLACE_COOKIE)?.value;
-  const [place, places] = await Promise.all([getPlace(placeCookie), listPlaces()]);
+  const [place, places, cafes, posts] = await Promise.all([getPlace(placeCookie), listPlaces(), listCafes(), listPosts()]);
+  const now = requestTime();
   return (
     // data-theme is changed before first paint by THEME_SCRIPT, so React
     // must not complain that it differs from the server's "light"
@@ -34,7 +36,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body>
-        <AppShell place={place} places={places} hasPlaceCookie={placeCookie !== undefined}>
+        <AppShell place={place} places={places} hasPlaceCookie={placeCookie !== undefined} cafes={cafes} posts={posts} today={boardDay(new Date(now))} now={now}>
           {children}
         </AppShell>
       </body>

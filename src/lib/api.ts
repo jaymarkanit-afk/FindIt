@@ -38,6 +38,12 @@ export async function listPosts(): Promise<Post[]> {
   return seedPosts;
 }
 
+// The time of the current request, for server renders that show relative
+// times ("5 min ago"). Call after `await connection()` in the page.
+export function requestTime(): number {
+  return Date.now();
+}
+
 // The place with this name, or the default place
 export async function getPlace(name: string | undefined): Promise<Place> {
   return findPlace(name);

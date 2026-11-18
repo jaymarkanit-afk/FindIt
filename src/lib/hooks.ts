@@ -1,8 +1,25 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { savedPlace, setPlace, userStateStore, type Place, type UserState } from "@/lib/api";
+import { getBoardView, getServerBoardView, subscribeBoardView, type BoardView } from "@/lib/boardView";
+
+// The board's search text and filter (see src/lib/boardView.ts)
+export function useBoardView(): BoardView {
+  return useSyncExternalStore(subscribeBoardView, getBoardView, getServerBoardView);
+}
+
+// A clock for "5 min ago" labels and Brevi. Starts from the server's time
+// so the first client render matches, then ticks once a minute.
+export function useNow(serverNow: number): number {
+  const [now, setNow] = useState(serverNow);
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
+  return now;
+}
 
 // The visitor's saved state. The server render and the first client render
 // use the defaults, so there is no hydration mismatch; saved values appear
