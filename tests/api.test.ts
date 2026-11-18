@@ -15,10 +15,11 @@ beforeEach(() => {
 
 const state = (changes: Partial<UserState>): UserState => ({ ...DEFAULT_USER_STATE, ...changes });
 
-// Runs the old app's js/database.js and returns what it defines.
-// Remove this test together with the old app (migration step 9).
+// Runs the old app's js/database.js, kept unchanged as a fixture after the
+// old app was removed, and returns what it defines. The seed must match it
+// value for value: saved alerts, keeps and sips refer to these ids.
 function oldDatabase(): unknown {
-  const source = readFileSync(path.resolve(__dirname, "../js/database.js"), "utf8");
+  const source = readFileSync(path.resolve(__dirname, "fixtures/old-database.js"), "utf8");
   return vm.runInNewContext(`${source}\n;({ places, DEFAULT_PLACE, cafeDatabase, posts })`);
 }
 

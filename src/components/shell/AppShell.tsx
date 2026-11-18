@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useSyncExternalStore, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { PlacePicker } from "@/components/PlacePicker";
 import { SearchField } from "@/components/SearchField";
-import { getOpenOverlayCount, getServerOpenOverlayCount, subscribeOverlays } from "@/components/overlay/overlayStore";
 import { visibleCafes, type Cafe, type Place, type Post } from "@/lib/api";
 import { useAdoptSavedPlace, useUserState } from "@/lib/hooks";
 import type { BoardDay } from "@/lib/posts";
@@ -29,13 +28,13 @@ type Props = {
 // an overlay is open everything here except the toast is inert, so focus
 // and screen readers stay in it.
 export function AppShell({ place, places, hasPlaceCookie, cafes, posts, today, now, children }: Props) {
-  const overlayOpen = useSyncExternalStore(subscribeOverlays, getOpenOverlayCount, getServerOpenOverlayCount) > 0;
   const state = useUserState();
   useAdoptSavedPlace(place, hasPlaceCookie, state);
 
   return (
     <ToastProvider>
-      <div className={styles.app} inert={overlayOpen}>
+      {/* Overlays make this inert while they are open (see overlayStore) */}
+      <div className={styles.app} data-app-root="">
         <a className={styles.skip} href="#main">
           Skip to content
         </a>

@@ -1,4 +1,4 @@
-import { act, render, screen, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { useRouter } from "next/navigation";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -230,9 +230,10 @@ describe("highlights on the dashboard", () => {
     await user.click(screen.getByRole("menuitem", { name: "Remove" }));
     expect(screen.getByText("Remove this highlight?")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Remove" }));
-    expect(screen.getByRole("status")).toHaveTextContent("Highlight removed");
-    expect(screen.getByRole("heading", { name: "Highlights" })).toHaveFocus();
-    expect(within(row()).getByText("5 of 6")).toBeInTheDocument();
+    // Saving is async: wait for its results rather than racing them
+    await waitFor(() => expect(within(row()).getByText("5 of 6")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Highlight removed"));
+    await waitFor(() => expect(screen.getByRole("heading", { name: "Highlights" })).toHaveFocus());
 
     await user.upload(within(row()).getByLabelText("New highlight"), [photo("one.jpg"), photo("two.jpg")]);
     expect(await within(row()).findByRole("alert")).toHaveTextContent("You can add up to 6 highlights, so 1 was not added.");

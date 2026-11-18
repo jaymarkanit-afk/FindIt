@@ -42,7 +42,9 @@ export function MoreMenu({ itemName, items, className }: Props) {
     panel.current.querySelector<HTMLElement>(selector)?.focus({ preventScroll: true });
   });
 
-  // Desktop dropdown: a click outside, scrolling or resizing closes it
+  // Desktop dropdown: a click outside closes it. On scroll or resize it
+  // follows its button (a scroll can arrive just after opening, e.g. from
+  // momentum), and closes only once the button has left the screen.
   useEffect(() => {
     if (!open || phone) return;
     const outside = (event: PointerEvent) => {
@@ -54,14 +56,21 @@ export function MoreMenu({ itemName, items, className }: Props) {
         if (document.activeElement === document.body) button.current?.focus();
       });
     };
-    const away = () => closeMenu(id);
+    const follow = () => {
+      const rect = button.current?.getBoundingClientRect();
+      if (!rect || rect.bottom < 0 || rect.top > window.innerHeight) {
+        closeMenu(id);
+        return;
+      }
+      setPosition({ top: rect.bottom + 4, right: Math.max(8, window.innerWidth - rect.right) });
+    };
     document.addEventListener("pointerdown", outside);
-    window.addEventListener("scroll", away, true);
-    window.addEventListener("resize", away);
+    window.addEventListener("scroll", follow, true);
+    window.addEventListener("resize", follow);
     return () => {
       document.removeEventListener("pointerdown", outside);
-      window.removeEventListener("scroll", away, true);
-      window.removeEventListener("resize", away);
+      window.removeEventListener("scroll", follow, true);
+      window.removeEventListener("resize", follow);
     };
   }, [open, phone, id]);
 

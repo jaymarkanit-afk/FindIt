@@ -1,31 +1,27 @@
-// How many overlays are open. The app shell reads it to make the page
-// behind an open overlay inert (no focus, no clicks, hidden from screen
-// readers), declaratively, through useSyncExternalStore.
+// While any overlay is open, the page behind it is inert (no focus, no
+// clicks, hidden from screen readers).
+//
+// `inert` is set directly on the app's root (marked data-app-root) from the
+// overlay's layout effect, not through a React render: browsers do not focus
+// inert elements, so `inert` must be gone the moment the last overlay
+// closes, before focus returns to its trigger and before any other effect
+// in the same render moves focus.
 
 let openCount = 0;
-const listeners = new Set<() => void>();
 
-function emit() {
-  for (const listener of listeners) listener();
+function appRoot(): HTMLElement | null {
+  return typeof document === "undefined" ? null : document.querySelector<HTMLElement>("[data-app-root]");
 }
 
-// Returns the function that unregisters it
-export function registerOpenOverlay(): () => void {
+// Call when an overlay opens; call the returned function when it closes
+export function makePageInert(): () => void {
   openCount += 1;
-  emit();
-  let done = false;
+  appRoot()?.setAttribute("inert", "");
+  let released = false;
   return () => {
-    if (done) return;
-    done = true;
+    if (released) return;
+    released = true;
     openCount -= 1;
-    emit();
+    if (openCount === 0) appRoot()?.removeAttribute("inert");
   };
 }
-
-export function subscribeOverlays(listener: () => void): () => void {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
-
-export const getOpenOverlayCount = () => openCount;
-export const getServerOpenOverlayCount = () => 0;

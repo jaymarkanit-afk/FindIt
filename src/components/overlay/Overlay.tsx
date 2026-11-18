@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useId, useRef, type KeyboardEvent, type ReactNode } from "react";
+import { useId, useLayoutEffect, useRef, type KeyboardEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "@/components/Icon";
-import { registerOpenOverlay } from "./overlayStore";
+import { makePageInert } from "./overlayStore";
 import styles from "./overlay.module.css";
 
 // One accessible overlay for the filter drawer ("sheet"), the alerts panel
@@ -14,7 +14,7 @@ import styles from "./overlay.module.css";
 //   first focusable element; Tab and Shift+Tab stay inside
 // - Escape, the close button and a click on the backdrop call onClose
 // - focus returns to whatever had it before opening (usually the trigger)
-// - the page behind is made inert by the app shell while it is open
+// - the page behind (the shell's data-app-root) is inert while it is open
 //
 // Focus has to be moved with element.focus(); that and the focusable-element
 // lookup inside the panel are the only direct DOM calls here.
@@ -48,16 +48,20 @@ function OverlayPanel({ onClose, title, hideTitle = false, variant = "sheet", on
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
 
-  useEffect(() => {
+  // A layout effect: the page becomes inert (and focus moves in) before the
+  // browser paints, and on close `inert` is gone before focus returns.
+  // An overlay that opens as another closes (a menu sheet opening a dialog)
+  // runs after that close, so it records the original trigger.
+  useLayoutEffect(() => {
     const returnTo = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    const unregister = registerOpenOverlay();
+    const release = makePageInert();
     const panel = panelRef.current;
     if (panel) {
       const target = panel.querySelector<HTMLElement>("[data-autofocus]") ?? focusables(panel)[0] ?? panel;
       target.focus();
     }
     return () => {
-      unregister();
+      release();
       // The trigger may have re-rendered; only return focus if it still exists
       if (returnTo?.isConnected) returnTo.focus();
     };
